@@ -1,0 +1,752 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+
+	<meta name="format-detection" content="telephone=no">
+
+	<link rel="stylesheet" href="../css/sample.css" />
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431152228724_jquery.js"></script>
+	<script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431576139678_jdsmart-1.0.0.js"></script>
+	<script src="../js/main.js"></script>
+	<title>空气净化器</title>
+
+</head>
+<body>
+<div id="top" >
+	<p>adaadadajda</p>
+
+</div>
+<!---->
+<section>
+
+    <div class="state">
+    	<dl>
+       		<dt>风速</dt>
+           <dd id="wtext">三档</dd>
+       	</dl>
+    	<dl class="cs">
+       		<dd id="ptext">100</dd>
+       	</dl>
+    	<dl>
+       		<dt class="green">良</dt>
+           <dd>μm/m3</dd>
+       	</dl>
+    	<dl>
+       		<dt>滤网剩余</dt>
+           <dd id="ltext">80%</dd>
+       	</dl>
+    	<dl>
+       		<dt>温度</dt>
+           <dd id="ttext">20℃</dd>
+       	</dl>
+    	<dl>
+       		<dt>湿度</dt>
+           <dd id="htext">40%RH</dd>
+       	</dl>
+    	<dl>
+       		<dt>模式</dt>
+           <dd id="mtext">睡眠</dd>
+       	</dl>
+    	<dl>
+       		<dt>负离子</dt>
+           <dd id="jtext">开</dd>
+       	</dl>
+    </div>
+    <div id="page1">
+        <!--风速选择-->
+        <h1 class="title">风速选择</h1>
+        <div class="pattern">
+            <div class="patterncon"></div>
+            <ul>
+                <li>
+                    <input onClick="mode(1)" id="radio_1" class="radio" name="radio" type="radio" checked />
+                   <label for="radio_1" class="trigger"><em></em>一档</label>
+                </li>
+                <li>
+                    <input onClick="mode(2)" id="radio_2" class="radio" name="radio" type="radio" />
+                   <label for="radio_2" class="trigger"><em></em>二档</label>
+                </li>
+                <li>
+                    <input onClick="mode(3)" id="radio_3" class="radio" name="radio" type="radio" />
+                   <label for="radio_3" class="trigger"><em></em>三档</label>
+                </li>
+                <li>
+                    <input onClick="mode(4)" id="radio_4" class="radio" name="radio" type="radio" />
+                   <label for="radio_4" class="trigger"><em></em>四档</label>
+                </li>
+                <li>
+                    <input onClick="mode(5)" id="radio_5" class="radio" name="radio" type="radio" />
+                   <label for="radio_5" class="trigger"><em></em>五档</label>
+                </li>
+           </ul>
+        </div>
+        <!--功能选择-->
+        <h1 class="title">功能选择</h1>
+        <ul class="func">
+            <li>
+                <input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+               <label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+            </li>
+            <li>
+                <input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+               <label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+            </li>
+            <li>
+                <input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+               <label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+            </li>
+            <li>
+                <input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+               <label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+            </li>
+        </ul>
+        <ul class="func time">
+            <li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+        </ul>
+
+
+		<!--功能选择-->
+		<h1 class="title">功能选择</h1>
+		<ul class="func">
+			<li>
+				<input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+				<label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+			</li>
+			<li>
+				<input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+				<label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+			</li>
+			<li>
+				<input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+				<label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+			</li>
+			<li>
+				<input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+				<label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+			</li>
+		</ul>
+		<ul class="func time">
+			<li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+		</ul>
+
+		<!--功能选择-->
+		<h1 class="title">功能选择</h1>
+		<ul class="func">
+			<li>
+				<input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+				<label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+			</li>
+			<li>
+				<input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+				<label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+			</li>
+			<li>
+				<input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+				<label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+			</li>
+			<li>
+				<input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+				<label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+			</li>
+		</ul>
+		<ul class="func time">
+			<li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+		</ul>
+
+		<!--功能选择-->
+		<h1 class="title">功能选择</h1>
+		<ul class="func">
+			<li>
+				<input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+				<label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+			</li>
+			<li>
+				<input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+				<label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+			</li>
+			<li>
+				<input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+				<label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+			</li>
+			<li>
+				<input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+				<label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+			</li>
+		</ul>
+		<ul class="func time">
+			<li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+		</ul>
+
+		<!--功能选择-->
+		<h1 class="title">功能选择</h1>
+		<ul class="func">
+			<li>
+				<input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+				<label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+			</li>
+			<li>
+				<input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+				<label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+			</li>
+			<li>
+				<input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+				<label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+			</li>
+			<li>
+				<input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+				<label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+			</li>
+		</ul>
+		<ul class="func time">
+			<li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+		</ul>
+
+		<!--功能选择-->
+		<h1 class="title">功能选择</h1>
+		<ul class="func">
+			<li>
+				<input onClick="moshi(1)" id="moshi_1" class="radio" name="moshi" type="radio"  />
+				<label for="moshi_1" class="trigger"><em class="ico1"></em>自动</label>
+			</li>
+			<li>
+				<input onClick="moshi(2)"  id="moshi_2" class="radio" name="moshi" type="radio" />
+				<label for="moshi_2" class="trigger"><em class="ico2"></em>节能</label>
+			</li>
+			<li>
+				<input onClick="moshi(3)"  id="moshi_3" class="radio" name="moshi" type="radio" />
+				<label for="moshi_3" class="trigger"><em class="ico3"></em>强力</label>
+			</li>
+			<li>
+				<input onClick="moshi(4)"  id="moshi_4" class="radio" name="moshi" type="radio" />
+				<label for="moshi_4" class="trigger"><em class="ico4"></em>睡眠</label>
+			</li>
+		</ul>
+		<ul class="func time">
+			<li id="jan" class="btn on"><em class="ico5"></em>负离子</li>
+		</ul>
+		<a href="home.html">产品首页</a>
+    </div>
+</section>
+<div class="ht50"></div>
+<div class="footbut" id="gj" onClick="gj()"><button>关闭</button></div>
+<div class="footbut" id="kj" onClick="kj()" style="display:none"><button>开启</button></div>
+<div class="mengban_off" style="display:none"></div>
+<div class="mengban" style="display:none"></div>
+
+<!--加载动画-->
+<div class="loader" style="display:none">
+	<div class=" ball-beat">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+
+<script>
+JDSMART.ready(function(){
+            showButton(true);
+            getInitData();            
+           setInterval(function(){
+            	getInfo();
+            }, 4000);
+       
+ });       
+        
+	function showButton(flag){
+
+		JDSMART.app.config (		//配置导航按钮隐藏显示
+            {
+                    showBack:flag,   // 返回按钮，false是隐藏，true是显示
+                    showShare:flag,
+                    showMore:flag   // 更多按钮
+					
+            });
+	};
+	function getInitData(){
+    JDSMART.io.initDeviceData(function (suc) {
+    	initData(suc);           
+    });    
+};
+//控制设备
+function controlDevice(command,callback){
+
+    view_wait(); 
+
+    JDSMART.io.controlDevice(  // 控制设备接口: 如开关
+            command,
+            function (suc) {
+                hide_wait(); 
+                if(callback)
+                    callback(suc);
+            },
+            function (error) {
+               toast(error.errorInfo);
+               hide_wait();
+
+
+            }
+    );
+};
+//交互等待动画显示/隐藏
+function view_wait(){
+	$(".loader").show();
+	};
+function hide_wait(){
+	$(".loader").hide();
+	};
+//toast
+function toast(str){
+	JDSMART.app.toast({"message":str},null);
+	}
+
+//获取快照
+function getInfo(){
+    JDSMART.io.getSnapshot(
+            function (suc) {              
+            reflashData(suc);
+            },
+            function (error) {
+                // 执行失败的回调
+ 			toast(error.errorInfo)
+            }
+    );
+
+};
+$(".btn").on("click",function(e){
+	if($(this).attr("class").indexOf("on") >= 0){
+		var command = {
+		"command":[				
+					{
+                        "stream_id": "jan",
+                        "current_value":"off"
+                    }
+                ]		
+		}	
+	controlDevice(command,function(suc){
+	 		$("#jan").attr("class","btn off");
+		});	       		
+	}
+	else{
+		var command = {
+		"command":[				
+					{
+                        "stream_id": "jan",
+                        "current_value":"on"
+                    }
+                ]		
+		}	
+	controlDevice(command,function(suc){
+	 		$("#jan").attr("class","btn on");
+		});	       		
+	}
+});
+function mode(arg){
+	cdate = new Date();
+	ctime = cdate.getTime();
+	var wind;
+	switch(arg){
+		case 1:
+		wind = 'a';
+		break;
+		case 2:
+		wind = 'b';
+		break;
+		case 3:
+		wind = 'c';
+		break;
+		case 4:
+		wind = 'd';
+		break;
+		case 5:
+		wind = 'e';
+		break;
+		}
+	var command = {
+		"command":[				
+					{
+                        "stream_id": "jwi",
+                        "current_value":wind
+                    }
+                ]		
+		}	
+	controlDevice(command,false);	       			
+}
+function moshi(arg){
+	fdate = new Date();
+	ftime = fdate.getTime();
+	var m;
+	switch(arg){
+		case 1:
+		m = 'c';
+		break;
+		case 2:
+		m = 'e';
+		break;
+		case 3:
+		m = 'd';
+		break;
+		case 4:
+		m = 'b';
+		break;
+	}
+	var command = {
+		"command":[				
+					{
+                        "stream_id": "jmo",
+                        "current_value":m
+                    }
+                ]		
+		}	
+	controlDevice(command,false);	       	
+	}
+function gj(){
+	var command = {
+	"command":[				
+					{
+                        "stream_id": "jpw",
+                        "current_value":"off"
+                    }
+                ]		
+		}	
+	controlDevice(command,function(suc){
+	 		$("#page1").addClass("gray");
+			$(".mengban_off,#kj").show();
+			$("#gj").hide();
+		});	            
+	}
+function kj(){
+	var command = {
+	"command":[				
+					{
+                        "stream_id": "jpw",
+                        "current_value":"on"
+                    }
+                ]		
+		}	
+	controlDevice(command,function(suc){
+	 		$("#page1").removeClass("gray");
+			$("#gj").show();
+			$("#kj,.mengban_off").hide();
+		});	            
+	}
+
+var date;
+var now;
+var cdate;
+var ctime = 0;	
+var fdate;
+var ftime = 0;
+function initData(suc){
+if(typeof(suc)=="string"){
+	suc = JSON.parse(suc);
+	}
+	//设备在线状态 status=0 ：不在线 1：在线
+    if(suc.device.status){
+		var status = suc.device.status;
+		if(status == 0){
+			$(".mengban").show();			
+			
+			}else{	
+			$(".mengban").hide();	
+				}
+		} 
+	
+	 $.each(suc["streams"], function(i,val){ 
+  //开关机
+        if(val["stream_id"] == "jpw" && val["current_value"]){
+            var p = val["current_value"];
+			if(p=="on"){
+				$("#page1").removeClass("gray");
+			$("#gj").show();
+			$("#kj,.mengban_off").hide();
+				}else{
+				$("#page1").addClass("gray");
+			$(".mengban_off,#kj").show();
+			$("#gj").hide();		
+					}          
+        }
+		 //空气质量
+	if(val["stream_id"] == "jaq" && val["current_value"]){
+		var r = val["current_value"];
+		if(r == "a"){
+		$(".green").text("优");	
+			}else if(r=="b"){
+			$(".green").text("良");		
+				}else if(r=="c"){
+					$(".green").text("差");
+					}
+		} 
+	//当前温度
+	 if(val["stream_id"] == "jct" && val["current_value"]){ 
+		 var m = val["current_value"];
+		 $("#ttext").text(m+"℃");
+		 }
+		
+	//PM2.5
+	if(val["stream_id"] == "jpm" && val["current_value"]){
+	 	var p = val["current_value"];
+		$("#ptext").text(p);
+		}
+
+	//湿度  
+	if(val["stream_id"] == "jhu" && val["current_value"]){
+		var h = val["current_value"];
+		$("#htext").text(h+"%RH");
+		} 
+	//滤网使用剩余 
+	 if(val["stream_id"] == "jfi" && val["current_value"]){
+		 var m = val["current_value"];
+		 $("#ltext").text(m+"%");
+		 }  
+	//风速 
+	 if(val["stream_id"] == "jwi" && val["current_value"]){
+		  date = new Date();
+		  now = date.getTime();
+		  var w = val["current_value"];
+		  var d;
+		  var i;
+		  switch(w){
+			 case 'a':
+			  d = "一档";
+			  i = 0;
+			  break;
+			  case 'b':
+			  d = "二档";
+			  i = 1;
+			  break;
+			  case 'c':
+			  d = "三档";
+			  i = 2;
+			  break;
+			  case 'd':
+			  d = "四档";
+			  i = 3
+			  break;
+			  case 'e':
+			  d = "五档";
+			  i = 4;
+			  break;
+		  }
+		  if((now-ctime)<3000){
+		  $("#wtext").text(d);
+     	 }else{	
+		 $("#wtext").text(d);
+		 $("input:radio[name='radio']").eq(i).attr("checked",true); 
+		}
+	 }  
+	//模式选择 
+	 if(val["stream_id"] == "jmo" && val["current_value"]){
+		  date = new Date();
+		  now = date.getTime();
+		  var w = val["current_value"];
+		  var d;
+		  var i;
+		  switch(w){
+			 case 'a':
+			  d = "无";
+			  i = -1;
+			  break;
+			  case 'b':
+			  d = "睡眠";
+			  i = 3;
+			  break;
+			  case 'c':
+			  d = "自动";
+			  i = 0;
+			  break;
+			  case 'd':
+			  d = "强力";
+			  i = 2;
+			  break;
+			  case 'e':
+			  d = "节能";
+			  i = 1;
+			  break;
+		  }
+		  if((now-ftime)<3000){
+		  $("#mtext").text(d);
+     	 }else{	
+		 $("#mtext").text(d);
+		 if(i == -1){
+		 $("input:radio[name='moshi']:checked").attr('checked',false);
+		 }else{
+		 $("input:radio[name='radio']").eq(i).attr("checked",true); 
+		 }
+		}
+		 }  
+	//负离子 
+	 if(val["stream_id"] == "jan" && val["current_value"]){
+		 var px = val["current_value"];
+		 if(px=="on"){
+		 $("#jtext").text("开");
+		 $("#jan").attr("class","btn on");
+		 }else{
+		 $("#jtext").text("关");
+		 $("#jan").attr("class","btn off");	 
+			 }
+		 }  	 	 
+    });  
+};
+	
+function reflashData(suc){
+	//alert(JSON.stringify(suc));
+	if(typeof(suc)=="string"){
+	suc = JSON.parse(suc);
+	}
+	if(suc.status){
+		var status = suc.status;
+		if(status == 0){			
+			$(".mengban").show();			
+			
+			}else{	
+			$(".mengban").hide();	
+				}
+		}
+	 $.each(suc["streams"], function(i,val){ 
+  //开关机
+        if(val["stream_id"] == "jpw" && val["current_value"]){
+            var p = val["current_value"];
+			if(p=="on"){
+				$("#page1").removeClass("gray");
+			$("#gj").show();
+			$("#kj,.mengban_off").hide();
+				}else{
+				$("#page1").addClass("gray");
+			$(".mengban_off,#kj").show();
+			$("#gj").hide();		
+					}          
+        }
+		 //空气质量
+	if(val["stream_id"] == "jaq" && val["current_value"]){
+		var r = val["current_value"];
+		if(r == "a"){
+		$(".green").text("优");	
+			}else if(r=="b"){
+			$(".green").text("良");		
+				}else if(r=="c"){
+					$(".green").text("差");
+					}
+		} 
+	//当前温度
+	 if(val["stream_id"] == "jct" && val["current_value"]){ 
+		 var m = val["current_value"];
+		 $("#ttext").text(m+"℃");
+		 }
+		
+	//PM2.5
+	if(val["stream_id"] == "jpm" && val["current_value"]){
+	 	var p = val["current_value"];
+		$("#ptext").text(p);
+		}
+
+	//湿度  
+	if(val["stream_id"] == "jhu" && val["current_value"]){
+		var h = val["current_value"];
+		$("#htext").text(h+"%RH");
+		} 
+	//滤网使用剩余 
+	 if(val["stream_id"] == "jfi" && val["current_value"]){
+		 var m = val["current_value"];
+		 $("#ltext").text(m+"%");
+		 }  
+	//风速 
+	 if(val["stream_id"] == "jwi" && val["current_value"]){
+		  date = new Date();
+		  now = date.getTime();
+		  var w = val["current_value"];
+		  var d;
+		  var i;
+		  switch(w){
+			 case 'a':
+			  d = "一档";
+			  i = 0;
+			  break;
+			  case 'b':
+			  d = "二档";
+			  i = 1;
+			  break;
+			  case 'c':
+			  d = "三档";
+			  i = 2;
+			  break;
+			  case 'd':
+			  d = "四档";
+			  i = 3
+			  break;
+			  case 'e':
+			  d = "五档";
+			  i = 4;
+			  break;
+		  }
+		  if((now-ctime)<3000){
+		  $("#wtext").text(d);
+     	 }else{	
+		 $("#wtext").text(d);
+		 $("input:radio[name='radio']").eq(i).attr("checked",true); 
+		}
+	 }  
+	//模式选择 
+	 if(val["stream_id"] == "jmo" && val["current_value"]){
+		  date = new Date();
+		  now = date.getTime();
+		  var w = val["current_value"];
+		  var d;
+		  var i;
+		  switch(w){
+			 case 'a':
+			  d = "无";
+			  i = -1;
+			  break;
+			  case 'b':
+			  d = "睡眠";
+			  i = 3;
+			  break;
+			  case 'c':
+			  d = "自动";
+			  i = 0;
+			  break;
+			  case 'd':
+			  d = "强力";
+			  i = 2;
+			  break;
+			  case 'e':
+			  d = "节能";
+			  i = 1;
+			  break;
+		  }
+		  if((now-ftime)<3000){
+		  $("#mtext").text(d);
+     	 }else{	
+		 $("#mtext").text(d);
+		 if(i == -1){
+		 $("input:radio[name='moshi']:checked").attr('checked',false);
+		 }else{
+		 $("input:radio[name='radio']").eq(i).attr("checked",true); 
+		 }
+		}
+		 }  
+	//负离子 
+	 if(val["stream_id"] == "jan" && val["current_value"]){
+		 var px = val["current_value"];
+		 if(px=="on"){
+		 $("#jtext").text("开");
+		 $("#jan").attr("class","btn on");
+		 }else{
+		 $("#jtext").text("关");
+		 $("#jan").attr("class","btn off");	 
+			 }
+		 }  	 	 
+    });  
+};
+	function naviToAnotherPage() {
+		JDSMART.app.openUrl(
+				"http://m.jd.com"
+		);
+	};
+</script>
+</body>
+</html>
+

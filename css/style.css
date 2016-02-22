@@ -1,0 +1,92 @@
+@charset "UTF-8";
+/* CSS Document */
+.tab { overflow: auto; -webkit-overflow-scrolling: touch; }
+
+.content-block {
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 1rem;
+}
+.content-block-title {
+    margin-top: 1rem;
+}
+#custom-header {
+    position: fixed;
+    top: 0;
+    z-index: 998;
+    width: 100%;
+    height: 150px;
+    background-color: #3d4145;
+}
+
+.bar-footer {
+    padding: 0;
+}
+
+.bottom-block {
+    position: fixed;
+    bottom: 0px;
+    padding: 0px;
+    margin-left: 0px;
+    width: 100%;
+    height: 50px;
+    background-color: white;
+    overflow: hidden;
+    z-index: 99;
+}
+
+.button-bottom {
+    width: 100%;
+    height: 50px;
+
+    color: black;
+    border: none;
+    margin: 0px;
+    border-left: 1px solid #eef2f7;
+    border-top: 1px solid #eef2f7;
+}
+
+.button-bottom:active {
+    border: none;
+    color: green;
+}
+.bottom-block .row .col50 {
+    margin-left: 0px;
+}
+#top {
+    position: fixed;
+    top: 0px;
+    overflow: hidden;
+    z-index: 99;
+    width: 100%;
+    height: 50px;
+    padding: 0px;
+}
+#tab1, #tab2, #tab3, #tab4 {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.buttons-tab .button {
+    height:49px;
+}
+
+.text-title {
+    color: #1e1e1e;
+    padding-left: 15px;
+}
+
+.text-second-title {
+    color: #c6c6c6;
+    padding-left: 10px;
+}
+
+.text-content {
+    color: #c6c6c6;
+    padding-left: 15px;
+}
+
+.text-content-black {
+    color: #1e1e1e;
+}
+
