@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="content">
-    <div class="list-block">
+    <div class="list-config list-block">
         <ul>
             <!-- Text inputs -->
             <li>
@@ -32,9 +32,9 @@
                 <div class="item-content">
 
                     <div class="item-inner">
-                        <div class="item-title label">楼层</div>
+                        <div class="item-title label">楼层:</div>
                         <div class="item-input">
-                            <select id="select-floor"></select>
+                            <select id="select-floor" onchange="refreshRoomSelect()"></select>
                         </div>
                     </div>
                 </div>
@@ -43,9 +43,9 @@
                 <div class="item-content">
 
                     <div class="item-inner">
-                        <div class="item-title label">Password</div>
+                        <div class="item-title label">房间:</div>
                         <div class="item-input">
-                            <input type="password" placeholder="Password" class="">
+                            <select id="select-room"></select>
                         </div>
                     </div>
                 </div>
@@ -54,12 +54,9 @@
                 <div class="item-content">
 
                     <div class="item-inner">
-                        <div class="item-title label">Gender</div>
+                        <div class="item-title label">继电器:</div>
                         <div class="item-input">
-                            <select >
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select>
+                            <select id="select-relay"></select>
                         </div>
                     </div>
                 </div>
@@ -69,39 +66,12 @@
                 <div class="item-content">
 
                     <div class="item-inner">
-                        <div class="item-title label">Birthday</div>
-                        <div class="item-input">
-                            <input type="date" placeholder="Birth day" value="2014-04-30">
-                        </div>
+                        <div class="item-title label">继电器插槽:</div>
+                        <select id="select-relay-slot"></select>
                     </div>
                 </div>
             </li>
             <!-- Switch (Checkbox) -->
-            <li>
-                <div class="item-content">
-
-                    <div class="item-inner">
-                        <div class="item-title label">Switch</div>
-                        <div class="item-input">
-                            <label class="label-switch">
-                                <input type="checkbox">
-                                <div class="checkbox"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="align-top">
-                <div class="item-content">
-
-                    <div class="item-inner">
-                        <div class="item-title label">Textarea</div>
-                        <div class="item-input">
-                            <textarea></textarea>
-                        </div>
-                    </div>
-                </div>
-            </li>
         </ul>
     </div>
 </div>
@@ -117,5 +87,6 @@
 <script src="../js/light7.js"></script>
 <script>
     initFloorSelect();
+    refreshRoomSelect()
 </script>
 </html>

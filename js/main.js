@@ -6,36 +6,23 @@ $(document).ready(function(){
         showButton(true);
         showLoading();
     });
-
-
-    $("#button1").click(function(){
-
-        $.ajax({
-            type: "GET",
-            cache: false,
-            url: "http://api.siyee.org/activities/instant-purchase/status",
-            data: {},
-            dataType: "jsonp",
-            //jsonp: "callback",
-            jsonpCallback: "OnGetMemberSuccessByjsonp"
-        });
-    });
-
-    $("#tab-control1").click(function(){
-        $("#bottom-control1").show();
-        $("#bottom-control2").hide();
-    });
-    $("#tab-control2").click(function(){
-        $("#bottom-control1").hide();
-        $("#bottom-control2").show();
-    });
-    $("#tab-control3, #tab-control4").click(function(){
-        $("#bottom-control1, #bottom-control2").hide();
-
-    });
-
-    setTimeout(hideLoading, 3000);
+    //$("#button1").click(function(){
+    //
+    //    $.ajax({
+    //        type: "GET",
+    //        cache: false,
+    //        url: "http://api.siyee.org/activities/instant-purchase/status",
+    //        data: {},
+    //        dataType: "jsonp",
+    //        //jsonp: "callback",
+    //        jsonpCallback: "OnGetMemberSuccessByjsonp"
+    //    });
+    //});
+   // setTimeout(hideLoading, 3000);
 });
+/**
+ * 通用js代码
+ */
 function showLoading() {
 
 }
@@ -52,18 +39,57 @@ function showButton(flag) {
             showTitle: false
         });
 }
-
+/**
+ * 添加电器页面所需js
+ */
 function initFloorSelect() {
-    var floorArrays = ["1", "2", "3", "4"]
-    $("#select-floor").innerHTML = "";
-    for(var floor in floorArrays) {
+    //TODO the floorArrays here should be fetched through local storage
+    var floorArrays = ["1层", "2层", "3层", "4层"]
+    var selectFloor = document.getElementById("select-floor");
+    selectFloor.innerHTML = "";
+    var length = floorArrays.length;
+    for(var i=0; i < length; i++) {
         var newOption = document.createElement("option");
-        newOption.value = floor;
-        newOption.innerHTML = floor;
-        $("#select-floor").add(newOption, null);
+        newOption.value = i;
+        newOption.text = floorArrays[i];
+        selectFloor.add(newOption);
     }
 }
+function  refreshRoomSelect() {
+    var selectFloor = document.getElementById("select-floor");
+    var selectRoom = document.getElementById("select-room");
+    selectRoom.innerHTML = "";
+    var roomArrays;
+    //TODO here we should match the real data
 
+    switch(selectFloor.value) {
+        case "0":
+            roomArrays = ["大厅", "厨房", "储物间"];
+            break;
+        case "1":
+            alert("selectFloor.value=" + selectFloor.value)
+            roomArrays = ["主卧", "主卧2"];
+            break;
+        case "2":
+            roomArrays = ["客房1", "客房2", "书房", "娱乐室"];
+            break;
+        case "3":
+            roomArrays = ["阳台"];
+            break;
+        default:
+            roomArrays = ["error"];
+    }
+    var length = roomArrays.length;
+    for(var i=0; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = roomArrays[i];
+        newOption.text = roomArrays[i];
+        selectRoom.add(newOption);
+    }
+}
+/**
+ * only for test
+ */
 function OnGetMemberSuccessByjsonp(data) {
     alert(JSON.stringify(data));
 }

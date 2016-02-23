@@ -50,7 +50,7 @@
                                         </tr>
                                     </table>
                                 </div>
-                            </a
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -130,5 +130,20 @@
 </footer>
 </body>
 <script src="../js/light7.js"></script>
+<script>
+    //动态配置选项卡对应页面的底部操作面板
+    $("#tab-control1").click(function(){
+        $("#bottom-control1").show();
+        $("#bottom-control2").hide();
+    });
+    $("#tab-control2").click(function(){
+        $("#bottom-control1").hide();
+        $("#bottom-control2").show();
+    });
+    $("#tab-control3, #tab-control4").click(function(){
+        $("#bottom-control1, #bottom-control2").hide();
+
+    });
+</script>
 </html>
 

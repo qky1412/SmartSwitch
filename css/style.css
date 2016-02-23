@@ -142,11 +142,18 @@ a.item-content:active {
     background-color: #c6c6c6 ;
 }
 
-.list-block li {
+.list-config.list-block li {
     background-color: #eef2f7;
 }
 
-.list-block .item-content .item-inner{
+.list-config.list-block .item-content .item-inner{
     background-color: white;
     padding-left: 15px;
+}
+.list-block .item-title.label {
+    width: 30%;
+}
+
+.row {
+    margin-left: 0;
 }
