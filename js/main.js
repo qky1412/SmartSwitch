@@ -2,6 +2,12 @@
  * Created by Administrator on 2016/2/20 0020.
  */
 $(document).ready(function(){
+    JDSMART.ready(function () {
+        showButton(true);
+        showLoading();
+    });
+
+
     $("#button1").click(function(){
 
         $.ajax({
@@ -15,10 +21,48 @@ $(document).ready(function(){
         });
     });
 
-    $("#tab22").click(function(){
-        alert("tab2 is selected");
+    $("#tab-control1").click(function(){
+        $("#bottom-control1").show();
+        $("#bottom-control2").hide();
     });
+    $("#tab-control2").click(function(){
+        $("#bottom-control1").hide();
+        $("#bottom-control2").show();
+    });
+    $("#tab-control3, #tab-control4").click(function(){
+        $("#bottom-control1, #bottom-control2").hide();
+
+    });
+
+    setTimeout(hideLoading, 3000);
 });
+function showLoading() {
+
+}
+function hideLoading() {
+
+}
+function showButton(flag) {
+
+    JDSMART.app.config(		//配置导航按钮隐藏显示
+        {
+            showBack: true,   // 返回按钮，false是隐藏，true是 显示
+            showShare: false,
+            showMore: false,  // 更多按钮
+            showTitle: false
+        });
+}
+
+function initFloorSelect() {
+    var floorArrays = ["1", "2", "3", "4"]
+    $("#select-floor").innerHTML = "";
+    for(var floor in floorArrays) {
+        var newOption = document.createElement("option");
+        newOption.value = floor;
+        newOption.innerHTML = floor;
+        $("#select-floor").add(newOption, null);
+    }
+}
 
 function OnGetMemberSuccessByjsonp(data) {
     alert(JSON.stringify(data));

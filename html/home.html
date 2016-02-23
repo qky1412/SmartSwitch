@@ -8,17 +8,17 @@
     <link href="../css/light7.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css"/>
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431576139678_jdsmart-1.0.0.js"></script>
+    <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
     <script src="../js/main.js"></script>
 
     <!-- Include the compiled Ratchet JS -->
 
     <title>hehe</title>
     <div id="top" class="buttons-tab">
-        <a href="#tab1" class="tab-link active button">电器</a>
-        <a id="tab22" href="#tab2" class="tab-link button">智能模块</a>
-        <a href="#tab3" class="tab-link button">配置</a>
-        <a href="#tab4" class="tab-link button">操作</a>
+        <a id="tab-control1" href="#tab1" class="tab-link active button">电器布局</a>
+        <a id="tab-control2" href="#tab2" class="tab-link button">智能模块</a>
+        <a id="tab-control3" href="#tab3" class="tab-link button">配置</a>
+        <a id="tab-control4" href="#tab4" class="tab-link button">操作</a>
 
     </div>
 </head>
@@ -33,25 +33,24 @@
                 <button id="button1">获取版本号</button>
                 <button id="button2" onclick="testStringLength()">测试发送控制数据</button>
                  -->
-                <div class="content-block-title"></div>
+
+                <div class="content-block-title">邮件应用</div>
                 <div class="list-block media-list">
                     <ul>
                         <li>
-                            <a href="#" class="item-link item-content">
+                            <a href="#" class="item-content">
                                 <div class="item-inner">
-                                    <div class="row">
-                                        <div class="col-80">
-                                            <div class="row">
-                                                <span class="text-title">客厅灯</span><span class="text-second-title">ID:123456</span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-20"><span>编辑</span></div>
-                                    </div>
+                                    <table class="table-device" >
+                                        <tr>
+                                            <td ><span class="text-title col-80" >客厅灯</span><span class="text-second-title">ID:123423442423442445322423244246</span></td>
+                                            <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅</span></td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </a>
+                            </a
                         </li>
                     </ul>
                 </div>
@@ -72,40 +71,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="content-block-title">邮件应用</div>
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-link item-content">
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title">Facebook</div>
-                                        <div class="item-after">17:14</div>
-                                    </div>
-                                    <div class="item-subtitle">子标题</div>
-                                    <div class="item-text">此处是文本内容...</div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="content-block-title">邮件应用</div>
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-link item-content">
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title">Facebook</div>
-                                        <div class="item-after">17:14</div>
-                                    </div>
-                                    <div class="item-subtitle">子标题</div>
-                                    <div class="item-text">此处是文本内容...</div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+
                 <div class="content-block-title">邮件应用</div>
                 <div class="list-block media-list">
                     <ul>
@@ -130,7 +96,7 @@
             <div id="tab2" class="tab">
 
                 <div class="content-block">
-                    <p>This is tab 2 content</p>
+
                 </div>
 
             </div>
@@ -150,35 +116,19 @@
 </div>
 
 <footer>
-    <div class="bottom-block">
+    <div id="bottom-control1" class="bottom-block">
         <div class="row">
-            <button class="button button-bottom col-50">取消</button>
-            <button class="button button-bottom col-50">确定</button>
+            <a href="add_home_device.html?value=fuck"><button class="button button-bottom" >添加电器</button></a>
+        </div>
+    </div>
+    <div id="bottom-control2" class="bottom-block" style="display: none">
+        <div class="row">
+            <button class="button button-bottom col-50">添加继电器</button>
+            <button class="button button-bottom col-50">添加开关</button>
         </div>
     </div>
 </footer>
-
-<script src="../js/light7.js"></script>
-<script>
-
-    JDSMART.ready(function () {
-        showButton(true);
-
-    });
-
-    function showButton(flag) {
-
-        JDSMART.app.config(		//配置导航按钮隐藏显示
-                {
-                    showBack: true,   // 返回按钮，false是隐藏，true是 显示
-                    showShare: false,
-                    showMore: false,  // 更多按钮
-                    showTitle: false
-                });
-    }
-    ;
-</script>
-
 </body>
+<script src="../js/light7.js"></script>
 </html>
 

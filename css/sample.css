@@ -274,32 +274,32 @@ h1.title {
 }
 
 .func li em.ico1 {
-    background: url(../images/gn1_a.png) no-repeat center;
+    background: url(../img/gn1_a.png) no-repeat center;
     background-size: 80%
 }
 
 .func li em.ico2 {
-    background: url(../images/gn2_a.png) no-repeat center;
+    background: url(../img/gn2_a.png) no-repeat center;
     background-size: 80%
 }
 
 .func li em.ico3 {
-    background: url(../images/gn3_a.png) no-repeat center;
+    background: url(../img/gn3_a.png) no-repeat center;
     background-size: 80%
 }
 
 .func li em.ico4 {
-    background: url(../images/gn4_a.png) no-repeat center;
+    background: url(../img/gn4_a.png) no-repeat center;
     background-size: 80%
 }
 
 .func li em.ico5 {
-    background: url(../images/gn5_a.png) no-repeat center;
+    background: url(../img/gn5_a.png) no-repeat center;
     background-size: 94%
 }
 
 .func li em.ico6 {
-    background: url(../images/gn6_a.png) no-repeat center;
+    background: url(../img/gn6_a.png) no-repeat center;
     background-size: 80%
 }
 
@@ -324,32 +324,32 @@ h1.title {
 }
 
 .func .radio:checked + .trigger em.ico1 {
-    background: url(../images/gn1_b.png) no-repeat center;
+    background: url(../img/gn1_b.png) no-repeat center;
     background-size: 80%
 }
 
 .func .radio:checked + .trigger em.ico2 {
-    background: url(../images/gn2_b.png) no-repeat center;
+    background: url(../img/gn2_b.png) no-repeat center;
     background-size: 80%
 }
 
 .func .radio:checked + .trigger em.ico3 {
-    background: url(../images/gn3_b.png) no-repeat center;
+    background: url(../img/gn3_b.png) no-repeat center;
     background-size: 80%
 }
 
 .func .radio:checked + .trigger em.ico4 {
-    background: url(../images/gn4_b.png) no-repeat center;
+    background: url(../img/gn4_b.png) no-repeat center;
     background-size: 80%
 }
 
 .func .radio:checked + .trigger em.ico5 {
-    background: url(../images/gn5_b.png) no-repeat center;
+    background: url(../img/gn5_b.png) no-repeat center;
     background-size: 94%
 }
 
 .func .radio:checked + .trigger em.ico6 {
-    background: url(../images/gn6_b.png) no-repeat center;
+    background: url(../img/gn6_b.png) no-repeat center;
     background-size: 80%
 }
 
@@ -374,7 +374,7 @@ h1.title {
 }
 
 .time .btn em.ico5 {
-    background: url(../images/gn5_a.png) no-repeat center;
+    background: url(../img/gn5_a.png) no-repeat center;
     background-size: 94%
 }
 
@@ -383,7 +383,7 @@ h1.title {
 }
 
 .time .on em.ico5 {
-    background: url(../images/gn5_b.png) no-repeat center;
+    background: url(../img/gn5_b.png) no-repeat center;
     background-size: 94%
 }
 

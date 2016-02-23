@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <link href="../css/light7.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431576139678_jdsmart-1.0.0.js"></script>
+    <script src="../js/main.js"></script>
+    <title>添加电器设备</title>
+</head>
+<body>
+<div class="content">
+    <div class="list-block">
+        <ul>
+            <!-- Text inputs -->
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">名称:</div>
+                        <div class="item-input">
+                            <input type="text" placeholder="请输入名称（如左床头灯）">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">楼层</div>
+                        <div class="item-input">
+                            <select id="select-floor"></select>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">Password</div>
+                        <div class="item-input">
+                            <input type="password" placeholder="Password" class="">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">Gender</div>
+                        <div class="item-input">
+                            <select >
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- Date -->
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">Birthday</div>
+                        <div class="item-input">
+                            <input type="date" placeholder="Birth day" value="2014-04-30">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- Switch (Checkbox) -->
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">Switch</div>
+                        <div class="item-input">
+                            <label class="label-switch">
+                                <input type="checkbox">
+                                <div class="checkbox"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="align-top">
+                <div class="item-content">
+
+                    <div class="item-inner">
+                        <div class="item-title label">Textarea</div>
+                        <div class="item-input">
+                            <textarea></textarea>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<footer>
+    <div id="bottom-control2" class="bottom-block">
+        <div class="row">
+            <button class="button button-bottom col-50" onclick="history.go(-1);">取消</button>
+            <button class="button button-bottom col-50" onclick="history.go(-1);">确定</button>
+        </div>
+    </div>
+</footer>
+<script src="../js/light7.js"></script>
+<script>
+    initFloorSelect();
+</script>
+</html>
