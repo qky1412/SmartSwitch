@@ -207,6 +207,10 @@ function YN_Elec_Equi_Action(d1, d2, d3) {
     //d1,d2,d3的意义为:
     //当为调色: d1 d2 d3 为 r g b 三色值
     //当为调光时: d1= d2 = d3 值的范围为0-100; 0表示关 100表示开  0-100中的某个数值表示一定的亮度
+    this.id = guid();
+    this.d1 = d1;
+    this.d2 = d2;
+    this.d3 = d3;
 }
 
 //继电器对象
@@ -221,6 +225,7 @@ function YN_Relay(id, name, floor, room, numberOfSlotsUsed) {
 }
 //用于绑定某个继电器的某一路使用的数据结构
 function YN_Relay_assoc(relay, slot_index) {
+    this.id = guid();
     this.relay = relay; //继电器对象
     this.slot_index = slot_index; //继电器的哪一路
 }
@@ -238,12 +243,14 @@ function YN_CtlPanel(id, name, floor, room) {
 
 //绑定控制面对中哪个按钮使用的数据
 function YN_CtlPanel_assoc(panel, btn_index) {
+    this.id = guid();
     this.panel = panel;
     this.btn_index = btn_index; //
 }
 
 //组成场景中的某一步的对象
 function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
+    this.id = guid();
     this.elec_equi = elec_equi; //相关的电器
     this.action1 = action1; //需要执行的第一个动作
     this.action1_delay = delay1; //第一个动作的相应延时
@@ -254,6 +261,7 @@ function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
 
 //场景对象
 function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
+    this.id = guid();
     this.name = name; //场景的名称
     this.scene_steps = scene_steps; //场景里的相关动作
     this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
@@ -262,6 +270,7 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
 
 //场景的定时
 function YN_Scene_Timing(scene, timeing) {
+    this.id = guid();
     this.scene = scene; //相对应的场景
     this.timing = timeing; //定时的配置
 }
