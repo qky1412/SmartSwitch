@@ -54,45 +54,33 @@
                         </li>
                     </ul>
                 </div>
-                <div class="content-block-title">邮件应用</div>
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-link item-content">
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title">Facebook</div>
-                                        <div class="item-after">17:14</div>
-                                    </div>
-                                    <div class="item-subtitle">子标题</div>
-                                    <div class="item-text">此处是文本内容...</div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
+                <div id="list-home-device">
+                    <!-- here we render the home-device list from template-->
                 </div>
-
-                <div class="content-block-title">邮件应用</div>
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-link item-content">
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title">Facebook</div>
-                                        <div class="item-after">17:14</div>
-                                    </div>
-                                    <div class="item-subtitle">子标题</div>
-                                    <div class="item-text">此处是文本内容...</div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-
-
             </div>
+            <template id="template-list-home-device">
+                <div class="list-block media-list" id="list-item-home-device" data-id="0" onclick="testDelete(this,this.dataset.id)">
+                    <ul>
+                        <li>
+                            <a class="item-content" id="a-list-home-device" >
+                                <div class="item-inner">
+                                    <table class="table-device" >
+                                        <tr>
+                                            <td ><span class="text-title col-80" id="device-title">{{Title}}</span><span class="text-second-title">{{Id}}</span></td>
+                                            <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="text-content">楼层:</span><span class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span class="text-content-black">{{Room}}</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+
+
             <div id="tab2" class="tab">
 
                 <div class="content-block">
@@ -100,11 +88,13 @@
                 </div>
 
             </div>
+
             <div id="tab3" class="tab">
                 <div class="content-block">
                     <p>This is tab 3 content</p>
                 </div>
             </div>
+
             <div id="tab4" class="tab">
                 <div class="content-block">
                     <p>This is tab 4 content</p>
@@ -144,6 +134,7 @@
         $("#bottom-control1, #bottom-control2").hide();
 
     });
+    renderHomeDevicesList();
 </script>
 </html>
 

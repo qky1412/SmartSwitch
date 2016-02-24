@@ -23,7 +23,7 @@
                     <div class="item-inner">
                         <div class="item-title label">名称:</div>
                         <div class="item-input">
-                            <input type="text" placeholder="请输入名称（如左床头灯）">
+                            <input id="input-name" type="text" placeholder="请输入名称（如左床头灯）">
                         </div>
                     </div>
                 </div>
@@ -80,13 +80,13 @@
     <div id="bottom-control2" class="bottom-block">
         <div class="row">
             <button class="button button-bottom col-50" onclick="history.go(-1);">取消</button>
-            <button class="button button-bottom col-50" onclick="history.go(-1);">确定</button>
+            <button class="button button-bottom col-50" onclick="addNewHomeDevice()">确定</button>
         </div>
     </div>
 </footer>
 <script src="../js/light7.js"></script>
 <script>
     initFloorSelect();
-    refreshRoomSelect()
+    refreshRoomSelect();
 </script>
 </html>
