@@ -1,0 +1,251 @@
+/**
+ * Created by tonychen on 16/2/24.
+ */
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+
+var Database = function () {
+    var elec_equi_list = []; //电器列表
+    var relay_list = []; //继电器列表
+    var ctlpanel_list = [];//控制面板列表
+    var scene_list = []; //场景列表
+
+    function indexOfItemInArray(ary, ele, filter_func) {
+        var i = 0;
+        for(i =0;i<ary.length; ++i) {
+            if (filter_func(ele, ary[i])) {
+                break;
+            }
+        }
+        if(i < ary.length) {
+            return i;
+        }
+        return -1;
+    }
+
+
+    function addEleToList(ele, list) {
+        list.unshift(ele);
+        return list;
+    }
+
+    function updateEleInList(ele, list) {
+        var i = indexOfItemInArray(list, ele, function(ele, ary_ele) {
+            return ele.id.equals(ary_ele.id);
+        });
+
+        if(i != -1) {
+            list[i] = ele;
+        }
+        return list;
+    }
+
+    function deleteEleFromList(ele, list) {
+        var i = indexOfItemInArray(list, ele, function(ele, ary_ele) {
+            return ele.id.equals(ary_ele.id);
+        });
+        if (i != -1) {
+            list.splice(i,1);
+        }
+        return list;
+    }
+
+
+    return {
+        /* ------------------------------------ */
+        /* 电器相关api */
+
+        //获取电器列表
+        'getElecEquiList': function() {
+            return elec_equi_list;
+        },
+
+        //参数: 需新增的电器
+        //返回: 新的电器列表
+        'addElecEquiToList': function (elec_equi) {
+            return addEleToList(elec_equi, elec_equi_list);
+        },
+
+        //参数: 待更新的电器
+        //返回: 新的电器列表
+        'updateElecEqui': function(elec_equi) {
+            return updateEleInList(elec_equi, elec_equi_list);
+        },
+
+        //参数: 待删除的电器
+        //返回: 新的电器列表
+        'deleteElecEquiFromList' : function(elec_equi) {
+            return deleteEleFromList(elec_equi, elec_equi_list);
+        },
+
+        /* ------------------------------------ */
+        /* 继电器相关的api */
+
+        //获取继电器列表
+        'getRelayList' : function() {
+            return relay_list;
+        },
+
+        //参数: 需新增的继电器
+        //返回: 新的继电器列表
+        'addRelayToList' : function(relay) {
+            return addEleToList(relay, relay_list);
+        },
+
+        //参数: 待更新的继电器
+        //返回: 新的继电器列表
+        'updateRelayList' : function(relay) {
+            return updateEleInList(relay, relay_list);
+        },
+
+        //参数: 待删除的继电器
+        //返回: 新的继电器列表
+        'deleteRelayFromList': function(relay) {
+            deleteEleFromList(relay, relay_list);
+        },
+
+        /* ------------------------------------ */
+        /* 控制面板相关api */
+
+        //获取控制面板列表
+        'getCtlPanelList' : function() {
+            return ctlpanel_list;
+        },
+
+        //参数: 需新增的控制面板
+        //返回: 新的控制面板列表
+        'addCtlPanelToList' : function(panel) {
+            return addEleToList(panel, ctlpanel_list);
+        },
+
+        //参数: 待更新的控制面板
+        //返回: 新的控制面板列表
+        'updateCtlPanelList' : function(panel) {
+            return updateEleInList(panel, ctlpanel_list);
+        },
+
+        //参数: 待删除的控制面板
+        //返回: 新的控制面板列表
+        'deleteCtlPanelFromList': function(panel) {
+            deleteEleFromList(panel, ctlpanel_list);
+        },
+
+        /* -------------------------------- */
+        /* 场景相关api */
+
+
+        //获取场景列表
+        'getSceneList' : function() {
+            return scene_list;
+        },
+
+        //参数: 需新增的场景
+        //返回: 新的场景列表
+        'addCtlPanelToList' : function(scene) {
+            return addEleToList(scene, scene_list);
+        },
+
+        //参数: 待更新的场景
+        //返回: 新的场景列表
+        'updateCtlPanelList' : function(scene) {
+            return updateEleInList(scene, scene_list);
+        },
+
+        //参数: 待删除的场景
+        //返回: 新的场景列表
+        'deleteSceneFromList': function(scene) {
+            deleteEleFromList(scene, scene_list);
+        },
+
+
+
+    }
+
+}();
+
+
+//电器对象
+function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc) {
+    this.id = guid(); //电器的id,作为唯的标识
+    this.name = name;  // 电器的名称
+    this.floor = floor; //电器所处楼层
+    this.room = room; //电器所处的房间
+    this.relay_assoc = relay_assoc; //关联的继电器
+    this.panel_assoc = panel_assoc; //关联的控制面板
+}
+
+//对电器对象执行的操作, 如调光\打开\关闭\调色
+function YN_Elec_Equi_Action(d1, d2, d3) {
+    //d1,d2,d3的意义为:
+    //当为调色: d1 d2 d3 为 r g b 三色值
+    //当为调光时: d1= d2 = d3 值的范围为0-100; 0表示关 100表示开  0-100中的某个数值表示一定的亮度
+}
+
+//继电器对象
+function YN_Relay(id, name, floor, room, numberOfSlotsUsed) {
+    this.id = id; //继电器对象的id
+    this.name = name; //此继电器用户所输入的名称
+    this.floor = floor; //继电器所处楼层
+    this.room = room; //继电器所处的房间
+    this.numberOfSlots = 0; //继电器的输出路数
+    this.numberOfSlotsUsed = numberOfSlotsUsed; //继电器已接路数
+    this.type = undefined; //继电器的类型
+}
+//用于绑定某个继电器的某一路使用的数据结构
+function YN_Relay_assoc(relay, slot_index) {
+    this.relay = relay; //继电器对象
+    this.slot_index = slot_index; //继电器的哪一路
+}
+
+//控制面板对象
+function YN_CtlPanel(id, name, floor, room) {
+    this.id = id; // 面板id
+    this.name = name; //面板名称
+    this.floor = floor; // 面板所处楼层
+    this.room = room; // 面板所处房间
+    this.numberOfButtons = 5; //面板中的按钮个数
+    this.type = undefined; //面板的类型
+
+}
+
+//绑定控制面对中哪个按钮使用的数据
+function YN_CtlPanel_assoc(panel, btn_index) {
+    this.panel = panel;
+    this.btn_index = btn_index; //
+}
+
+//组成场景中的某一步的对象
+function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
+    this.elec_equi = elec_equi; //相关的电器
+    this.action1 = action1; //需要执行的第一个动作
+    this.action1_delay = delay1; //第一个动作的相应延时
+    this.action2 = action2; //需要执行的第二个动作
+    this.action2_delay = delay2;  //第二个动作的相应延时
+
+}
+
+//场景对象
+function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
+    this.name = name; //场景的名称
+    this.scene_steps = scene_steps; //场景里的相关动作
+    this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
+    this.timings = timings; //场景的定时配置列表
+}
+
+//场景的定时
+function YN_Scene_Timing(scene, timeing) {
+    this.scene = scene; //相对应的场景
+    this.timing = timeing; //定时的配置
+}
+
+
