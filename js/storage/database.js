@@ -15,10 +15,25 @@ function guid() {
 
 
 var Database = function () {
-    var elec_equi_list = []; //电器列表
-    var relay_list = []; //继电器列表
-    var ctlpanel_list = [];//控制面板列表
-    var scene_list = []; //场景列表
+
+    var dataTables = {
+        'elec_equi_list' : [],  //电器列表
+        'relay_list' : [],  //继电器列表
+        'ctlpanel_list' : [],  //控制面板列表
+        'scene_list' : []  //场景列表
+    }
+
+    function writeToDb() {
+        for(key_table in dataTables) {
+            Lockr.set(key_table, dataTables[key_table]);
+        }
+    }
+
+    function readFromDb() {
+        for(key_table in dataTables) {
+            dataTables[key_table] = Lockr.get(key_table) || [];
+        }
+    }
 
     function indexOfItemInArray(ary, ele, filter_func) {
         var i = 0;
@@ -61,31 +76,34 @@ var Database = function () {
     }
 
 
+    //初始化动作
+    readFromDb();
+
     return {
         /* ------------------------------------ */
         /* 电器相关api */
 
         //获取电器列表
         'getElecEquiList': function() {
-            return elec_equi_list;
+            return dataTables.elec_equi_list;
         },
 
         //参数: 需新增的电器
         //返回: 新的电器列表
         'addElecEquiToList': function (elec_equi) {
-            return addEleToList(elec_equi, elec_equi_list);
+            return addEleToList(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待更新的电器
         //返回: 新的电器列表
         'updateElecEqui': function(elec_equi) {
-            return updateEleInList(elec_equi, elec_equi_list);
+            return updateEleInList(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待删除的电器
         //返回: 新的电器列表
         'deleteElecEquiFromList' : function(elec_equi) {
-            return deleteEleFromList(elec_equi, elec_equi_list);
+            return deleteEleFromList(elec_equi, dataTables.elec_equi_list);
         },
 
         /* ------------------------------------ */
@@ -93,25 +111,25 @@ var Database = function () {
 
         //获取继电器列表
         'getRelayList' : function() {
-            return relay_list;
+            return dataTables.relay_list;
         },
 
         //参数: 需新增的继电器
         //返回: 新的继电器列表
         'addRelayToList' : function(relay) {
-            return addEleToList(relay, relay_list);
+            return addEleToList(relay, dataTables.relay_list);
         },
 
         //参数: 待更新的继电器
         //返回: 新的继电器列表
         'updateRelayList' : function(relay) {
-            return updateEleInList(relay, relay_list);
+            return updateEleInList(relay, dataTables.relay_list);
         },
 
         //参数: 待删除的继电器
         //返回: 新的继电器列表
         'deleteRelayFromList': function(relay) {
-            deleteEleFromList(relay, relay_list);
+            deleteEleFromList(relay, dataTables.relay_list);
         },
 
         /* ------------------------------------ */
@@ -119,25 +137,25 @@ var Database = function () {
 
         //获取控制面板列表
         'getCtlPanelList' : function() {
-            return ctlpanel_list;
+            return dataTables.ctlpanel_list;
         },
 
         //参数: 需新增的控制面板
         //返回: 新的控制面板列表
         'addCtlPanelToList' : function(panel) {
-            return addEleToList(panel, ctlpanel_list);
+            return addEleToList(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待更新的控制面板
         //返回: 新的控制面板列表
         'updateCtlPanelList' : function(panel) {
-            return updateEleInList(panel, ctlpanel_list);
+            return updateEleInList(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待删除的控制面板
         //返回: 新的控制面板列表
         'deleteCtlPanelFromList': function(panel) {
-            deleteEleFromList(panel, ctlpanel_list);
+            deleteEleFromList(panel, dataTables.ctlpanel_list);
         },
 
         /* -------------------------------- */
@@ -146,25 +164,25 @@ var Database = function () {
 
         //获取场景列表
         'getSceneList' : function() {
-            return scene_list;
+            return dataTables.scene_list;
         },
 
         //参数: 需新增的场景
         //返回: 新的场景列表
         'addCtlPanelToList' : function(scene) {
-            return addEleToList(scene, scene_list);
+            return addEleToList(scene, dataTables.scene_list);
         },
 
         //参数: 待更新的场景
         //返回: 新的场景列表
         'updateCtlPanelList' : function(scene) {
-            return updateEleInList(scene, scene_list);
+            return updateEleInList(scene, dataTables.scene_list);
         },
 
         //参数: 待删除的场景
         //返回: 新的场景列表
         'deleteSceneFromList': function(scene) {
-            deleteEleFromList(scene, scene_list);
+            deleteEleFromList(scene, dataTables.scene_list);
         },
 
 
