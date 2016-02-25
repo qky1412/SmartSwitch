@@ -96,9 +96,23 @@
             </div>
 
             <div id="tab4" class="tab">
-                <div class="content-block">
-                    <p>This is tab 4 content</p>
-                </div>
+                    <div class="content-block-title">场景控制</div>
+                    <div id="list-scene-control">
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div id="list-device-control">
+                        <div class="content-block-title">场景控制</div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                    </div>
             </div>
 
         </div>
@@ -108,13 +122,20 @@
 <footer>
     <div id="bottom-control1" class="bottom-block">
         <div class="row">
-            <a href="add_home_device.html?value=fuck"><button class="button button-bottom" >添加电器</button></a>
+            <button class="button button-bottom col-33" >添加电器</button>
+            <button class="button button-bottom col-33" >添加房间</button>
+            <button class="button button-bottom col-33" >添加楼层</button>
         </div>
     </div>
     <div id="bottom-control2" class="bottom-block" style="display: none">
         <div class="row">
             <button class="button button-bottom col-50">添加继电器</button>
             <button class="button button-bottom col-50">添加开关</button>
+        </div>
+    </div>
+    <div id="bottom-control3" class="bottom-block" style="display: none">
+        <div class="row">
+            <button class="button button-bottom">添加配置</button>
         </div>
     </div>
 </footer>
@@ -125,14 +146,19 @@
     $("#tab-control1").click(function(){
         $("#bottom-control1").show();
         $("#bottom-control2").hide();
+        $("#bottom-control3").hide();
     });
     $("#tab-control2").click(function(){
         $("#bottom-control1").hide();
         $("#bottom-control2").show();
+        $("#bottom-control3").hide();
     });
-    $("#tab-control3, #tab-control4").click(function(){
+    $("#tab-control3").click(function(){
         $("#bottom-control1, #bottom-control2").hide();
-
+        $("#bottom-control3").show();
+    });
+    $("#tab-control4").click(function(){
+        $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
     });
     renderHomeDevicesList();
 </script>

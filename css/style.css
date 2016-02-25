@@ -157,3 +157,22 @@ a.item-content:active {
 .row {
     margin-left: 0;
 }
+.row .col-33 {
+    width: 33.333333333333332%;
+    margin-left: 0;
+}
+
+.control-grid {
+    float: left;
+    width: 50%;
+    height: 100px;
+    text-align: center;
+    border-left: 1px solid #eef2f7;
+    border-top: 1px solid #eef2f7;
+    background-color: white;
+}
+.control-grid .control-content {
+    line-height: 100px;
+}
+
+.
