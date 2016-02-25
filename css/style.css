@@ -173,6 +173,26 @@ a.item-content:active {
 }
 .control-grid .control-content {
     line-height: 100px;
+    text-align: center;
 }
 
-.
+.control-circle {
+    width:25px;
+    height:25px;
+    background-color:#727272;
+    border-radius:12.5px;
+    float: left;
+    margin-top: 34px;
+    margin-left: 15px;
+    margin-right: 0;
+}
+.control-digit {
+    line-height: 25px;
+    color:#FFF;
+    text-align: center;
+    display: block;
+}
+
+.control-content span {
+    margin-left: -32px;
+}
