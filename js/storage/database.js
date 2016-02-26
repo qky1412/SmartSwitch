@@ -20,7 +20,8 @@ var Database = function () {
         'elec_equi_list' : [],  //电器列表
         'relay_list' : [],  //继电器列表
         'ctlpanel_list' : [],  //控制面板列表
-        'scene_list' : []  //场景列表
+        'scene_list' : [],  //场景列表
+        'floor_list': [] //楼层列表
     }
 
     function writeToDb() {
@@ -186,20 +187,68 @@ var Database = function () {
         },
 
 
+        /* --------------------------------- */
+        /* 楼层相关api */
+
+        //获取楼层列表
+        'getFloorList' : function () {
+            return dataTables.floor_list;
+        },
+
+        //参数: 需新增的楼层
+        //返回: 新的楼层列表
+        'addFloorToList': function(floor) {
+            return addEleToList(floor, dataTables.floor_list);
+        },
+
+
+        //参数: 待更新的楼层
+        //返回: 新的楼层列表
+        'updateFloorList' : function (floor) {
+            return updateEleInList(floor, dataTables.floor_list);
+
+        },
+
+        //参数: 待删除的楼层
+        //返回: 新的楼层列表
+
+        'deleteFloorFromList' : function (floor) {
+            deleteEleFromList(floor, dataTables.floor_list);
+        }
 
     }
 
 }();
 
 
+
+//楼层对象
+function YN_Floor(name) {
+    this.name = name; //楼层名称, 如一层/地下室等
+    this.id = guid();
+    this.rooms = [];
+
+    //向本楼层添加一个房间
+    function addRoom(room) {
+        this.rooms.push(room);
+    }
+}
+
+
+//房间对象
+function YN_Room(name) {
+    this.name = name; //房间名称; 如客厅\厨房等
+    this.id = guid();
+}
+
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc) {
+function YN_Elec_Equi(name, floor, relay_assocs, room, panel_assoc) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
     this.room = room; //电器所处的房间
     this.relay_assoc = relay_assoc; //关联的继电器
-    this.panel_assoc = panel_assoc; //关联的控制面板
+    this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
 }
 
 //对电器对象执行的操作, 如调光\打开\关闭\调色
