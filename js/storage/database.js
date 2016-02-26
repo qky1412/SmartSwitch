@@ -21,7 +21,8 @@ var Database = function () {
         'relay_list' : [],  //继电器列表
         'ctlpanel_list' : [],  //控制面板列表
         'scene_list' : [],  //场景列表
-        'floor_list': [] //楼层列表
+        'floor_list': [], //楼层列表
+        'gateway': undefined, //网关对象
     }
 
     function writeToDb() {
@@ -214,12 +215,25 @@ var Database = function () {
 
         'deleteFloorFromList' : function (floor) {
             deleteEleFromList(floor, dataTables.floor_list);
+        },
+
+
+        /* ----------------------- */
+        /* 网关相关api */
+        'setGateway' : function (gateway) {
+            dataTables.gateway = gateway;
         }
 
     }
 
 }();
 
+//网关对象
+function YN_Gateway(device_id, feed_id, mac) {
+    this.device_id = device_id;
+    this.feed_id = feed_id;
+    this.mac =mac;
+}
 
 
 //楼层对象
