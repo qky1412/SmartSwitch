@@ -315,6 +315,16 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
     this.scene_steps = scene_steps; //场景里的相关动作
     this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
     this.timings = timings; //场景的定时配置列表
+
+    //删除指面板
+    function deleteCtlPanel(panel) {
+        this.ctlpanel_assocs = deleteEleFromList(panel, this.ctlpanel_assocs);
+    }
+
+    //删除指定场景里的动作
+    function deleteSceneStep(sceneStep) {
+        this.scene_steps = deleteEleFromList(sceneStep, this.scene_steps);
+    }
 }
 
 //场景的定时
