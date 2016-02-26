@@ -6,6 +6,8 @@ $(document).ready(function(){
         showButton(true);
         showLoading();
     });
+
+
     //$("#button1").click(function(){
     //
     //    $.ajax({
@@ -39,6 +41,32 @@ function showButton(flag) {
             showTitle: false
         });
 }
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+/**
+ * 电器布局页面所需js
+ */
+function renderHomeDevicesList() {
+    //TODO
+    var template = document.getElementById("template-list-home-device");
+    for(var i = 0; i < 4; i++) {
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('#device-title').innerText = "fuckingTitle" + i;
+        tmp.querySelector('#list-item-home-device').dataset.id = i;
+        document.getElementById("list-home-device").appendChild(tmp);
+    }
+}
+
+function testDelete(elem,id) {
+    $(elem).remove();
+}
 /**
  * 添加电器页面所需js
  */
@@ -55,6 +83,7 @@ function initFloorSelect() {
         selectFloor.add(newOption);
     }
 }
+
 function  refreshRoomSelect() {
     var selectFloor = document.getElementById("select-floor");
     var selectRoom = document.getElementById("select-room");
@@ -86,6 +115,12 @@ function  refreshRoomSelect() {
         newOption.text = roomArrays[i];
         selectRoom.add(newOption);
     }
+}
+
+function addNewHomeDevice() {
+    var homeDeviceName = document.getElementById("input-name");
+    var storage = window.localStorage;
+    storage.setItem("current_home_device", homeDeviceName);
 }
 /**
  * only for test
