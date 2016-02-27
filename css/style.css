@@ -196,3 +196,17 @@ a.item-content:active {
 .control-content span {
     margin-left: -32px;
 }
+img.config {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.item-inner .item-title {
+    margin-left: 15px;
+}
+
+.list-config.list-block ul {
+    border-bottom: none;
+    border-top: none;
+}

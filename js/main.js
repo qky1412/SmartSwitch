@@ -1,13 +1,7 @@
 /**
- * Created by Administrator on 2016/2/20 0020.
+ * Created by qky on 2016/2/20 0020.
  */
 $(document).ready(function(){
-    JDSMART.ready(function () {
-        showButton(true);
-        showLoading();
-    });
-
-
     //$("#button1").click(function(){
     //
     //    $.ajax({
@@ -50,10 +44,14 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function enterPage(url) {
+    window.location.href = url;
+}
 /**
  * 电器布局页面所需js
  */
-function renderHomeDevicesList() {
+function refreshHomeDevicesList() {
     //TODO
     var template = document.getElementById("template-list-home-device");
     for(var i = 0; i < 4; i++) {
@@ -66,6 +64,67 @@ function renderHomeDevicesList() {
 
 function testDelete(elem,id) {
     $(elem).remove();
+}
+/**
+ * 楼层页面所需js
+ */
+function refreshFloorList() {
+    var template = document.getElementById("template-list-floor");
+    for(var i = 0; i < 4; i++) {
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('.item-title').innerText = "floor" + i;
+        tmp.querySelector('ul').id = "floor" + i;
+        tmp.querySelector('ul').dataset.id = i;
+        tmp.querySelector('ul').dataset.name = "floor" + i;
+        tmp.querySelector('.item-edit').dataset.name = "floor" + i;
+        tmp.querySelector('.item-edit').dataset.id = i;
+        tmp.querySelector('.item-delete').dataset.id = i;
+
+        document.getElementById("list-floor").appendChild(tmp);
+    }
+}
+
+function showEditFloorName(id, previousName) {
+    $.prompt('编辑楼层名称', function (value) {
+        //TODO should judge if the floor's name exists already
+        editFloorName(id, value);
+    });
+    var input = document.getElementsByClassName("modal-text-input");
+    input[0].value = previousName;
+    //$('.modal-text-input').val(previousName);
+}
+
+function editFloorName(id, newName) {
+
+}
+
+function  deleteFloor(id) {
+    var floorDiv = document.getElementById("floor" + id)
+    floorDiv.remove();
+}
+
+function showAddFloor() {
+    $.prompt('楼层名称', function (value) {
+        //TODO should judge if the floor's name exists already
+        addFloor(value);
+    });
+}
+
+function addFloor(floorName) {
+    //TODO new a floor by given name
+    if(floorName != null && floorName != '') {
+        var template = document.getElementById("template-list-floor");
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('.item-title').innerText = floorName;
+        tmp.querySelector('ul').id = "floor" + 4;
+        tmp.querySelector('ul').dataset.id = 4;
+        tmp.querySelector('ul').dataset.name = "floor" + 4;
+        tmp.querySelector('.item-edit').dataset.name = "floor" + 4;
+        tmp.querySelector('.item-edit').dataset.id = 4;
+        tmp.querySelector('.item-delete').dataset.id = 4;
+        document.getElementById("list-floor").appendChild(tmp);
+    }
+
 }
 /**
  * 添加电器页面所需js
