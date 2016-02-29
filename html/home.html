@@ -9,11 +9,18 @@
     <link rel="stylesheet" href="../css/style.css"/>
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
+    <script src="../js/storage/lockr.js"></script>
+    <script src="../js/storage/database.js"></script>
     <script src="../js/main.js"></script>
 
     <!-- Include the compiled Ratchet JS -->
 
     <title>hehe</title>
+
+</head>
+<body>
+<!---->
+<div class="page" id="page-home">
     <div id="top" class="buttons-tab">
         <a id="tab-control1" href="#tab1" class="tab-link active button">电器布局</a>
         <a id="tab-control2" href="#tab2" class="tab-link button">智能模块</a>
@@ -21,10 +28,6 @@
         <a id="tab-control4" href="#tab4" class="tab-link button">操作</a>
 
     </div>
-</head>
-<body>
-<!---->
-
 <div class="content">
         <div class="tabs">
             <div id="tab1" class="tab active">
@@ -33,26 +36,45 @@
                 <button id="button1">获取版本号</button>
                 <button id="button2" onclick="testStringLength()">测试发送控制数据</button>
                  -->
+                <div class="card">
+                    <div class="card-header"><h4>一楼 厨房</h4></div>
+                    <div class="card-content">
+                        <div class="list-block media-list">
+                            <ul>
+                                <li>
+                                    <a href="#" class="item-content">
+                                        <div class="item-inner">
+                                            <table class="table-device" >
+                                                <tr>
+                                                    <td ><span class="text-title col-80" >客厅灯</span></td>
+                                                    <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅</span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="item-content">
+                                        <div class="item-inner">
+                                            <table class="table-device" >
+                                                <tr>
+                                                    <td ><span class="text-title col-80" >客厅灯</span></td>
+                                                    <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅</span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
-                <div class="content-block-title">邮件应用</div>
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-content">
-                                <div class="item-inner">
-                                    <table class="table-device" >
-                                        <tr>
-                                            <td ><span class="text-title col-80" >客厅灯</span></td>
-                                            <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅</span></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
                 </div>
                 <div id="list-home-device">
                     <!-- here we render the home-device list from template-->
@@ -170,9 +192,9 @@
 <footer>
     <div id="bottom-control1" class="bottom-block">
         <div class="row">
-            <button class="button button-bottom col-33" onclick="enterPage('add_home_device.html')">添加电器</button>
-            <button class="button button-bottom col-33" onclick="enterPage('room.html')">房间</button>
-            <button class="button button-bottom col-33" onclick="enterPage('floor.html')">楼层</button>
+            <a href="add_home_device.html" class="button button-bottom col-33">添加电器</a>
+            <a href="room.html" class="button button-bottom col-33">房间</a>
+            <a href="floor.html" class="button button-bottom col-33">楼层</a>
         </div>
     </div>
     <div id="bottom-control2" class="bottom-block" style="display: none">
@@ -187,33 +209,9 @@
         </div>
     </div>
 </footer>
-</body>
+</div>
 <script src="../js/light7.js"></script>
-<script>
-    JDSMART.ready(function () {
-        showButton(true);
-        showLoading();
-    });
-    //动态配置选项卡对应页面的底部操作面板
-    $("#tab-control1").click(function () {
-        $("#bottom-control1").show();
-        $("#bottom-control2").hide();
-        $("#bottom-control3").hide();
-    });
-    $("#tab-control2").click(function () {
-        $("#bottom-control1").hide();
-        $("#bottom-control2").show();
-        $("#bottom-control3").hide();
-    });
-    $("#tab-control3").click(function () {
-        $("#bottom-control1, #bottom-control2").hide();
-        $("#bottom-control3").show();
-    });
-    $("#tab-control4").click(function () {
-        $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
-    });
-    refreshHomeDevicesList();
+</body>
 
-</script>
 </html>
 

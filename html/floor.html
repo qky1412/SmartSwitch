@@ -5,16 +5,10 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
     <meta name="format-detection" content="telephone=no">
-    <link href="../css/light7.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css"/>
-    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
-    <script src="../js/storage/lockr.js"></script>
-    <script src="../js/storage/database.js"></script>
-    <script src="../js/main.js"></script>
     <title>楼层</title>
 </head>
 <body>
+<div class="page" id="page-floor">
 <div class="content">
 <div class=" list-config list-block">
     <ul>
@@ -22,8 +16,8 @@
             <div class="item-inner">
                 <div class="item-title">一层</div>
                 <div class="item-after">
-                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
-                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a onclick="testControl();return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a href="index.html" class="external"><img src="../img/i-list-chevron-right.png" class="config"></a>
                 </div>
             </div>
         </li>
@@ -50,7 +44,7 @@
 
 </template>
 </div>
-</body>
+
 <footer>
     <div id="bottom-control2" class="bottom-block">
         <div class="row">
@@ -58,13 +52,7 @@
         </div>
     </div>
 </footer>
-<script src="../js/light7.js"></script>
-<script>
-    JDSMART.ready(function () {
-        showButton(true);
-        showLoading();
+</div>
+</body>
 
-    });
-    refreshFloorList();
-</script>
 </html>

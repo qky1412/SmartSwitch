@@ -5,14 +5,10 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
     <meta name="format-detection" content="telephone=no">
-    <link href="../css/light7.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css"/>
-    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
-    <script src="../js/main.js"></script>
     <title>添加电器设备</title>
 </head>
 <body>
+<div class="page" id="page-add-home-device">
 <div class="content">
     <div class="list-config list-block">
         <ul>
@@ -28,6 +24,10 @@
                     </div>
                 </div>
             </li>
+        </ul>
+    </div>
+    <div class="list-config list-block">
+        <ul>
             <li>
                 <div class="item-content">
 
@@ -39,6 +39,10 @@
                     </div>
                 </div>
             </li>
+        </ul>
+    </div>
+    <div class="list-config list-block">
+        <ul>
             <li>
                 <div class="item-content">
 
@@ -50,6 +54,10 @@
                     </div>
                 </div>
             </li>
+        </ul>
+    </div>
+    <div class="list-config list-block">
+        <ul>
             <li>
                 <div class="item-content">
 
@@ -61,6 +69,10 @@
                     </div>
                 </div>
             </li>
+        </ul>
+    </div>
+    <div class="list-config list-block">
+        <ul>
             <!-- Date -->
             <li>
                 <div class="item-content">
@@ -75,18 +87,15 @@
         </ul>
     </div>
 </div>
-</body>
 <footer>
     <div id="bottom-control2" class="bottom-block">
         <div class="row">
-            <button class="button button-bottom col-50" onclick="history.go(-1);">取消</button>
-            <button class="button button-bottom col-50" onclick="addNewHomeDevice()">确定</button>
+            <a class="button button-bottom back col-50">取消</a>
+            <a class="button button-bottom col-50" onclick="addNewHomeDevice();return false;">确定</a>
         </div>
     </div>
 </footer>
-<script src="../js/light7.js"></script>
-<script>
-    initFloorSelect();
-    refreshRoomSelect();
-</script>
+</div>
+</body>
+
 </html>
