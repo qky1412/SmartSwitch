@@ -7,7 +7,9 @@
     <script src="../js/storage/database.js"></script>
     <script>
         window.onload = function () {
-            alert(JSON.stringify(Database.getCtlPanelList()));
+            var gateway = new YN_Gateway('dev_id', 'feed_id', '7777777');
+            alert(JSON.stringify(CmdGen.regGateway(gateway)));
+
         }
     </script>
 
