@@ -32,6 +32,8 @@ var Database = function () {
         }
     }
 
+
+
     function readFromDb() {
         for (key_table in dataTables) {
             dataTables[key_table] = Lockr.get(key_table) || [];
@@ -54,6 +56,7 @@ var Database = function () {
 
     function addEleToList(ele, list) {
         list.unshift(ele);
+        writeToDb();
         return list;
     }
 
@@ -65,6 +68,7 @@ var Database = function () {
         if (i != -1) {
             list[i] = ele;
         }
+        writeToDb();
         return list;
     }
 
@@ -75,6 +79,7 @@ var Database = function () {
         if (i != -1) {
             list.splice(i, 1);
         }
+        writeToDb();
         return list;
     }
 
@@ -223,6 +228,7 @@ var Database = function () {
         /* 网关相关api */
         'setGateway': function (gateway) {
             dataTables.gateway = gateway;
+            writeToDb();
         }
 
     }
