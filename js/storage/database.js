@@ -32,6 +32,8 @@ var Database = function () {
         }
     }
 
+
+
     function readFromDb() {
         for (key_table in dataTables) {
             dataTables[key_table] = Lockr.get(key_table) || [];
@@ -54,6 +56,7 @@ var Database = function () {
 
     function addEleToList(ele, list) {
         list.unshift(ele);
+        writeToDb();
         return list;
     }
 
@@ -65,6 +68,7 @@ var Database = function () {
         if (i != -1) {
             list[i] = ele;
         }
+        writeToDb();
         return list;
     }
 
@@ -75,6 +79,7 @@ var Database = function () {
         if (i != -1) {
             list.splice(i, 1);
         }
+        writeToDb();
         return list;
     }
 
@@ -223,6 +228,7 @@ var Database = function () {
         /* 网关相关api */
         'setGateway': function (gateway) {
             dataTables.gateway = gateway;
+            writeToDb();
         }
 
     }
@@ -273,6 +279,7 @@ var CmdGen = function () {
             }
         },
 
+        /*
         //更换网关:
         'updateGateway': function(old_gateway, new_gateway) {
             return {
@@ -285,6 +292,9 @@ var CmdGen = function () {
                 'YN_msgpack': "" //??
             }
         },
+
+        */
+
 
         //注册按键子设备
         //参数 : gateway 网关, ctlpanel: 控制面板
@@ -435,22 +445,97 @@ var CmdGen = function () {
         },
 
         //配置定时任务
-        //参数: gateway网关, pid 要定时的Pid，timing 定时配置对象
-        'configTiming': function (gateway, pid, timing) {
+        //参数: gateway网关, pid 要定时的Pid，timing 定时任务对象
+        'configTiming': function (gateway, timing_task) {
 
             return {
                 'YN_msg_id':String.fromCharCode(14),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
-                'YN_time_n': timing.id,
-                'YN_pid':pid,
-                'YN_timer_t': timing.type,
-                'YN_datetime': timing.datetime,
-                'YN_time_s': "", //定时的任务状态 ??
+                'YN_time_n': timing_task.id,
+                'YN_pid':timing_task.pid,
+                'YN_timer_t': timing_task.timing_config,
+                'YN_datetime': timing.timing_config.getDatetime(),
+                'YN_time_s': timing.timing_config.status, //定时的任务状态 ??
 
             }
         },
 
+        //删除定时任务
+        //参数: gateway网关, timer_id 定时Id
+        'deleteTiming' : function (gateway, timer_id) {
+            return {
+                'YN_msg_id':String.fromCharCode(0x0f),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_time_n': timer_id
+            }
+        },
+
+        //app查询所有pid状态
+        //参数: gateway网关, pid_b起始pid pid_e结束Pid
+        'queryAllPidStatus': function (gateway, pid_b, pid_e) {
+
+            return {
+                'YN_msg_id':String.fromCharCode(0x10),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_pid_b': pid_b,
+                'YN_pid_e': pid_e,
+                'YN_pid_s': '' //返回, 所有的Pid状态,每个状态占用1字节
+            }
+        },
+
+        //app查询单个pid状态
+        //参数: gateway网关, pid
+        'queryPidStatus' : function(gateway, pid) {
+            return {
+                'YN_msg_id':String.fromCharCode(0x11),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_pid':pid,
+                'YN_pid_s':'' //返回,1字节pid状态
+            }
+        },
+
+        //查询所有定时Pid状态
+        //参数: gateway网关, pid_b起始pid pid_e结束Pid
+        'queryAllTimingPidStatus' : function (gateway, pid_b, pid_e) {
+            return {
+                'YN_msg_id':String.fromCharCode(0x12),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_pid_b': pid_b,
+                'YN_pid_e': pid_e,
+                'YN_pid_s': '' //返回, 所有的Pid状态,每个状态占用1字节
+            }
+        },
+
+        //app场景控制
+        //参数: gateway网关, Pid 要执行的Pid,  status将要执行的动作0x7f表示执行/0x00表示停止
+        'controlScene': function(gateway, pid, status) {
+            return {
+                'YN_msg_id':String.fromCharCode(0x99),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_pid':pid,
+                'YN_pid_s': status,
+                'YN_msgpack': '' //返回  ??
+            }
+        },
+
+        //为某个电器配置单次执行的任务
+        //参数  gateway网关, step为YN_Scene_Step对象
+        'controlElecEquiOnce' :function(gateway, step) {
+            return {
+                'YN_msg_id':String.fromCharCode(0x98),
+                'YN_device_id': gateway.device_id,
+                'YN_mac': gateway.mac,
+                'YN_s_driver': step.to_s_driver(),
+                'YN_pid': '', //返回 ?
+                'YN_pid_s': '', //返回, 执行后的状态
+            }
+        }
 
 
      //没有查询了??
@@ -533,12 +618,16 @@ function YN_Elec_Equi(name, floor, relay_assocs, room, panel_assoc) {
 
     //生成YN_s_key 关联按钮组
     function  to_s_key () {
-
+        var rt = '';
+        for(as_panel in this.panel_assocs) {
+            rt = rt.concat(as_panel.to_s_key());
+        }
+        return rt;
     }
 
     //YN_s_key按钮组的长度
     function len_s_key() {
-
+        this.panel_assocs.length;
     }
 }
 
@@ -590,6 +679,12 @@ function YN_CtlPanel_assoc(panel, btn_index) {
     this.id = guid();
     this.panel = panel;
     this.btn_index = btn_index; //
+
+    function to_s_key() {
+        //组成为: SN（id）+ 按键编号 + 按键类型
+        return '' + this.panel.id + btn_index + this.panel.type;
+    }
+
 }
 
 //组成场景中的某一步的对象
@@ -602,15 +697,24 @@ function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
     this.action2_delay = delay2;  //第二个动作的相应延时
 
 
+    function to_s_driver() {
+        //组成驱动SN+驱动编号+3位初始状态+2位延时时间+3位结束状态+2位延时时间
+        return '' + this.elec_equi.relay_assoc.relay.id +
+                this.elec_equi.relay_assoc.slot_index +
+                this.action1 +
+                this.action1_delay +
+                this.action2 +
+                this.action2_delay;
+    }
 }
 
 //场景对象
-function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
+function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     this.id = guid();
     this.name = name; //场景的名称
     this.scene_steps = scene_steps; //场景里的相关动作
     this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
-    this.timings = timings; //场景的定时配置列表
+    this.timing_tasks = timing_tasks; //场景的定时配置列表
     this.pid = undefined; //场景的pid
 
     //删除指面板
@@ -624,31 +728,48 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timings) {
     }
 
     //生成场景YN_s_key 场景关联按键
-    function to_s_key() {}
+    function to_s_key() {
+        var rt = '';
+        for(as_panel in this.panel_assocs) {
+            rt = rt.concat(as_panel.to_s_key());
+        }
+        return rt;
+    }
     //生成场景关联子设备驱动组
     function to_s_driver() {
-
+        var rt = '';
+        for(step in this.scene_steps) {
+            rt = rt.concat(step.to_s_driver());
+        }
+        return rt;
     }
     //场景中关联按键的个数
     function len_s_key() {
-
+        return this.ctlpanel_assocs.length;
     }
     //场景中关联按键的驱动个数
-    function len_s_driver() {}
+    function len_s_driver() {
+        return this.scene_steps.length;
+    }
 }
 
-//场景的定时
-function YN_Scene_Timing(scene, timeing) {
-    this.id = guid();
-    this.scene = scene; //相对应的场景
-    this.timing = timeing; //定时的配置
-}
-
-
-//定时对象
-function YN_Timing(type, datetime) {
-    this.id = 'FFFF'; //对应于YN_time_n
+//定时配置对象
+function YN_Timing_Config(type, datetime, status) {
     this.type = type ; // 01代表单次定时,02代表每周循环
-    this.datetime = datetime; //YYYYMMDDhhmmss ,当类型为02时,DD 代表每周中哪几天响应定时,Bit0~Bit6 分别对应星期日~星期六
+    // todo: 配置的具体格式待定
+    this.datetime = datetime;
+    this.status = status; //开启或是关闭
+
+    function getDatetime() {
+        return datetime;
+    }
+
 }
 
+//定时任务
+function YN_Timing_Task(pid, timing_config) {
+    this.id = String.fromCharCode(255,255); //对应于YN_time_n,即定时任务的编号
+    this.timing_config = timing_config;  //定时配置
+    this.pid = pid ; //定时任务针对的pid
+
+}
