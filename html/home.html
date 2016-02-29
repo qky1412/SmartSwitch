@@ -76,15 +76,24 @@
                     </div>
 
                 </div>
-                <div id="list-home-device">
+                <div id="list-room">
                     <!-- here we render the home-device list from template-->
                 </div>
             </div>
+            <template id="template-list-room">
+                <div class="card">
+                    <div class="card-header">一楼 厨房</div>
+                    <div class="card-content">
+                        <div id="list-room-id" class="list-block media-list">
+
+                        </div>
+                    </div>
+                </div>
+            </template>
             <template id="template-list-home-device">
-                <div class="list-block media-list" id="list-item-home-device" data-id="0" onclick="testDelete(this,this.dataset.id)">
                     <ul>
                         <li>
-                            <a class="item-content" id="a-list-home-device" >
+                            <a class="item-content" >
                                 <div class="item-inner">
                                     <table class="table-device" >
                                         <tr>
@@ -99,12 +108,13 @@
                             </a>
                         </li>
                     </ul>
-                </div>
             </template>
 
 
             <div id="tab2" class="tab">
-
+                <div class="content-block">
+                    hahaha
+                </div>
             </div>
 
             <div id="tab3" class="tab">
@@ -199,13 +209,13 @@
     </div>
     <div id="bottom-control2" class="bottom-block" style="display: none">
         <div class="row">
-            <button class="button button-bottom col-50">添加继电器</button>
-            <button class="button button-bottom col-50">添加开关</button>
+            <a class="button button-bottom col-50">添加继电器</a>
+            <a class="button button-bottom col-50">添加开关</a>
         </div>
     </div>
     <div id="bottom-control3" class="bottom-block" style="display: none">
         <div class="row">
-            <button class="button button-bottom">添加配置</button>
+            <a class="button button-bottom">添加配置</a>
         </div>
     </div>
 </footer>

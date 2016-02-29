@@ -15,8 +15,8 @@ $(document).ready(function(){
         });
         $("#tab-control2").click(function () {
             $("#bottom-control1").hide();
-            $("#bottom-control2").show();
             $("#bottom-control3").hide();
+            $("#bottom-control2").show();
         });
         $("#tab-control3").click(function () {
             $("#bottom-control1, #bottom-control2").hide();
@@ -79,13 +79,27 @@ function enterPage(url) {
  * 电器布局页面所需js
  */
 function refreshHomeDevicesList() {
-    //TODO
-    var template = document.getElementById("template-list-home-device");
-    for(var i = 0; i < 4; i++) {
-        var tmp = template.content.cloneNode(true);
-        tmp.querySelector('#device-title').innerText = "fuckingTitle" + i;
-        tmp.querySelector('#list-item-home-device').dataset.id = i;
-        document.getElementById("list-home-device").appendChild(tmp);
+    document.getElementById("list-room").innerHTML = '';
+    var floors = Database.getFloorList();
+    var floorNumbers = floors.length;
+    if(floorNumbers > 0) {
+        //先添加房间
+        var template = document.getElementById("template-list-room");
+        for(var i = 0; i < floorNumbers; i++) {
+            var rooms = floors[i].rooms;
+            var roomNumbers = rooms.length;
+            if(roomNumbers > 0) {
+                for(var j = 0; j < roomNumbers; j++) {
+                    var tmp = template.content.cloneNode(true);
+                    tmp.querySelector('card-header').innerText = floors[i].name + rooms[j].name;
+                    tmp.querySelector('#list-room-id').id = "list-room-id" + rooms[j].id;
+                    document.getElementById("list-room").appendChild(tmp);
+                }
+            }
+
+        }
+
+        //TODO 然后添加电器
     }
 }
 
