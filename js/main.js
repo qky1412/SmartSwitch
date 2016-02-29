@@ -15,6 +15,7 @@ $(document).ready(function(){
     //    });
     //});
    // setTimeout(hideLoading, 3000);
+    $.init();
 });
 /**
  * 通用js代码
@@ -176,9 +177,7 @@ function  refreshRoomSelect() {
 }
 
 function addNewHomeDevice() {
-    var homeDeviceName = document.getElementById("input-name");
-    var storage = window.localStorage;
-    storage.setItem("current_home_device", homeDeviceName);
+   alert('addNewHomeDevice');
 }
 /**
  * only for test
