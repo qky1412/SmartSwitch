@@ -590,6 +590,26 @@ var CmdGen = function () {
 }();
 
 
+
+/* 用于与京东交互的api */
+var CloudApi = function () {
+    return {
+        'registerGateway': function(gateway) {
+            JDSMART.io.controlDevice(
+                {"command": CmdGen.regGateway(gateway)},
+                function (suc) {
+                    alert("success: " + JSON.stringify(suc))
+                },
+                function(err) {
+                    alert ("error: "+ JSON.stringify(err));
+                }
+            );
+        }
+    }
+
+}();
+
+
 //网关对象
 function YN_Gateway(device_id, feed_id, mac) {
     this.device_id = device_id;
