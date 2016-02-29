@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <link href="../css/light7.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
+    <script src="../js/main.js"></script>
+    <title>楼层</title>
+</head>
+<body>
+<div class="content">
+<div class=" list-config list-block">
+    <ul>
+        <li class="item-content">
+            <div class="item-inner">
+                <div class="item-title">一层</div>
+                <div class="item-after">
+                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+</div>
+<div class="list-config list-block">
+    <div id="list-floor">
+
+    </div>
+</div>
+<template id="template-list-floor">
+        <ul id="floor" data-id="floor-id" data-name="floor-name">
+            <li class="item-content">
+                <div class="item-inner">
+                    <div class="item-title">楼层名称</div>
+                    <div class="item-after">
+                        <a class="item-edit" data-id="" data-name="" onclick="showEditFloorName(this.dataset.id, this.dataset.name);return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                        <a class="item-delete" data-id="" onclick="deleteFloor(this.dataset.id);return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+</template>
+</div>
+</body>
+<footer>
+    <div id="bottom-control2" class="bottom-block">
+        <div class="row">
+            <button class="button button-bottom" onclick="showAddFloor()">添加楼层</button>
+        </div>
+    </div>
+</footer>
+<script src="../js/light7.js"></script>
+<script>
+    JDSMART.ready(function () {
+        showButton(true);
+        showLoading();
+
+    });
+    refreshFloorList();
+</script>
+</html>
