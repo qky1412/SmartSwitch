@@ -2,19 +2,45 @@
  * Created by qky on 2016/2/20 0020.
  */
 $(document).ready(function(){
-    //$("#button1").click(function(){
-    //
-    //    $.ajax({
-    //        type: "GET",
-    //        cache: false,
-    //        url: "http://api.siyee.org/activities/instant-purchase/status",
-    //        data: {},
-    //        dataType: "jsonp",
-    //        //jsonp: "callback",
-    //        jsonpCallback: "OnGetMemberSuccessByjsonp"
-    //    });
-    //});
-   // setTimeout(hideLoading, 3000);
+    $(document).on("pageInit", "#page-home", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(true);
+            showLoading();
+        });
+        //动态配置选项卡对应页面的底部操作面板
+        $("#tab-control1").click(function () {
+            $("#bottom-control1").show();
+            $("#bottom-control2").hide();
+            $("#bottom-control3").hide();
+        });
+        $("#tab-control2").click(function () {
+            $("#bottom-control1").hide();
+            $("#bottom-control2").show();
+            $("#bottom-control3").hide();
+        });
+        $("#tab-control3").click(function () {
+            $("#bottom-control1, #bottom-control2").hide();
+            $("#bottom-control3").show();
+        });
+        $("#tab-control4").click(function () {
+            $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
+        });
+        refreshHomeDevicesList();
+    });
+    $(document).on("pageInit", "#page-floor", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        refreshFloorList();
+    });
+    $(document).on("pageInit", "#page-add-home-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        refreshRoomSelect();
+    });
+
     $.init();
 });
 /**
@@ -31,9 +57,9 @@ function showButton(flag) {
     JDSMART.app.config(		//配置导航按钮隐藏显示
         {
             showBack: true,   // 返回按钮，false是隐藏，true是 显示
-            showShare: false,
-            showMore: false,  // 更多按钮
-            showTitle: false
+            showShare: flag,
+            showMore: flag,  // 更多按钮
+            showTitle: flag
         });
 }
 function getParameterByName(name, url) {
@@ -182,6 +208,30 @@ function addNewHomeDevice() {
 /**
  * only for test
  */
+function testControl() {
+    var command = {
+        "command":[
+            {
+                "stream_id": "test",
+                "current_value":"fuckme"
+            },
+            {
+                "stream_id": "test2",
+                "current_value":"shittyhead"
+            }
+        ]
+    }
+    JDSMART.io.controlDevice(  // 控制设备接口: 如开关
+        command,
+        function (suc) {
+            alert(JSON.stringify(suc));
+        },
+        function (error) {
+            alert(error);
+        }
+    );
+}
+
 function OnGetMemberSuccessByjsonp(data) {
     alert(JSON.stringify(data));
 }

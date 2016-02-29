@@ -8,6 +8,7 @@
     <title>楼层</title>
 </head>
 <body>
+<div class="page" id="page-floor">
 <div class="content">
 <div class=" list-config list-block">
     <ul>
@@ -15,8 +16,8 @@
             <div class="item-inner">
                 <div class="item-title">一层</div>
                 <div class="item-after">
-                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
-                    <a onclick="return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a onclick="testControl();return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a href="index.html" class="external"><img src="../img/i-list-chevron-right.png" class="config"></a>
                 </div>
             </div>
         </li>
@@ -51,13 +52,7 @@
         </div>
     </div>
 </footer>
+</div>
 </body>
-<script>
-    JDSMART.ready(function () {
-        showButton(true);
-        showLoading();
 
-    });
-    refreshFloorList();
-</script>
 </html>

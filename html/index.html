@@ -3,14 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
-
 	<meta name="format-detection" content="telephone=no">
-
 	<link rel="stylesheet" href="../css/sample.css" />
 	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431152228724_jquery.js"></script>
 	<script type="text/javascript" src="http://storage.360buyimg.com/devh5/1431576139678_jdsmart-1.0.0.js"></script>
-	<script src="../js/main.js"></script>
 	<title>空气净化器</title>
 
 </head>
@@ -278,7 +275,9 @@ function controlDevice(command,callback){
     JDSMART.io.controlDevice(  // 控制设备接口: 如开关
             command,
             function (suc) {
-                hide_wait(); 
+
+                hide_wait();
+				alert(JSON.stringify(suc));
                 if(callback)
                     callback(suc);
             },

@@ -122,7 +122,7 @@ td.device-edit {
 }
 
 .text-content {
-    color: #c6c6c6;
+    color: #727272;
     padding-left: 15px;
     font-size: .5rem;
 }
@@ -141,9 +141,14 @@ a.item-content:active {
     background-color: #eef2f7;
 }
 
+
 .list-config.list-block .item-content .item-inner{
-    background-color: white;
     padding-left: 15px;
+    background-color: white;
+}
+
+.list-block .item-content {
+    padding-left: 0;
 }
 .list-block .item-title.label {
     width: 30%;
@@ -197,11 +202,18 @@ img.config {
     margin-left: 10px;
 }
 
-.item-inner .item-title {
-    margin-left: 15px;
-}
 
 .list-config.list-block ul {
     border-bottom: none;
     border-top: none;
+}
+
+.list-block {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.card-header {
+    background-color: #68d68b;
+    color: white;
 }
