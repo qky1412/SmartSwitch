@@ -266,17 +266,27 @@ var CmdGen = function () {
         return new Date().format("yyyyMMddhhmmss");
     }
 
+    function to_stream_value(kv) {
+        var cmds = []
+        for (key in kv) {
+            cmds.push({"stream_id":key,
+                        "current_value": kv[key]});
+        }
+
+        return cmds;
+    }
+
     return {
         //添加网关后进行初始化（app注册网关）
         //参数:网关对象
         'regGateway': function (gateway) {
-            return {
+            return to_stream_value({
                 'YN_msg_id': String.fromCharCode(0),
                 'YN_device_id': gateway.device_id,
                 'YN_feed_id': gateway.feed_id,
                 'YN_mac':String.fromCharCode(255,255,255,255,255,255),
                 'YN_datetime': datetime()
-            }
+            });
         },
 
         /*
@@ -299,7 +309,7 @@ var CmdGen = function () {
         //注册按键子设备
         //参数 : gateway 网关, ctlpanel: 控制面板
         'regBtnSubDev': function(gateway, ctlpanel) {
-            return {
+            return to_stream_value({
                 'YN_msg_id': String.fromCharCode(2),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -311,14 +321,14 @@ var CmdGen = function () {
                 'YN_pid': "" //返回值
 
 
-            }
+            });
 
         },
 
         //注册驱动子设备
         //参数: gateway 网关, relay: 继电器
         'regDrvSubDev': function(gateway, relay) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(3),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -328,25 +338,25 @@ var CmdGen = function () {
                 'YN_subdev_t': "", //返回
                 'YN_pid': ""//返回
 
-            }
+            });
         },
 
         //删除按键子设备
         //参数 : gateway 网关,panel按钮
         'deleteBtnSubDev': function (gateway, ctlpanel) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(4),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_subdev_id': ctlpanel.id,
 
-            }
+            });
         },
 
         //删除驱动子设备
         //参数: gateway 网关, relay: 继电器
         'deleteDrvSubDev': function (gateway, relay) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(5),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -354,14 +364,14 @@ var CmdGen = function () {
                 'YN_pid': "", //返回
                 'YN_subdev_n': '',// 返回
 
-            }
+            });
         },
 
 
         //更换按键子设备:
         //参数: gateway 网关, old_ctlpanel 旧的控制面板, new_ctlpanel 新的控制面板
         'replaceBtnSubDev': function(gateway, old_ctlpanel, new_ctlpanel) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(8),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -369,13 +379,13 @@ var CmdGen = function () {
                 'YN_psubdev_id': old_ctlpanel.id,
                 'YN_msgpack': "" //??
 
-            }
+            });
         },
 
         //更换驱动子设备
         //参数: gateway 网关, old_relay旧的驱动子设备  new_relay 新的驱动子设备
         'replaceDrvSubDev' : function (gateway, old_relay, new_relay) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(9),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -383,13 +393,13 @@ var CmdGen = function () {
                 'YN_psubdev_id': old_relay.id,
                 'YN_pid_b': old_relay.pid,
                 'YN_msgpack': "" //??
-            }
+            });
         },
 
         //创建场景
         //参数: gateway网关, scene 要创建的场景
         'createScene' : function (gateway, scene) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(10),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -399,13 +409,13 @@ var CmdGen = function () {
                 'YN_s_key_n': scene.len_s_key(),//按键组数
                 'YN_s_driver': scene.to_s_driver(),//关联驱动组
                 'YN_s_driver_n': scene.len_s_driver() //驱动组数
-            }
+            });
         },
 
         //更新场景
         //参数 gateway网关, scene: 要更新的场景
         'updateScene' :function (gateway, scene) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(11),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -415,24 +425,24 @@ var CmdGen = function () {
                 'YN_s_key_n': scene.len_s_key(),//按键组数
                 'YN_s_driver': scene.to_s_driver(),//关联驱动组
                 'YN_s_driver_n': scene.len_s_driver() //驱动组数
-            }
+            });
         },
 
         //删除场景
         //参数 gateway 网关 scene: 要删除的场景
         'deleteScene' : function (gateway, scene) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(12),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_pid': scene.pid
-            }
+            });
         },
 
         //配置单一驱动场景<其实就是为某个电器配置按钮>
 
         'configElecEqui': function (gateway, elec_equi) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(13),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -441,14 +451,14 @@ var CmdGen = function () {
                 'YN_subdev_id':elec_equi.relay_assoc.relay.id,
                 'YN_pid': elec_equi.relay_assoc.relay.pid,
                 'YN_pid_s': "" //返回
-            }
+            });
         },
 
         //配置定时任务
         //参数: gateway网关, pid 要定时的Pid，timing 定时任务对象
         'configTiming': function (gateway, timing_task) {
 
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(14),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
@@ -458,83 +468,83 @@ var CmdGen = function () {
                 'YN_datetime': timing.timing_config.getDatetime(),
                 'YN_time_s': timing.timing_config.status, //定时的任务状态 ??
 
-            }
+            });
         },
 
         //删除定时任务
         //参数: gateway网关, timer_id 定时Id
         'deleteTiming' : function (gateway, timer_id) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x0f),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_time_n': timer_id
-            }
+            });
         },
 
         //app查询所有pid状态
         //参数: gateway网关, pid_b起始pid pid_e结束Pid
         'queryAllPidStatus': function (gateway, pid_b, pid_e) {
 
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x10),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_pid_b': pid_b,
                 'YN_pid_e': pid_e,
                 'YN_pid_s': '' //返回, 所有的Pid状态,每个状态占用1字节
-            }
+            });
         },
 
         //app查询单个pid状态
         //参数: gateway网关, pid
         'queryPidStatus' : function(gateway, pid) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x11),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_pid':pid,
                 'YN_pid_s':'' //返回,1字节pid状态
-            }
+            });
         },
 
         //查询所有定时Pid状态
         //参数: gateway网关, pid_b起始pid pid_e结束Pid
         'queryAllTimingPidStatus' : function (gateway, pid_b, pid_e) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x12),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_pid_b': pid_b,
                 'YN_pid_e': pid_e,
                 'YN_pid_s': '' //返回, 所有的Pid状态,每个状态占用1字节
-            }
+            });
         },
 
         //app场景控制
         //参数: gateway网关, Pid 要执行的Pid,  status将要执行的动作0x7f表示执行/0x00表示停止
         'controlScene': function(gateway, pid, status) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x99),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_pid':pid,
                 'YN_pid_s': status,
                 'YN_msgpack': '' //返回  ??
-            }
+            });
         },
 
         //为某个电器配置单次执行的任务
         //参数  gateway网关, step为YN_Scene_Step对象
         'controlElecEquiOnce' :function(gateway, step) {
-            return {
+            return to_stream_value({
                 'YN_msg_id':String.fromCharCode(0x98),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
                 'YN_s_driver': step.to_s_driver(),
                 'YN_pid': '', //返回 ?
                 'YN_pid_s': '', //返回, 执行后的状态
-            }
+            });
         }
 
 
