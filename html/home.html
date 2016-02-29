@@ -42,7 +42,7 @@
                                 <div class="item-inner">
                                     <table class="table-device" >
                                         <tr>
-                                            <td ><span class="text-title col-80" >客厅灯</span><span class="text-second-title">ID:123423442423442445322423244246</span></td>
+                                            <td ><span class="text-title col-80" >客厅灯</span></td>
                                             <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
                                         </tr>
                                         <tr>
@@ -66,7 +66,7 @@
                                 <div class="item-inner">
                                     <table class="table-device" >
                                         <tr>
-                                            <td><span class="text-title col-80" id="device-title">{{Title}}</span><span class="text-second-title">{{Id}}</span></td>
+                                            <td><span class="text-title col-80" id="device-title">{{Title}}</span></td>
                                             <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
                                         </tr>
                                         <tr>
@@ -170,8 +170,8 @@
 <footer>
     <div id="bottom-control1" class="bottom-block">
         <div class="row">
-            <button class="button button-bottom col-33" >添加电器</button>
-            <button class="button button-bottom col-33" >房间</button>
+            <button class="button button-bottom col-33" onclick="enterPage('add_home_device.html')">添加电器</button>
+            <button class="button button-bottom col-33" onclick="enterPage('room.html')">房间</button>
             <button class="button button-bottom col-33" onclick="enterPage('floor.html')">楼层</button>
         </div>
     </div>

@@ -110,7 +110,7 @@ td.device-edit {
 }
 
 .text-title {
-    color: #1e1e1e;
+    color: #68d68b;
     padding-left: 15px;
 }
 
@@ -131,12 +131,6 @@ td.device-edit {
     font-size: .5rem;
 }
 
-
-.list-block .item-content {
-    padding-left: 0;
-    padding-top: 0.75em;
-    padding-bottom: 0.75em;
-}
 
 a.item-content:active {
     background-color: #c6c6c6 ;
