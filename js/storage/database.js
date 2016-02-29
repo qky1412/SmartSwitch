@@ -59,7 +59,7 @@ var Database = function () {
 
     function updateEleInList(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id.equals(ary_ele.id);
+            return ele.id == ary_ele.id;
         });
 
         if (i != -1) {
@@ -70,7 +70,7 @@ var Database = function () {
 
     function deleteEleFromList(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id.equals(ary_ele.id);
+            return ele.id == ary_ele.id;
         });
         if (i != -1) {
             list.splice(i, 1);

@@ -69,17 +69,18 @@ function testDelete(elem,id) {
  * 楼层页面所需js
  */
 function refreshFloorList() {
+    document.getElementById("list-floor").innerHTML = '';
+    var floors = Database.getFloorList();
     var template = document.getElementById("template-list-floor");
-    for(var i = 0; i < 4; i++) {
+    for(var i = 0, length = floors.length; i < length; i++) {
         var tmp = template.content.cloneNode(true);
-        tmp.querySelector('.item-title').innerText = "floor" + i;
-        tmp.querySelector('ul').id = "floor" + i;
-        tmp.querySelector('ul').dataset.id = i;
-        tmp.querySelector('ul').dataset.name = "floor" + i;
-        tmp.querySelector('.item-edit').dataset.name = "floor" + i;
-        tmp.querySelector('.item-edit').dataset.id = i;
-        tmp.querySelector('.item-delete').dataset.id = i;
-
+        tmp.querySelector('.item-title').innerText = floors[i].name;
+        tmp.querySelector('ul').id = "floor" + floors[i].id;
+        tmp.querySelector('ul').dataset.id = floors[i].id;
+        tmp.querySelector('ul').dataset.name = floors[i].name;
+        tmp.querySelector('.item-edit').dataset.name = floors[i].name;
+        tmp.querySelector('.item-edit').dataset.id = floors[i].id;
+        tmp.querySelector('.item-delete').dataset.id = floors[i].id;
         document.getElementById("list-floor").appendChild(tmp);
     }
 }
@@ -95,12 +96,18 @@ function showEditFloorName(id, previousName) {
 }
 
 function editFloorName(id, newName) {
-
+    var editFloor = new YN_Floor(newName);
+    alert(typeof id);
+    editFloor.id = id;
+    Database.updateFloorList(editFloor);
+    refreshFloorList();
 }
 
 function  deleteFloor(id) {
-    var floorDiv = document.getElementById("floor" + id)
-    floorDiv.remove();
+    var deleteFloor = new YN_Floor("fake");
+    deleteFloor.id = id;
+    Database.deleteFloorFromList(deleteFloor);
+    refreshFloorList();
 }
 
 function showAddFloor() {
@@ -113,16 +120,8 @@ function showAddFloor() {
 function addFloor(floorName) {
     //TODO new a floor by given name
     if(floorName != null && floorName != '') {
-        var template = document.getElementById("template-list-floor");
-        var tmp = template.content.cloneNode(true);
-        tmp.querySelector('.item-title').innerText = floorName;
-        tmp.querySelector('ul').id = "floor" + 4;
-        tmp.querySelector('ul').dataset.id = 4;
-        tmp.querySelector('ul').dataset.name = "floor" + 4;
-        tmp.querySelector('.item-edit').dataset.name = "floor" + 4;
-        tmp.querySelector('.item-edit').dataset.id = 4;
-        tmp.querySelector('.item-delete').dataset.id = 4;
-        document.getElementById("list-floor").appendChild(tmp);
+        var newFloor = Database.addFloorToList(new YN_Floor(floorName));
+        refreshFloorList();
     }
 
 }
