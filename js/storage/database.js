@@ -13,6 +13,31 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
+function indexOfItemInArray(ary, ele, filter_func) {
+    var i = 0;
+    for (i = 0; i < ary.length; ++i) {
+        if (filter_func(ele, ary[i])) {
+            break;
+        }
+    }
+    if (i < ary.length) {
+        return i;
+    }
+    return -1;
+}
+
+
+function findEleWithId(id, list) {
+    var i = indexOfItemInArray(list, {'id': id}, function (ele, ary_ele) {
+        return ele.id == ary_ele.id;
+    });
+
+    if (i != -1) {
+        return list[i];
+    }
+    return null;
+}
+
 
 /** 数据库对象 **/
 var Database = function () {
@@ -37,19 +62,6 @@ var Database = function () {
         for (key_table in dataTables) {
             dataTables[key_table] = Lockr.get(key_table) || [];
         }
-    }
-
-    function indexOfItemInArray(ary, ele, filter_func) {
-        var i = 0;
-        for (i = 0; i < ary.length; ++i) {
-            if (filter_func(ele, ary[i])) {
-                break;
-            }
-        }
-        if (i < ary.length) {
-            return i;
-        }
-        return -1;
     }
 
 
@@ -80,17 +92,6 @@ var Database = function () {
         }
         writeToDb();
         return list;
-    }
-
-    function findEleWithId(id, list) {
-        var i = indexOfItemInArray(list, {'id':id}, function (ele, ary_ele) {
-            return ele.id == ary_ele.id;
-        });
-
-        if( i != -1) {
-            return list[i];
-        }
-        return null;
     }
 
 
@@ -235,7 +236,7 @@ var Database = function () {
 
         //参数楼层id
         //返回: 楼层对象或null
-        'findFloorFromList' :function(id) {
+        'findFloorFromList': function (id) {
             return findEleWithId(id, dataTables.floor_list);
         },
 
@@ -828,7 +829,7 @@ var CloudApi = function () {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
                 return CmdGen.controlElecEquiOnce(Database.gateway, step);
-            },callback, keys);
+            }, callback, keys);
         }
 
     }
@@ -851,13 +852,13 @@ function YN_Floor(name) {
     this.rooms = [];
 
     //向本楼层添加一个房间
-    function addRoom(room) {
+    this.addRoom = function (room) {
         this.rooms.push(room);
     }
 
     //查找该楼层下特定id的房间
     //返回: 房间对象或null
-    function findRoom(id) {
+    this.findRoom = function (id) {
         return findEleWithId(id, this.room);
     }
 }
@@ -879,7 +880,7 @@ function YN_Elec_Equi(name, floor, relay_assocs, room, panel_assoc) {
     this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
 
     //生成YN_s_key 关联按钮组
-    function to_s_key() {
+    this.to_s_key = function () {
         var rt = '';
         for (as_panel in this.panel_assocs) {
             rt = rt.concat(as_panel.to_s_key());
@@ -888,7 +889,7 @@ function YN_Elec_Equi(name, floor, relay_assocs, room, panel_assoc) {
     }
 
     //YN_s_key按钮组的长度
-    function len_s_key() {
+    this.len_s_key = function () {
         this.panel_assocs.length;
     }
 }
@@ -942,7 +943,7 @@ function YN_CtlPanel_assoc(panel, btn_index) {
     this.panel = panel;
     this.btn_index = btn_index; //
 
-    function to_s_key() {
+    this.to_s_key = function () {
         //组成为: SN（id）+ 按键编号 + 按键类型
         return '' + this.panel.id + btn_index + this.panel.type;
     }
@@ -959,7 +960,7 @@ function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
     this.action2_delay = delay2;  //第二个动作的相应延时
 
 
-    function to_s_driver() {
+    this.to_s_driver = function () {
         //组成驱动SN+驱动编号+3位初始状态+2位延时时间+3位结束状态+2位延时时间
         return '' + this.elec_equi.relay_assoc.relay.id +
             this.elec_equi.relay_assoc.slot_index +
@@ -980,17 +981,17 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     this.pid = undefined; //场景的pid
 
     //删除指面板
-    function deleteCtlPanel(panel) {
+    this.deleteCtlPanel = function (panel) {
         this.ctlpanel_assocs = deleteEleFromList(panel, this.ctlpanel_assocs);
     }
 
     //删除指定场景里的动作
-    function deleteSceneStep(sceneStep) {
+    this.deleteSceneStep = function (sceneStep) {
         this.scene_steps = deleteEleFromList(sceneStep, this.scene_steps);
     }
 
     //生成场景YN_s_key 场景关联按键
-    function to_s_key() {
+    this.to_s_key = function () {
         var rt = '';
         for (as_panel in this.panel_assocs) {
             rt = rt.concat(as_panel.to_s_key());
@@ -999,7 +1000,7 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     }
 
     //生成场景关联子设备驱动组
-    function to_s_driver() {
+    this.to_s_driver = function () {
         var rt = '';
         for (step in this.scene_steps) {
             rt = rt.concat(step.to_s_driver());
@@ -1008,12 +1009,12 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     }
 
     //场景中关联按键的个数
-    function len_s_key() {
+    this.len_s_key = function () {
         return this.ctlpanel_assocs.length;
     }
 
     //场景中关联按键的驱动个数
-    function len_s_driver() {
+    this.len_s_driver = function () {
         return this.scene_steps.length;
     }
 }
@@ -1025,7 +1026,7 @@ function YN_Timing_Config(type, datetime, status) {
     this.datetime = datetime;
     this.status = status; //开启或是关闭
 
-    function getDatetime() {
+    this.getDatetime = function () {
         return datetime;
     }
 
