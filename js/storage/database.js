@@ -82,6 +82,17 @@ var Database = function () {
         return list;
     }
 
+    function findEleWithId(id, list) {
+        var i = indexOfItemInArray(list, {'id':id}, function (ele, ary_ele) {
+            return ele.id == ary_ele.id;
+        });
+
+        if( i != -1) {
+            return list[i];
+        }
+        return null;
+    }
+
 
     //初始化动作
     readFromDb();
@@ -220,6 +231,12 @@ var Database = function () {
 
         'deleteFloorFromList': function (floor) {
             deleteEleFromList(floor, dataTables.floor_list);
+        },
+
+        //参数楼层id
+        //返回: 楼层对象或null
+        'findFloorFromList' :function(id) {
+            return findEleWithId(id, dataTables.floor_list);
         },
 
 
@@ -836,6 +853,12 @@ function YN_Floor(name) {
     //向本楼层添加一个房间
     function addRoom(room) {
         this.rooms.push(room);
+    }
+
+    //查找该楼层下特定id的房间
+    //返回: 房间对象或null
+    function findRoom(id) {
+        return findEleWithId(id, this.room);
     }
 }
 
