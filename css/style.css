@@ -217,3 +217,15 @@ img.config {
     background-color: #68d68b;
     color: white;
 }
+
+img.edit {
+    width: 15px;
+    height: 15px;
+    margin-left: 15px;
+}
+
+img.delete {
+    width: 14px;
+    height: 16px;
+    margin-left: 15px;
+}

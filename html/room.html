@@ -11,33 +11,68 @@
 <div class="page" id="page-room">
     <div class="content">
         <div class="card">
-            <div class="card-header">一楼 厨房</div>
+            <div class="card-header">一楼 厨房<span class="icon icon-edit" onclick="showAddRoom();"> 添加</span></div>
             <div class="card-content">
-                <div class="list-block media-list">
-                    <ul>
-                        <li>
-                            <a href="#" class="item-content">
-                                <div class="item-inner">
-                                    <table class="table-device" >
-                                        <tr>
-                                            <td ><span class="text-title col-80" >客厅灯</span></td>
-                                            <td  rowspan="2" class="device-edit"><img src="../img/i-list-chevron-right.png" width="10px" height="10px"><span>编辑</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="text-content">楼层:</span><span class="text-content-black">1</span><span class="text-content">房间:</span><span class="text-content-black">小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅小客厅</span></td>
-                                        </tr>
-                                    </table>
+                <div class="list-config list-block">
+                    <ul  data-id="floor-id" data-name="floor-name">
+                        <li class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">房间名称</div>
+                                <div class="item-after">
+                                    <a class="item-edit" data-id="" data-name="" onclick="return false;"><img src="../img/ic_edit_gary.png" class="edit"></a>
+                                    <a class="item-delete" data-id="" onclick="return false;"><img src="../img/ic_del_red.png" class="delete"></a>
                                 </div>
-                            </a>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">房间名称</div>
+                                <div class="item-after">
+                                    <a class="item-edit" data-id="" data-name="" onclick="return false;"><img src="../img/ic_edit_gary.png" class="edit"></a>
+                                    <a class="item-delete" data-id="" onclick="return false;"><img src="../img/ic_del_red.png" class="delete"></a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">房间名称</div>
+                                <div class="item-after">
+                                    <a class="item-edit" data-id="" data-name="" onclick="return false;"><img src="../img/ic_edit_gary.png" class="edit"></a>
+                                    <a class="item-delete" data-id="" onclick="return false;"><img src="../img/ic_del_red.png" class="delete"></a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
 
         </div>
-        <div id="list-floor">
+        <div id="room-list-floor">
 
         </div>
+        <template id="room-template-floor">
+            <div class="card">
+                <div class="card-header"><span class="room-title">一楼 厨房</span><span class="icon icon-edit" data-floorID="" onclick="showAddRoom(this.dataset.floorID);"></span></div>
+                <div class="card-content">
+                    <div  class="list-config list-block">
+                        <ul id="room-list-floor-id">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template id="room-template-room">
+                <li class="item-content" id="room-li-room">
+                    <div class="item-inner">
+                        <div class="item-title">房间名称</div>
+                        <div class="item-after">
+                            <a class="item-edit" data-floorID="" data-roomID="" data-roomName="" onclick="showEditRoom(this.dataset.floorID, this.dataset.roomID, this.dataset.roomName);return false;"><img src="../img/ic_edit_gary.png" class="edit"></a>
+                            <a class="item-delete" data-floorID="" data-roomID="" onclick="showDeleteRoom(this.dataset.floorID, this.dataset.roomID);return false;"><img src="../img/ic_del_red.png" class="delete"></a>
+                        </div>
+                    </div>
+                </li>
+        </template>
     </div>
 </div>
 </body>

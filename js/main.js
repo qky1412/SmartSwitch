@@ -27,6 +27,9 @@ $(document).ready(function(){
         });
         refreshHomeDevicesList();
     });
+    $(document).on("pageReinit", "#page-home", function (e, id, page) {
+        refreshHomeDevicesList();
+    });
     $(document).on("pageInit", "#page-floor", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
@@ -40,7 +43,12 @@ $(document).ready(function(){
         initFloorSelect();
         refreshRoomSelect();
     });
-
+    $(document).on("pageInit", "#page-room", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        refreshRoomList();
+    });
     $.init();
 });
 /**
@@ -91,7 +99,7 @@ function refreshHomeDevicesList() {
             if(roomNumbers > 0) {
                 for(var j = 0; j < roomNumbers; j++) {
                     var tmp = template.content.cloneNode(true);
-                    tmp.querySelector('card-header').innerText = floors[i].name + rooms[j].name;
+                    tmp.querySelector('.card-header').innerText = floors[i].name + rooms[j].name;
                     tmp.querySelector('#list-room-id').id = "list-room-id" + rooms[j].id;
                     document.getElementById("list-room").appendChild(tmp);
                 }
@@ -165,6 +173,122 @@ function addFloor(floorName) {
         refreshFloorList();
     }
 
+}
+/**
+ * 房间页面所需js
+ */
+function refreshRoomList() {
+    document.getElementById("room-list-floor").innerHTML = '';
+    var floors = Database.getFloorList();
+    var floorCount = floors.length;
+    if(floorCount > 0) {
+        //先添加楼层
+        var floorTpl = document.getElementById("room-template-floor");
+        for(var i = 0; i < floorCount; i++) {
+            var floorTmp = floorTpl.content.cloneNode(true);
+            floorTmp.querySelector('.room-title').innerText = floors[i].name;
+            floorTmp.querySelector('#room-list-floor-id').id = "room-list-floor-id" + floors[i].id;
+            floorTmp.querySelector('.icon').dataset.floorID = floors[i].id;
+            document.getElementById("room-list-floor").appendChild(floorTmp);
+        }
+
+        //再添加房间
+        var roomTpl = document.getElementById("room-template-room");
+        for(var i = 0; i < floorCount; i++) {
+            var rooms = floors[i].rooms;
+            var roomCount = rooms.length;
+            if(roomCount > 0) {
+                for(var j = 0; j < roomCount; j++) {
+                    var roomTmp = roomTpl.content.cloneNode(true);
+                    roomTmp.querySelector('.item-title').innerText = rooms[j].name;
+                    roomTmp.querySelector('.item-edit').dataset.floorID = floors[i].id;
+                    roomTmp.querySelector('.item-edit').dataset.roomID = rooms[j].id;
+                    roomTmp.querySelector('.item-edit').dataset.roomName = rooms[j].name;
+                    roomTmp.querySelector('.item-delete').dataset.floorID = floors[i].id;
+                    roomTmp.querySelector('.item-delete').dataset.roomID = rooms[j].id;
+                    document.getElementById("room-list-floor-id" + floors[i].id).appendChild(roomTmp);
+                }
+            }
+        }
+    }
+}
+
+function showAddRoom(floorID) {
+    $.prompt('房间名称', function (value) {
+        //TODO should judge if the floor's name exists already
+        addRoom(floorID,value);
+    });
+}
+
+function addRoom(floorID, roomName) {
+    if(roomName != null && roomName != '') {
+        var floors = Database.getFloorList();
+        var floorCount = floors.length;
+        for(var i = 0; i < floorCount; i++) {
+            if(floorID == floors[i].id) {
+                var newRoom = new YN_Room(roomName);
+                floors[i].rooms.push(newRoom);
+                Database.updateFloorList(floors[i]);
+                refreshRoomList();
+                break;
+            }
+        }
+
+    }
+
+}
+
+function showEditRoom(floorID, roomID, previousName) {
+    $.prompt('房间名称', function (value) {
+        //TODO should judge if the floor's name exists already
+        editRoom(floorID,roomID,value);
+    });
+    var input = document.getElementsByClassName("modal-text-input");
+    input[0].value = previousName;
+}
+
+function editRoom(floorID, roomID, newName) {
+    if(newName != null && newName != '') {
+        var floors = Database.getFloorList();
+        var floorCount = floors.length;
+        for(var i = 0; i < floorCount; i++) {
+            if(floorID == floors[i].id) {
+                for(var j = 0, roomCount = floors[i].rooms.length; j < roomCount; j ++) {
+                    if(roomID == floors[i].rooms[j].id) {
+                        floors[i].rooms[j].name = newName;
+                        Database.updateFloorList(floors[i]);
+                        refreshRoomList();
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+function showDeleteRoom(floorID, roomID) {
+    $.confirm('是否要删除该房间?', function () {
+        deleteRoom(floorID, roomID);
+    });
+}
+
+function deleteRoom(floorID, roomID) {
+    var floors = Database.getFloorList();
+    var floorCount = floors.length;
+    outermost:
+    for(var i = 0; i < floorCount; i++) {
+        if(floorID == floors[i].id) {
+            for(var j = 0, roomCount = floors[i].rooms.length; j < roomCount; j++) {
+                if(roomID == floors[i].rooms[j].id) {
+                    floors[i].rooms.splice(j, 1);
+                    Database.updateFloorList(floors[i]);
+                    refreshRoomList();
+                    break outermost;
+                }
+            }
+        }
+    }
 }
 /**
  * 添加电器页面所需js
