@@ -290,16 +290,16 @@ function deleteRoom(floorID, roomID) {
  * 添加电器页面所需js
  */
 function initFloorSelect() {
-    //TODO the floorArrays here should be fetched through local storage
-    var floorArrays = ["1层", "2层", "3层", "4层"]
+    var floors = Database.getFloorList();
     var selectFloor = document.getElementById("select-floor");
     selectFloor.innerHTML = "";
-    var length = floorArrays.length;
-    for(var i=0; i < length; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = i;
-        newOption.text = floorArrays[i];
-        selectFloor.add(newOption);
+    for(var i = 0, length = floors.length; i < length; i++) {
+        if(floors[i].rooms.length > 0) {
+            var newOption = document.createElement("option");
+            newOption.value = floors[i].id;
+            newOption.text = floors[i].name;
+            selectFloor.add(newOption);
+        }
     }
 }
 
@@ -307,31 +307,18 @@ function  refreshRoomSelect() {
     var selectFloor = document.getElementById("select-floor");
     var selectRoom = document.getElementById("select-room");
     selectRoom.innerHTML = "";
-    var roomArrays;
-    //TODO here we should match the real data
-
-    switch(selectFloor.value) {
-        case "0":
-            roomArrays = ["大厅", "厨房", "储物间"];
+    var rooms = [];
+    var floors = Database.getFloorList();
+    for(var i = 0, floorCount = floors.length; i < floorCount; i++) {
+        if(selectFloor.value == floors[i].id) {
+            rooms = floors[i].rooms;
             break;
-        case "1":
-            alert("selectFloor.value=" + selectFloor.value)
-            roomArrays = ["主卧", "主卧2"];
-            break;
-        case "2":
-            roomArrays = ["客房1", "客房2", "书房", "娱乐室"];
-            break;
-        case "3":
-            roomArrays = ["阳台"];
-            break;
-        default:
-            roomArrays = ["error"];
+        }
     }
-    var length = roomArrays.length;
-    for(var i=0; i < length; i++) {
+    for(var i = 0, length = rooms.length; i < length; i++) {
         var newOption = document.createElement("option");
-        newOption.value = roomArrays[i];
-        newOption.text = roomArrays[i];
+        newOption.value = rooms[i].id;
+        newOption.text = rooms[i].name;
         selectRoom.add(newOption);
     }
 }

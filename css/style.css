@@ -229,3 +229,9 @@ img.delete {
     height: 16px;
     margin-left: 15px;
 }
+
+img.down-arrow {
+    width: 15px;
+    height: 15px;
+    margin-left: 15px;
+}
