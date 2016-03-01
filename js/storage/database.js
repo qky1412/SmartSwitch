@@ -858,7 +858,7 @@ function YN_Floor(name) {
     //查找该楼层下特定id的房间
     //返回: 房间对象或null
     function findRoom(id) {
-        return findEleWithId(id, this.room);
+        return findEleWithId(id, this.rooms);
     }
 }
 

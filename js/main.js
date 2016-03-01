@@ -334,19 +334,22 @@ function addNewHomeDevice() {
  * 添加输出设备页面所需js
  */
 function addNewOutputDevice() {
-    var deviceId = document.getElementById("input-id");
-    var deviceName = document.getElementById("input-name");
-    var floorId = document.getElementById("select-floor");
-    var roomId = document.getElementById("select-room");
-    if(deviceId.value.trim() == '') {
+    var deviceId = document.getElementById("input-id").value;
+    var deviceName = document.getElementById("input-name").value;
+    var floorId = document.getElementById("select-floor").value;
+    var roomId = document.getElementById("select-room").value;
+    if(deviceId.trim() == '') {
         alert('ID不能为空');
         return;
     }
-    if(deviceName.value.trim() == '') {
+    if(deviceName.trim() == '') {
         alert('名称不能为空');
         return;
     }
-    var newOutputDevice = new YN_Relay(deviceId, deviceName,  )
+    var floor = Database.findFloorFromList(floorId);
+    var room = floor.addRoom(roomId);
+
+    //var newOutputDevice = new YN_Relay(deviceId, deviceName,  )
 }
 /**
  * only for test
