@@ -16,31 +16,33 @@
             <div class="item-inner">
                 <div class="item-title">一层</div>
                 <div class="item-after">
-                    <a onclick="testControl();return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
-                    <a href="index.html" class="external"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                    <a onclick="testControl();return false;"><img src="../img/ic_edit_gray.png" class="edit"></a>
+                    <a href="index.html" class="external"><img src="../img/ic_del_red.png" class="delete"></a>
                 </div>
             </div>
         </li>
     </ul>
 
 </div>
-<div class="list-config list-block">
+
     <div id="list-floor">
 
     </div>
-</div>
+
 <template id="template-list-floor">
+    <div class="list-config list-block">
         <ul id="floor" data-id="floor-id" data-name="floor-name">
             <li class="item-content">
                 <div class="item-inner">
                     <div class="item-title">楼层名称</div>
                     <div class="item-after">
-                        <a class="item-edit" data-id="" data-name="" onclick="showEditFloorName(this.dataset.id, this.dataset.name);return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
-                        <a class="item-delete" data-id="" onclick="deleteFloor(this.dataset.id);return false;"><img src="../img/i-list-chevron-right.png" class="config"></a>
+                        <a class="item-edit" data-id="" data-name="" onclick="showEditFloorName(this.dataset.id, this.dataset.name);return false;"><img src="../img/ic_edit_gray.png" class="edit"></a>
+                        <a class="item-delete" data-id="" onclick="deleteFloor(this.dataset.id);return false;"><img src="../img/ic_del_red.png" class="delete"></a>
                     </div>
                 </div>
             </li>
         </ul>
+    </div>
 </template>
 </div>
 

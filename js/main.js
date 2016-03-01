@@ -124,9 +124,6 @@ function refreshFloorList() {
     for(var i = 0, length = floors.length; i < length; i++) {
         var tmp = template.content.cloneNode(true);
         tmp.querySelector('.item-title').innerText = floors[i].name;
-        tmp.querySelector('ul').id = "floor" + floors[i].id;
-        tmp.querySelector('ul').dataset.id = floors[i].id;
-        tmp.querySelector('ul').dataset.name = floors[i].name;
         tmp.querySelector('.item-edit').dataset.name = floors[i].name;
         tmp.querySelector('.item-edit').dataset.id = floors[i].id;
         tmp.querySelector('.item-delete').dataset.id = floors[i].id;
@@ -141,7 +138,6 @@ function showEditFloorName(id, previousName) {
     });
     var input = document.getElementsByClassName("modal-text-input");
     input[0].value = previousName;
-    //$('.modal-text-input').val(previousName);
 }
 
 function editFloorName(id, newName) {
