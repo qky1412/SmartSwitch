@@ -51,8 +51,9 @@ td {
 td.device-edit {
     vertical-align: middle;
     text-align: right;
-    width: 20%;
-    color: #1d1e1e;
+    width: 25%;
+    color: #727272;
+    font-size: 0.75rem;
 }
 .bar-footer {
     padding: 0;
@@ -81,7 +82,9 @@ td.device-edit {
     border-left: 1px solid #eef2f7;
     border-top: 1px solid #eef2f7;
 }
-
+.button-bottom.highlight {
+    color: #68d68b;
+}
 .button-bottom:active {
     border: none;
     color: #68d68b;
@@ -136,7 +139,10 @@ td.device-edit {
 a.item-content:active {
     background-color: #c6c6c6 ;
 }
-
+.list-block.media-list .item-inner, .list-block li.media-item .item-inner {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
 .list-config.list-block li {
     background-color: #eef2f7;
 }
@@ -151,7 +157,9 @@ a.item-content:active {
     padding-left: 0;
 }
 .list-block .item-title.label {
-    width: 30%;
+    width: 25%;
+    font-size: 0.5rem;
+    color: black;
 }
 
 .row {
@@ -222,6 +230,7 @@ img.edit {
     width: 15px;
     height: 15px;
     margin-left: 15px;
+    margin-right: 5px;
 }
 
 img.delete {
@@ -235,3 +244,4 @@ img.down-arrow {
     height: 15px;
     margin-left: 15px;
 }
+

@@ -49,6 +49,13 @@ $(document).ready(function(){
         });
         refreshRoomList();
     });
+    $(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        refreshRoomSelect();
+    });
     $.init();
 });
 /**
@@ -142,7 +149,6 @@ function showEditFloorName(id, previousName) {
 
 function editFloorName(id, newName) {
     var editFloor = new YN_Floor(newName);
-    alert(typeof id);
     editFloor.id = id;
     Database.updateFloorList(editFloor);
     refreshFloorList();
@@ -229,9 +235,7 @@ function addRoom(floorID, roomName) {
                 break;
             }
         }
-
     }
-
 }
 
 function showEditRoom(floorID, roomID, previousName) {
@@ -259,7 +263,6 @@ function editRoom(floorID, roomID, newName) {
                 }
             }
         }
-
     }
 }
 
@@ -325,6 +328,25 @@ function  refreshRoomSelect() {
 
 function addNewHomeDevice() {
    alert('addNewHomeDevice');
+}
+
+/**
+ * 添加输出设备页面所需js
+ */
+function addNewOutputDevice() {
+    var deviceId = document.getElementById("input-id");
+    var deviceName = document.getElementById("input-name");
+    var floorId = document.getElementById("select-floor");
+    var roomId = document.getElementById("select-room");
+    if(deviceId.value.trim() == '') {
+        alert('ID不能为空');
+        return;
+    }
+    if(deviceName.value.trim() == '') {
+        alert('名称不能为空');
+        return;
+    }
+    var newOutputDevice = new YN_Relay(deviceId, deviceName,  )
 }
 /**
  * only for test
