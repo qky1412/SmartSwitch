@@ -26,9 +26,13 @@ $(document).ready(function(){
             $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
         });
         refreshHomeDevicesList();
+        refreshOutputDeviceList();
+        refreshInputDeviceList();
     });
     $(document).on("pageReinit", "#page-home", function (e, id, page) {
         refreshHomeDevicesList();
+        refreshOutputDeviceList();
+        refreshInputDeviceList();
     });
     $(document).on("pageInit", "#page-floor", function (e, id, page) {
         JDSMART.ready(function () {
@@ -50,6 +54,13 @@ $(document).ready(function(){
         refreshRoomList();
     });
     $(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        refreshRoomSelect();
+    });
+    $(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
         });
@@ -120,6 +131,40 @@ function refreshHomeDevicesList() {
 
 function testDelete(elem,id) {
     $(elem).remove();
+}
+/**
+ * 智能模块页面所需js
+ */
+function refreshOutputDeviceList() {
+    document.getElementById("home-output-module").innerHTML = '';
+    var outputs = Database.getRelayList();
+    var template = document.getElementById("template-output-device");
+    for(var i = 0, length = outputs.length; i < length; i++) {
+        var output = outputs[i];
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('a').dataset.id = output.id;
+        tmp.querySelector('.text-title').innerText = output.name;
+        tmp.querySelector('#span-output-id').innerText = output.id;
+        tmp.querySelector('#span-output-room').innerText = output.room.name;
+        tmp.querySelector('#span-output-floor').innerText = output.floor.name;
+        document.getElementById("home-output-module").appendChild(tmp);
+    }
+}
+
+function refreshInputDeviceList() {
+    document.getElementById("home-input-module").innerHTML = '';
+    var inputs = Database.getCtlPanelList();
+    var template = document.getElementById("template-input-device");
+    for(var i = 0, length = inputs.length; i < length; i++) {
+        var input = inputs[i];
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('a').dataset.id = input.id;
+        tmp.querySelector('.text-title').innerText = input.name;
+        tmp.querySelector('#span-input-id').innerText = input.id;
+        tmp.querySelector('#span-input-room').innerText = input.room.name;
+        tmp.querySelector('#span-input-floor').innerText = input.floor.name;
+        document.getElementById("home-input-module").appendChild(tmp);
+    }
 }
 /**
  * 楼层页面所需js
@@ -347,8 +392,7 @@ function addNewOutputDevice() {
         return;
     }
     var floor = Database.findFloorFromList(floorId);
-    var room = floor.addRoom(roomId);
-
+    var room = floor.findRoom(roomId);
     //var newOutputDevice = new YN_Relay(deviceId, deviceName,  )
 }
 /**
