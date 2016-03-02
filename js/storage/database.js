@@ -753,7 +753,7 @@ var CloudApi = function () {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid'];
             JDIOCtl(function () {
                 if (!scene.pid) {
-                    throw "scene.pid is undefined";
+                    throw "scene.pid is null";
                 }
                 return CmdGen.deleteScene(scene);
             }, callback, keys);
@@ -858,7 +858,7 @@ function YN_Floor(name) {
 
     //查找该楼层下特定id的房间
     //返回: 房间对象或null
-    function findRoom(id) {
+    this.findRoom = function (id) {
         return findEleWithId(id, this.rooms);
 
     }
@@ -914,8 +914,8 @@ function YN_Relay(id, name, floor, room, numberOfSlotsUsed) {
     this.room = room; //继电器所处的房间
     this.numberOfSlots = 0; //继电器的输出路数
     this.numberOfSlotsUsed = numberOfSlotsUsed; //继电器已接路数
-    this.type = undefined; //继电器的类型
-    this.pid = undefined; //起始pid
+    this.type = null; //继电器的类型
+    this.pid = null; //起始pid
 }
 //用于绑定某个继电器的某一路使用的数据结构
 function YN_Relay_assoc(relay, slot_index) {
@@ -931,9 +931,9 @@ function YN_CtlPanel(id, name, floor, room) {
     this.floor = floor; // 面板所处楼层
     this.room = room; // 面板所处房间
     this.numberOfButtons = 5; //面板中的按钮个数
-    this.type = undefined; //面板的类型
-    this.key_type = undefined; //按键外接设备类型
-    this.pid = undefined; //起始pid
+    this.type = null; //面板的类型
+    this.key_type = null; //按键外接设备类型
+    this.pid = null; //起始pid
 
 
 }
@@ -979,7 +979,7 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     this.scene_steps = scene_steps; //场景里的相关动作
     this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
     this.timing_tasks = timing_tasks; //场景的定时配置列表
-    this.pid = undefined; //场景的pid
+    this.pid = null; //场景的pid
 
     //删除指面板
     this.deleteCtlPanel = function (panel) {
