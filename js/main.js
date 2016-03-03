@@ -392,8 +392,48 @@ function addNewOutputDevice() {
         return;
     }
     var floor = Database.findFloorFromList(floorId);
-    var room = floor.findRoom(roomId);
-    //var newOutputDevice = new YN_Relay(deviceId, deviceName,  )
+    for(var i = 0, length = floor.rooms.length; i < length; i++) {
+        if(floor.rooms[i].id == roomId) {
+            var newOutputDevice = new YN_Relay(deviceId, deviceName, floor, floor.rooms[i], 2);
+            Database.addRelayToList(newOutputDevice);
+            $.router.loadPage("../html/home.html");
+            break;
+        }
+    }
+    //TODO 这里的findRoom有问题
+    //var room = floor.findRoom(roomId);
+    //TODO 不知道这里是否需要绑定继电器已接路数
+
+}
+/**
+ * 添加输入设备页面所需js
+ */
+function addNewInputDevice() {
+    var deviceId = document.getElementById("input-id").value;
+    var deviceName = document.getElementById("input-name").value;
+    var floorId = document.getElementById("select-floor").value;
+    var roomId = document.getElementById("select-room").value;
+    if(deviceId.trim() == '') {
+        alert('ID不能为空');
+        return;
+    }
+    if(deviceName.trim() == '') {
+        alert('名称不能为空');
+        return;
+    }
+    var floor = Database.findFloorFromList(floorId);
+    for(var i = 0, length = floor.rooms.length; i < length; i++) {
+        if(floor.rooms[i].id == roomId) {
+            var newInputDevice = new YN_CtlPanel(deviceId, deviceName, floor, floor.rooms[i]);
+            Database.addCtlPanelToList
+            $.router.loadPage("../html/home.html");
+            break;
+        }
+    }
+    //TODO 这里的findRoom有问题
+    //var room = floor.findRoom(roomId);
+    //TODO 不知道这里是否需要绑定继电器已接路数
+
 }
 /**
  * only for test
