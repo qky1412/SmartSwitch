@@ -102,6 +102,12 @@ var Database = function () {
         /* ------------------------------------ */
         /* 电器相关api */
 
+        //获取指定Id的电器对象
+        //返回: 电器对象 or null
+        'getElecEquiByid': function(id) {
+            return  findEleWithId(id, dataTables.elec_equi_list);
+        },
+
         //获取电器列表
         'getElecEquiList': function () {
             return dataTables.elec_equi_list;
@@ -127,6 +133,12 @@ var Database = function () {
 
         /* ------------------------------------ */
         /* 继电器相关的api */
+
+        //获取指定Id的继电器对象
+        //返回: 继电器对象 or null
+        'getRelayByid' : function(id) {
+            return findEleWithId(id, dataTables.relay_list);
+        },
 
         //获取继电器列表
         'getRelayList': function () {
@@ -154,6 +166,14 @@ var Database = function () {
         /* ------------------------------------ */
         /* 控制面板相关api */
 
+        //获取指定Id的控制面板对象
+        //返回: 控制面板对象 or null
+
+        'getCtlPanelByid':function(id) {
+            return findEleWithId(id, dataTables.ctlpanel_list);
+        },
+
+
         //获取控制面板列表
         'getCtlPanelList': function () {
             return dataTables.ctlpanel_list;
@@ -180,6 +200,12 @@ var Database = function () {
         /* -------------------------------- */
         /* 场景相关api */
 
+        //获取指定Id的场景对象
+        //返回: 场景对象 or null
+
+        'getSceneByid': function(id) {
+            return findEleWithId(id, dataTables.scene_list);
+        },
 
         //获取场景列表
         'getSceneList': function () {
@@ -207,6 +233,13 @@ var Database = function () {
 
         /* --------------------------------- */
         /* 楼层相关api */
+
+        //获取指定Id的楼层对象
+        //返回: 楼层对象 or null
+
+        'getFloorByid' : function (id) {
+            return findEleWithId(id, dataTables.floor_list);
+        },
 
         //获取楼层列表
         'getFloorList': function () {
