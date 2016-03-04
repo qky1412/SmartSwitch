@@ -256,13 +256,29 @@ var Database = function () {
         /* 一些定制的api */
 
         //参数: 房间id
-        //返回: 该房间下所有的电器, 如果一个电器都滑,则返回空列表([])
+        //返回: 该房间下所有的电器, 如果一个电器都没,则返回空列表([])
         'getElecEquicListInRoom': function(roomid) {
 
             return dataTables.elec_equi_list.filter(function(elec_equi){
                 return elec_equi.room.id == roomid;
             });
 
+        },
+
+        //参数:房间id
+        //返回: 该房间下所有的继电器,若无则返回[]
+        'getRelayListInRoom': function (roomid) {
+            return dataTables.relay_list.filter(function(relay){
+                return relay.room.id == roomid;
+            });
+        },
+
+        //参数: 房间id
+        //返回: 该房间下所有的控制面板, 若无则返回[]
+        'getCtlPanelListInRoom' : function (roomid) {
+            return dataTables.ctlpanel_list.filter(function (ctlpanel) {
+                return ctlpanel.room.id == roomid;
+            })
         }
 
     }
