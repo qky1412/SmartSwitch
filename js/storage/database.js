@@ -66,7 +66,7 @@ var Database = function () {
 
 
     function addEleToList(ele, list) {
-        list.unshift(ele);
+        list.push(ele);
         writeToDb();
         return list;
     }
@@ -188,13 +188,13 @@ var Database = function () {
 
         //参数: 需新增的场景
         //返回: 新的场景列表
-        'addCtlPanelToList': function (scene) {
+        'addSceneToList': function (scene) {
             return addEleToList(scene, dataTables.scene_list);
         },
 
         //参数: 待更新的场景
         //返回: 新的场景列表
-        'updateCtlPanelList': function (scene) {
+        'updateSceneList': function (scene) {
             return updateEleInList(scene, dataTables.scene_list);
         },
 
