@@ -8,8 +8,13 @@
     <script>
         window.onload = function () {
 
+            var ages = [32, 33, 16, 40];
 
-            alert(!null);
+            function checkAdult(age) {
+                return age >= 50;
+            }
+
+            alert( ages.filter(checkAdult));
 
         }
     </script>
