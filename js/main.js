@@ -193,15 +193,17 @@ function showEditFloorName(id, previousName) {
 }
 
 function editFloorName(id, newName) {
-    var editFloor = new YN_Floor(newName);
-    editFloor.id = id;
-    Database.updateFloorList(editFloor);
-    refreshFloorList();
+    if(newName != null && newName != '') {
+        var editFloor = Database.findFloorFromList(id);
+        editFloor.name = newName;
+        Database.updateFloorList(editFloor);
+        refreshFloorList();
+    }
+
 }
 
 function  deleteFloor(id) {
-    var deleteFloor = new YN_Floor("fake");
-    deleteFloor.id = id;
+    var deleteFloor = Database.findFloorFromList(id);
     Database.deleteFloorFromList(deleteFloor);
     refreshFloorList();
 }
@@ -294,20 +296,11 @@ function showEditRoom(floorID, roomID, previousName) {
 
 function editRoom(floorID, roomID, newName) {
     if(newName != null && newName != '') {
-        var floors = Database.getFloorList();
-        var floorCount = floors.length;
-        for(var i = 0; i < floorCount; i++) {
-            if(floorID == floors[i].id) {
-                for(var j = 0, roomCount = floors[i].rooms.length; j < roomCount; j ++) {
-                    if(roomID == floors[i].rooms[j].id) {
-                        floors[i].rooms[j].name = newName;
-                        Database.updateFloorList(floors[i]);
-                        refreshRoomList();
-                        break;
-                    }
-                }
-            }
-        }
+        var floor = Database.findFloorFromList(floorID);
+        var editRoom = floor.findRoom(roomID);
+        editRoom.name = newName;
+        Database.updateFloorList(editRoom);
+        refreshRoomList();
     }
 }
 
@@ -396,7 +389,8 @@ function addNewOutputDevice() {
         if(floor.rooms[i].id == roomId) {
             var newOutputDevice = new YN_Relay(deviceId, deviceName, floor, floor.rooms[i], 2);
             Database.addRelayToList(newOutputDevice);
-            $.router.loadPage("../html/home.html");
+            $.router.back("../html/home.html")
+
             break;
         }
     }
@@ -425,8 +419,8 @@ function addNewInputDevice() {
     for(var i = 0, length = floor.rooms.length; i < length; i++) {
         if(floor.rooms[i].id == roomId) {
             var newInputDevice = new YN_CtlPanel(deviceId, deviceName, floor, floor.rooms[i]);
-            Database.addCtlPanelToList
-            $.router.loadPage("../html/home.html");
+            Database.addCtlPanelToList(newInputDevice);
+            $.router.back("../html/home.html")
             break;
         }
     }
