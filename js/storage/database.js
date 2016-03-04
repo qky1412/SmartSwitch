@@ -246,6 +246,23 @@ var Database = function () {
         'setGateway': function (gateway) {
             dataTables.gateway = gateway;
             writeToDb();
+        },
+
+
+
+
+
+        /* ------------------------ */
+        /* 一些定制的api */
+
+        //参数: 房间id
+        //返回: 该房间下所有的电器, 如果一个电器都滑,则返回空列表([])
+        'getElecEquicListInRoom': function(roomid) {
+
+            return dataTables.elec_equi_list.filter(function(elec_equi){
+                return elec_equi.room.id == roomid;
+            });
+
         }
 
     }
