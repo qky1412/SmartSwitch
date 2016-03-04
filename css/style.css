@@ -13,7 +13,9 @@ body {
     -webkit-user-select: none;
     user-select: none;
 }
-
+.content {
+    padding-bottom: 50px;
+}
 td {
     overflow: hidden;
     text-overflow:ellipsis;
@@ -54,6 +56,19 @@ td.device-edit {
     width: 25%;
     color: #727272;
     font-size: 0.75rem;
+}
+td.device-delete {
+    vertical-align: middle;
+    text-align: center;
+    width: 15%;
+    color: #727272;
+    font-size: 0.75rem;
+    border-left: 1px solid #eef2f7;
+}
+td.panel-title {
+    width: 25%;
+    font-size: 0.5rem;
+    color: black;
 }
 .bar-footer {
     padding: 0;
@@ -243,5 +258,19 @@ img.down-arrow {
     width: 15px;
     height: 15px;
     margin-left: 15px;
+}
+
+.item-after {
+    font-size: 0.75rem;
+}
+
+.item-after img.more{
+    width: 10px;
+    height: 8px;
+}
+
+.item-inner img.more{
+    width: 10px;
+    height: 8px;
 }
 

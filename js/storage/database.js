@@ -978,7 +978,7 @@ function YN_Relay(id, name, floor, room, numberOfSlotsUsed) {
     this.name = name; //此继电器用户所输入的名称
     this.floor = floor; //继电器所处楼层
     this.room = room; //继电器所处的房间
-    this.numberOfSlots = 0; //继电器的输出路数
+    this.numberOfSlots = 4; //继电器的输出路数
     this.numberOfSlotsUsed = numberOfSlotsUsed; //继电器已接路数
     this.type = null; //继电器的类型
     this.pid = null; //起始pid
