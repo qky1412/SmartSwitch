@@ -45,7 +45,7 @@ $(document).ready(function(){
             showButton(false);
         });
         initFloorSelect();
-        refreshRoomSelect();
+        initRelaySelect();
     });
     $(document).on("pageInit", "#page-room", function (e, id, page) {
         JDSMART.ready(function () {
@@ -58,14 +58,12 @@ $(document).ready(function(){
             showButton(false);
         });
         initFloorSelect();
-        refreshRoomSelect();
     });
     $(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
         });
         initFloorSelect();
-        refreshRoomSelect();
     });
     $.init();
 });
@@ -108,25 +106,31 @@ function refreshHomeDevicesList() {
     document.getElementById("list-room").innerHTML = '';
     var floors = Database.getFloorList();
     var floorNumbers = floors.length;
-    if(floorNumbers > 0) {
-        //先添加房间
-        var template = document.getElementById("template-list-room");
-        for(var i = 0; i < floorNumbers; i++) {
-            var rooms = floors[i].rooms;
-            var roomNumbers = rooms.length;
-            if(roomNumbers > 0) {
-                for(var j = 0; j < roomNumbers; j++) {
-                    var tmp = template.content.cloneNode(true);
-                    tmp.querySelector('.card-header').innerText = floors[i].name + rooms[j].name;
-                    tmp.querySelector('#list-room-id').id = "list-room-id" + rooms[j].id;
-                    document.getElementById("list-room").appendChild(tmp);
-                }
+    //先添加房间
+    var templateRoom = document.getElementById("template-list-room");
+    var templateDevice = document.getElementById("template-list-home-device");
+    for (var i = 0; i < floorNumbers; i++) {
+        var rooms = floors[i].rooms;
+        var roomNumbers = rooms.length;
+        for (var j = 0; j < roomNumbers; j++) {
+            var tmpRoom = templateRoom.content.cloneNode(true);
+            tmpRoom.querySelector('.card-header').innerText = floors[i].name + rooms[j].name;
+            tmpRoom.querySelector('#list-device').id = "list-device" + rooms[j].id;
+            document.getElementById("list-room").appendChild(tmpRoom);
+            var devices = Database.getElecEquicListInRoom(rooms[j].id);
+            document.getElementById("list-device" +  rooms[j].id).innerHTML = '';
+            for(var k = 0, length = devices.length; k < length; k++) {
+                var tmpDevice = templateDevice.content.cloneNode(true);
+                tmpDevice.querySelector('#device-title').innerText = devices[k].name;
+                tmpDevice.querySelector('#home-device-floor').innerText = devices[k].floor.name;
+                tmpDevice.querySelector('#home-device-room').innerText = devices[k].room.name;
+                document.getElementById("list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
-
         }
 
-        //TODO 然后添加电器
+
     }
+
 }
 
 function testDelete(elem,id) {
@@ -332,7 +336,7 @@ function deleteRoom(floorID, roomID) {
  */
 function initFloorSelect() {
     var floors = Database.getFloorList();
-    var selectFloor = document.getElementById("select-floor");
+    var selectFloor = document.getElementById("add-home-device-select-floor");
     selectFloor.innerHTML = "";
     for(var i = 0, length = floors.length; i < length; i++) {
         if(floors[i].rooms.length > 0) {
@@ -342,11 +346,12 @@ function initFloorSelect() {
             selectFloor.add(newOption);
         }
     }
+    refreshRoomSelect();
 }
 
 function  refreshRoomSelect() {
-    var selectFloor = document.getElementById("select-floor");
-    var selectRoom = document.getElementById("select-room");
+    var selectFloor = document.getElementById("add-home-device-select-floor");
+    var selectRoom = document.getElementById("add-home-device-select-room");
     selectRoom.innerHTML = "";
     var rooms = [];
     var floors = Database.getFloorList();
@@ -362,10 +367,151 @@ function  refreshRoomSelect() {
         newOption.text = rooms[i].name;
         selectRoom.add(newOption);
     }
+
 }
 
+function initRelaySelect() {
+    var selectRelay = document.getElementById("add-home-device-select-relay");
+    selectRelay.innerHTML = '';
+    var relayList = Database.getRelayList();
+    for (var i = 0, length = relayList.length; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = relayList[i].id;
+        newOption.text = relayList[i].name;
+        selectRelay.add(newOption);
+    }
+    refreshRelaySlot();
+}
+
+function refreshRelaySlot() {
+    var selectRelay = document.getElementById("add-home-device-select-relay");
+    var selectRelaySlot = document.getElementById("add-home-device-select-relay-slot");
+    selectRelaySlot.innerHTML = '';
+    var selectedRelayId = selectRelay.value;
+    if(selectedRelayId != null && selectedRelayId != '') {
+        var relay = Database.getRelayByid(selectedRelayId);
+        if(relay != null) {
+            //TODO 插槽编号待定这里假设numberOfSlots + 1
+            for(var i = 0, length = relay.numberOfSlots + 1; i < length; i++) {
+                var newOption = document.createElement("option");
+                newOption.value = i;
+                newOption.text = i + 1;
+                selectRelaySlot.add(newOption);
+            }
+        }
+    }
+}
+
+function addPanelInAddHomeDevice() {
+    var existPanelNumbers = $('.li-panel').length;
+    var ul = document.getElementById("add_home_device_ul_panel");
+    var template = document.getElementById("add_home_device_template_panel");
+    var tmp = template.content.cloneNode(true);
+    tmp.querySelector('#add_home_device_li_panel').id = "add_home_device_li_panel" + existPanelNumbers;
+    tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
+
+    //TODO 给刚刚添加的开关面板增加select
+    var defaultPanelOption = document.createElement("option");
+    defaultPanelOption.value = '';
+    defaultPanelOption.disabled = true;
+    defaultPanelOption.text = "请选择开关面板";
+    defaultPanelOption.selected = true;
+    tmp.querySelector('#add-home-device-select-panel').add(defaultPanelOption);
+    var panelList = Database.getCtlPanelList();
+    for (var i = 0, length = panelList.length; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = panelList[i].id;
+        newOption.text = panelList[i].name;
+        tmp.querySelector('#add-home-device-select-panel').add(newOption);
+    }
+    //TODO 这里没做联动，默认显示1-5的按键
+    var defaultSlotOption = document.createElement("option");
+    defaultSlotOption.value = '';
+    defaultSlotOption.disabled = true;
+    defaultSlotOption.text = "请选择开关位置";
+    defaultSlotOption.selected = true;
+    tmp.querySelector('#add-home-device-select-panel-slot').add(defaultSlotOption);
+    for(var i = 0; i< 5; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = i;
+        newOption.text = i + 1;
+        tmp.querySelector('#add-home-device-select-panel-slot').add(newOption);
+    }
+    document.getElementById("add_home_device_ul_panel").appendChild(tmp);
+}
+
+function showAddHomeDeviceDeletePanel(id) {
+    $.confirm('是否要删除该面板?', function () {
+        deletePanelInAddHomeDevice(id);
+    });
+}
+
+function deletePanelInAddHomeDevice(id) {
+    $('#' + "add_home_device_li_panel" +id).remove();
+}
 function addNewHomeDevice() {
-   alert('addNewHomeDevice');
+    var name = document.getElementById("add-home-device-input-name").value;
+    var floorId = document.getElementById("add-home-device-select-floor").value;
+    var roomId = document.getElementById("add-home-device-select-room").value;
+    var relayId = document.getElementById("add-home-device-select-relay").value;
+    var relaySlot = document.getElementById("add-home-device-select-relay-slot").value;
+    if(name == null || name == "") {
+        alert("名称不能为空");
+        return;
+    }
+    if(floorId == null || floorId =="") {
+        alert("楼层不能为空");
+        return;
+    }
+    if(roomId == null || roomId =="") {
+        alert("房间不能为空");
+        return;
+    }
+    if(relayId == null || relayId =="") {
+        alert("输出模块不能为空");
+        return;
+    }
+    if(relaySlot == null || relaySlot =="") {
+        alert("输出模块编号不能为空");
+        return;
+    }
+    var floor = Database.findFloorFromList(floorId);
+    if(floor == null || floor =="") {
+        alert("楼层无效");
+        return;
+    }
+    var room = floor.findRoom(roomId);
+    if(room == null || room =="") {
+        alert("房间无效");
+        return;
+    }
+    var relay = Database.getRelayByid(relayId);
+    if(relay == null || relay =="") {
+        alert("输出模块无效");
+        return;
+    }
+    var relay_assoc = new YN_Relay_assoc(relay, relaySlot);
+    //TODO  判断当前已添加面板个数 如果存在绑定的开关面板，则获取合法的面板数据
+    //var existPanelNumbers = $('.li-panel').length;
+    var selectPanels = document.getElementsByClassName("add-home-device-select-panel");
+    var selectPanelSlots = document.getElementsByClassName("add-home-device-select-panel-slot");
+    for(var i = 0, length = selectPanels.length; i < length; i++) {
+        var selectedPanelId = selectPanels[i].value;
+        if(selectedPanelId != null && selectedPanelId != '') {
+            var selectedPanelSlot = selectPanelSlots[i].value;
+            if(selectedPanelSlot != null && selectedPanelSlot != '') {
+                var panel = Database.getCtlPanelByid(selectedPanelId);
+                if(panel != null && panel != "") {
+                    var panel_assoc = YN_CtlPanel_assoc(panel, selectedPanelSlot);
+                    var newDevice = YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc);
+                    Database.addElecEquiToList(newDevice);
+                }
+            }
+        }
+    }
+    //var device = YN_Elec_Equi(name, floor, relay_assoc, room, )
+
+
 }
 
 /**
@@ -389,7 +535,7 @@ function addNewOutputDevice() {
         if(floor.rooms[i].id == roomId) {
             var newOutputDevice = new YN_Relay(deviceId, deviceName, floor, floor.rooms[i], 2);
             Database.addRelayToList(newOutputDevice);
-            $.router.back("../html/home.html")
+            $.router.back("../html/home.html");
 
             break;
         }
@@ -420,7 +566,7 @@ function addNewInputDevice() {
         if(floor.rooms[i].id == roomId) {
             var newInputDevice = new YN_CtlPanel(deviceId, deviceName, floor, floor.rooms[i]);
             Database.addCtlPanelToList(newInputDevice);
-            $.router.back("../html/home.html")
+            $.router.back("../html/home.html");
             break;
         }
     }

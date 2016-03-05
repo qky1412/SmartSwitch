@@ -19,7 +19,7 @@
                     <div class="item-inner">
                         <div class="item-title label">名称:</div>
                         <div class="item-input">
-                            <input id="input-name" type="text" placeholder="请输入名称（如左床头灯）">
+                            <input id="add-home-device-input-name" type="text" placeholder="请输入名称（如左床头灯）">
                         </div>
                     </div>
                 </div>
@@ -34,9 +34,9 @@
                     <div class="item-inner">
                         <div class="item-title label">楼层:</div>
                         <div class="item-input">
-                            <select id="select-floor" onchange="refreshRoomSelect()"></select>
+                            <select id="add-home-device-select-floor" onchange="refreshRoomSelect()"></select>
                         </div>
-                        <div class="item-after"><img src="../img/ic_more.png" class=""></div>
+                        <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
                     </div>
                 </div>
             </li>
@@ -50,9 +50,9 @@
                     <div class="item-inner">
                         <div class="item-title label">房间:</div>
                         <div class="item-input">
-                            <select id="select-room"></select>
+                            <select id="add-home-device-select-room" onchange="initRelaySelect()"></select>
                         </div>
-                        <div class="item-after"><img src="../img/ic_more.png" class=""></div>
+                        <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
                     </div>
                 </div>
             </li>
@@ -64,10 +64,11 @@
                 <div class="item-content">
 
                     <div class="item-inner">
-                        <div class="item-title label">继电器:</div>
+                        <div class="item-title label">输出模块:</div>
                         <div class="item-input">
-                            <select id="select-relay"></select>
+                            <select id="add-home-device-select-relay" onchange="refreshRelaySlot()"></select>
                         </div>
+                        <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
                     </div>
                 </div>
             </li>
@@ -78,16 +79,67 @@
             <!-- Date -->
             <li>
                 <div class="item-content">
-
                     <div class="item-inner">
                         <div class="item-title label">插槽编号:</div>
-                        <select id="select-relay-slot"></select>
+                            <div class="item-input">
+                            <select id="add-home-device-select-relay-slot"></select>
+                            </div>
+                        <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
                     </div>
+
                 </div>
             </li>
             <!-- Switch (Checkbox) -->
         </ul>
     </div>
+    <div class="card">
+        <div class="card-header" onclick="addPanelInAddHomeDevice()">绑定开关<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
+        <div class="card-content">
+            <div class="list-config list-block">
+                <ul id="add_home_device_ul_panel">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <template id="add_home_device_template_panel">
+        <li id="add_home_device_li_panel" class="li-panel">
+            <a onclick="return false;" class="item-content">
+                <div class="item-inner">
+                    <table class="table-device" >
+                        <tr>
+                            <td class="panel-title">
+                                开关面板
+                            </td>
+                            <td >
+                                <select id="add-home-device-select-panel" >
+
+
+                                </select>
+                            </td>
+                            <td width="8%">
+                                <img src="../img/ic_more.png" class="more">
+                            </td>
+                            <td  rowspan="2" class="device-delete" style="width: 10%;" data-id="" onclick="showAddHomeDeviceDeletePanel(this.dataset.id)"><img src="../img/ic_del_red.png" class="edit"></td>
+                        </tr>
+                        <tr>
+                            <td class="panel-title">
+                                面板插槽
+                            </td>
+                            <td>
+                                <select id="add-home-device-select-panel-slot" >
+
+                                </select>
+                            </td>
+                            <td width="8%">
+                                <img src="../img/ic_more.png" class="more">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </a>
+        </li>
+    </template>
 </div>
 <footer>
     <div  class="bottom-block">
