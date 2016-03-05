@@ -2,6 +2,8 @@
  * Created by tonychen on 16/2/24.
  */
 
+
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -55,7 +57,7 @@ function CtlPanel_Assoc_to_s_key(ctlpanel) {
 //参数: elec_equic电器对象
 function Elec_equic_to_s_key(elec_equic) {
     var rt = '';
-    for (as_panel in elec_equic.panel_assocs) {
+    for (var as_panel in elec_equic.panel_assocs) {
         rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
     }
     return rt;
@@ -102,7 +104,7 @@ function deleteSceneStep(scene, sceneStep) {
 //参数: scene YN_Scene对象
 function Scene_to_s_key(scene) {
     var rt = '';
-    for (as_panel in scene.panel_assocs) {
+    for (var as_panel in scene.panel_assocs) {
         rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
     }
     return rt;
@@ -156,7 +158,7 @@ var Database = function () {
     }
 
     function writeToDb() {
-        for (key_table in dataTables) {
+        for (var key_table in dataTables) {
             Lockr.set(key_table, dataTables[key_table]);
         }
     }
@@ -198,6 +200,11 @@ var Database = function () {
         return list;
     }
 
+    function error(x) {
+        return x * 10;
+    }
+
+    error("hello,world");
 
     //初始化动作
     readFromDb();
@@ -1186,43 +1193,6 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     this.timing_tasks = timing_tasks; //场景的定时配置列表
     this.pid = null; //场景的pid
 
-    //删除指面板
-    this.deleteCtlPanel = function (panel) {
-        this.ctlpanel_assocs = deleteEleFromList(panel, this.ctlpanel_assocs);
-    }
-
-    //删除指定场景里的动作
-    this.deleteSceneStep = function (sceneStep) {
-        this.scene_steps = deleteEleFromList(sceneStep, this.scene_steps);
-    }
-
-    //生成场景YN_s_key 场景关联按键
-    this.to_s_key = function () {
-        var rt = '';
-        for (as_panel in this.panel_assocs) {
-            rt = rt.concat(as_panel.to_s_key());
-        }
-        return rt;
-    }
-
-    //生成场景关联子设备驱动组
-    this.to_s_driver = function () {
-        var rt = '';
-        for (step in this.scene_steps) {
-            rt = rt.concat(step.to_s_driver());
-        }
-        return rt;
-    }
-
-    //场景中关联按键的个数
-    this.len_s_key = function () {
-        return this.ctlpanel_assocs.length;
-    }
-
-    //场景中关联按键的驱动个数
-    this.len_s_driver = function () {
-        return this.scene_steps.length;
-    }
 }
 
 //定时配置对象
