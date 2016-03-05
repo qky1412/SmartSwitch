@@ -31,13 +31,39 @@ function indexOfItemInArray(ary, ele, filter_func) {
 
 function findEleWithId(id, list) {
     var i = indexOfItemInArray(list, {'id': id}, function (ele, ary_ele) {
-        return ele.id == ary_ele.id;
+        return ele.id === ary_ele.id;
     });
 
-    if (i != -1) {
+    if (i !== -1) {
         return list[i];
     }
     return null;
+}
+
+function addEleToList(ele, list) {
+    list.push(ele);
+    return list;
+}
+
+function updateEleInList(ele, list) {
+    var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
+        return ele.id === ary_ele.id;
+    });
+
+    if (i !== -1) {
+        list[i] = ele;
+    }
+    return list;
+}
+
+function deleteEleFromList(ele, list) {
+    var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
+        return ele.id === ary_ele.id;
+    });
+    if (i !== -1) {
+        list.splice(i, 1);
+    }
+    return list;
 }
 
 
@@ -114,7 +140,7 @@ function Scene_to_s_key(scene) {
 //参数: scene YN_Scene对象
 function Scene_to_s_driver(scene) {
     var rt = '';
-    for (step in this.scene_steps) {
+    for (var step in this.scene_steps) {
         rt = rt.concat(Scene_Step_to_s_driver(step));
     }
     return rt;
@@ -165,46 +191,41 @@ var Database = function () {
 
 
     function readFromDb() {
-        for (key_table in dataTables) {
+        for (var key_table in dataTables) {
             dataTables[key_table] = Lockr.get(key_table) || [];
         }
     }
 
 
-    function addEleToList(ele, list) {
+    function addEleToListDb(ele, list) {
         list.push(ele);
         writeToDb();
         return list;
     }
 
-    function updateEleInList(ele, list) {
+    function updateEleInListDb(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id == ary_ele.id;
+            return ele.id === ary_ele.id;
         });
 
-        if (i != -1) {
+        if (i !== -1) {
             list[i] = ele;
         }
         writeToDb();
         return list;
     }
 
-    function deleteEleFromList(ele, list) {
+    function deleteEleFromListDb(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id == ary_ele.id;
+            return ele.id === ary_ele.id;
         });
-        if (i != -1) {
+        if (i !== -1) {
             list.splice(i, 1);
         }
         writeToDb();
         return list;
     }
 
-    function error(x) {
-        return x * 10;
-    }
-
-    error("hello,world");
 
     //初始化动作
     readFromDb();
@@ -227,19 +248,19 @@ var Database = function () {
         //参数: 需新增的电器
         //返回: 新的电器列表
         'addElecEquiToList': function (elec_equi) {
-            return addEleToList(elec_equi, dataTables.elec_equi_list);
+            return addEleToListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待更新的电器
         //返回: 新的电器列表
         'updateElecEqui': function (elec_equi) {
-            return updateEleInList(elec_equi, dataTables.elec_equi_list);
+            return updateEleInListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待删除的电器
         //返回: 新的电器列表
         'deleteElecEquiFromList': function (elec_equi) {
-            return deleteEleFromList(elec_equi, dataTables.elec_equi_list);
+            return deleteEleFromListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         /* ------------------------------------ */
@@ -259,19 +280,19 @@ var Database = function () {
         //参数: 需新增的继电器
         //返回: 新的继电器列表
         'addRelayToList': function (relay) {
-            return addEleToList(relay, dataTables.relay_list);
+            return addEleToListDb(relay, dataTables.relay_list);
         },
 
         //参数: 待更新的继电器
         //返回: 新的继电器列表
         'updateRelayList': function (relay) {
-            return updateEleInList(relay, dataTables.relay_list);
+            return updateEleInListDb(relay, dataTables.relay_list);
         },
 
         //参数: 待删除的继电器
         //返回: 新的继电器列表
         'deleteRelayFromList': function (relay) {
-            deleteEleFromList(relay, dataTables.relay_list);
+            deleteEleFromListDb(relay, dataTables.relay_list);
         },
 
         /* ------------------------------------ */
@@ -293,19 +314,19 @@ var Database = function () {
         //参数: 需新增的控制面板
         //返回: 新的控制面板列表
         'addCtlPanelToList': function (panel) {
-            return addEleToList(panel, dataTables.ctlpanel_list);
+            return addEleToListDb(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待更新的控制面板
         //返回: 新的控制面板列表
         'updateCtlPanelList': function (panel) {
-            return updateEleInList(panel, dataTables.ctlpanel_list);
+            return updateEleInListDb(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待删除的控制面板
         //返回: 新的控制面板列表
         'deleteCtlPanelFromList': function (panel) {
-            deleteEleFromList(panel, dataTables.ctlpanel_list);
+            deleteEleFromListDb(panel, dataTables.ctlpanel_list);
         },
 
         /* -------------------------------- */
@@ -326,19 +347,19 @@ var Database = function () {
         //参数: 需新增的场景
         //返回: 新的场景列表
         'addSceneToList': function (scene) {
-            return addEleToList(scene, dataTables.scene_list);
+            return addEleToListDb(scene, dataTables.scene_list);
         },
 
         //参数: 待更新的场景
         //返回: 新的场景列表
         'updateSceneList': function (scene) {
-            return updateEleInList(scene, dataTables.scene_list);
+            return updateEleInListDb(scene, dataTables.scene_list);
         },
 
         //参数: 待删除的场景
         //返回: 新的场景列表
         'deleteSceneFromList': function (scene) {
-            deleteEleFromList(scene, dataTables.scene_list);
+            deleteEleFromListDb(scene, dataTables.scene_list);
         },
 
 
@@ -360,14 +381,14 @@ var Database = function () {
         //参数: 需新增的楼层
         //返回: 新的楼层列表
         'addFloorToList': function (floor) {
-            return addEleToList(floor, dataTables.floor_list);
+            return addEleToListDb(floor, dataTables.floor_list);
         },
 
 
         //参数: 待更新的楼层
         //返回: 新的楼层列表
         'updateFloorList': function (floor) {
-            return updateEleInList(floor, dataTables.floor_list);
+            return updateEleInListDb(floor, dataTables.floor_list);
 
         },
 
@@ -375,7 +396,7 @@ var Database = function () {
         //返回: 新的楼层列表
 
         'deleteFloorFromList': function (floor) {
-            deleteEleFromList(floor, dataTables.floor_list);
+            deleteEleFromListDb(floor, dataTables.floor_list);
         },
 
         //参数楼层id
@@ -401,7 +422,7 @@ var Database = function () {
         'getElecEquicListInRoom': function (roomid) {
 
             return dataTables.elec_equi_list.filter(function (elec_equi) {
-                return elec_equi.room.id == roomid;
+                return elec_equi.room.id === roomid;
             });
 
         },
@@ -410,7 +431,7 @@ var Database = function () {
         //返回: 该房间下所有的继电器,若无则返回[]
         'getRelayListInRoom': function (roomid) {
             return dataTables.relay_list.filter(function (relay) {
-                return relay.room.id == roomid;
+                return relay.room.id === roomid;
             });
         },
 
@@ -418,7 +439,7 @@ var Database = function () {
         //返回: 该房间下所有的控制面板, 若无则返回[]
         'getCtlPanelListInRoom': function (roomid) {
             return dataTables.ctlpanel_list.filter(function (ctlpanel) {
-                return ctlpanel.room.id == roomid;
+                return ctlpanel.room.id === roomid;
             })
         },
 
@@ -519,11 +540,14 @@ var CmdGen = function () {
             "q+": Math.floor((this.getMonth() + 3) / 3), //季度
             "S": this.getMilliseconds()             //毫秒
         };
-        if (/(y+)/.test(fmt))
+        if (/(y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
-            if (new RegExp("(" + k + ")").test(fmt))
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
         return fmt;
     }
 
@@ -533,7 +557,7 @@ var CmdGen = function () {
 
     function to_stream_value(kv) {
         var cmds = []
-        for (key in kv) {
+        for (var key in kv) {
             cmds.push({
                 "stream_id": key,
                 "current_value": kv[key]
@@ -871,7 +895,7 @@ var CloudApi = function () {
 
     function parseWithSnapShop(streams, keys) {
         var rt = {};
-        for (s in streams) {
+        for (var s in streams) {
             if (contains(keys, s['stream_id'])) {
                 rt[s['stream_id']] = s['current_value'];
             }
@@ -891,7 +915,7 @@ var CloudApi = function () {
                     }
                 }, function (error) {
                     if (callback) {
-                        callback(false, err);
+                        callback(false, error);
                     }
                 });
             },
@@ -1081,7 +1105,7 @@ var CloudApi = function () {
             }, callback, keys);
         }
 
-    }
+    };
 
 }();
 
