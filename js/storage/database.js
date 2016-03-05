@@ -436,9 +436,8 @@ var Database = function () {
         //查找楼层下特定id的房间
         //参数 floor 楼层对象, roomid 房间Id
         'findRoomInFloor': function (floor, roomid) {
-            return findEleWithId(id, floor.rooms);
+            return findEleWithId(roomid, floor.rooms);
         },
-
 
         //电器对象方法
 
@@ -1111,7 +1110,7 @@ function YN_Room(name) {
 }
 
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assocs, room, panel_assoc) {
+function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
