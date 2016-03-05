@@ -261,7 +261,7 @@ img.down-arrow {
 }
 
 .item-after {
-    font-size: 0.75rem;
+    font-size: 0.5rem;
 }
 
 .item-after img.more{
@@ -273,4 +273,8 @@ img.down-arrow {
     width: 10px;
     height: 8px;
 }
+.item-after img.edit{
+   vertical-align: middle;
+}
+
 

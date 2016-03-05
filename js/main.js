@@ -28,11 +28,13 @@ $(document).ready(function(){
         refreshHomeDevicesList();
         refreshOutputDeviceList();
         refreshInputDeviceList();
+        refreshSceneList();
     });
     $(document).on("pageReinit", "#page-home", function (e, id, page) {
         refreshHomeDevicesList();
         refreshOutputDeviceList();
         refreshInputDeviceList();
+        refreshSceneList();
     });
     $(document).on("pageInit", "#page-floor", function (e, id, page) {
         JDSMART.ready(function () {
@@ -133,9 +135,29 @@ function refreshHomeDevicesList() {
 
 }
 
-function testDelete(elem,id) {
-    $(elem).remove();
+/**
+ * 场景配置页面所需js
+ */
+function refreshSceneList() {
+    var sceneList = Database.getSceneList();
+    var templateScene = document.getElementById("home-config-template-config");
+    var templateDevice = document.getElementById("home-config-template-device");
+    for(var i = 0, length = sceneList.length; i < length; i++) {
+        var scene = sceneList[i];
+        var tmpScene = templateScene.content.cloneNode(true);
+        tmpScene.querySelector('.card-header').innerText = scene.name;
+        tmpScene.querySelector('.item-after').dataset.id = scene.id;
+        tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id
+        document.getElementById("home-config-list").appendChild(tmpScene);
+        for(var j = 0, length = scene.scene_steps.length; j < length; j++) {
+            var sceneStep = scene.scene_steps[j];
+            var tmpDevice = templateDevice.content.cloneNode(true);
+            tmpDevice.querySelector('.text-title').innerText = sceneStep.elec_equi.name;
+            document.getElementById("home-config-ul-scene" + scene.id).appendChild(tmpDevice);
+        }
+    }
 }
+
 /**
  * 智能模块页面所需js
  */
@@ -222,7 +244,8 @@ function showAddFloor() {
 function addFloor(floorName) {
     //TODO new a floor by given name
     if(floorName != null && floorName != '') {
-        var newFloor = Database.addFloorToList(new YN_Floor(floorName));
+        var newFloor = new YN_Floor(floorName)
+        Database.addFloorToList(newFloor);
         refreshFloorList();
     }
 
@@ -411,12 +434,7 @@ function addPanelInAddHomeDevice() {
     tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
 
     //TODO 给刚刚添加的开关面板增加select
-    var defaultPanelOption = document.createElement("option");
-    defaultPanelOption.value = '';
-    defaultPanelOption.disabled = true;
-    defaultPanelOption.text = "请选择开关面板";
-    defaultPanelOption.selected = true;
-    tmp.querySelector('#add-home-device-select-panel').add(defaultPanelOption);
+
     var panelList = Database.getCtlPanelList();
     for (var i = 0, length = panelList.length; i < length; i++) {
         var newOption = document.createElement("option");
@@ -425,12 +443,7 @@ function addPanelInAddHomeDevice() {
         tmp.querySelector('#add-home-device-select-panel').add(newOption);
     }
     //TODO 这里没做联动，默认显示1-5的按键
-    var defaultSlotOption = document.createElement("option");
-    defaultSlotOption.value = '';
-    defaultSlotOption.disabled = true;
-    defaultSlotOption.text = "请选择开关位置";
-    defaultSlotOption.selected = true;
-    tmp.querySelector('#add-home-device-select-panel-slot').add(defaultSlotOption);
+
     for(var i = 0; i< 5; i++) {
         var newOption = document.createElement("option");
         newOption.value = i;
@@ -480,7 +493,8 @@ function addNewHomeDevice() {
         alert("楼层无效");
         return;
     }
-    var room = floor.findRoom(roomId);
+    //TODO
+    var room = Database.findRoomInFloor(floor, roomId);
     if(room == null || room =="") {
         alert("房间无效");
         return;
@@ -495,23 +509,26 @@ function addNewHomeDevice() {
     //var existPanelNumbers = $('.li-panel').length;
     var selectPanels = document.getElementsByClassName("add-home-device-select-panel");
     var selectPanelSlots = document.getElementsByClassName("add-home-device-select-panel-slot");
-    for(var i = 0, length = selectPanels.length; i < length; i++) {
-        var selectedPanelId = selectPanels[i].value;
-        if(selectedPanelId != null && selectedPanelId != '') {
-            var selectedPanelSlot = selectPanelSlots[i].value;
-            if(selectedPanelSlot != null && selectedPanelSlot != '') {
-                var panel = Database.getCtlPanelByid(selectedPanelId);
-                if(panel != null && panel != "") {
-                    var panel_assoc = YN_CtlPanel_assoc(panel, selectedPanelSlot);
-                    var newDevice = YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc);
-                    Database.addElecEquiToList(newDevice);
+    if(selectPanels.length > 0) {
+        for(var i = 0, length = selectPanels.length; i < length; i++) {
+            var selectedPanelId = selectPanels[i].value;
+            if(selectedPanelId != null && selectedPanelId != '') {
+                var selectedPanelSlot = selectPanelSlots[i].value;
+                if(selectedPanelSlot != null && selectedPanelSlot != '') {
+                    var panel = Database.getCtlPanelByid(selectedPanelId);
+                    if(panel != null && panel != "") {
+                        var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
+                        var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc);
+                        Database.addElecEquiToList(newDevice);
+                    }
                 }
             }
         }
+    } else {
+        var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, null);
+        Database.addElecEquiToList(newDevice);
     }
-    //var device = YN_Elec_Equi(name, floor, relay_assoc, room, )
-
-
+    $.router.back("../html/home.html");
 }
 
 /**
@@ -578,6 +595,9 @@ function addNewInputDevice() {
 /**
  * only for test
  */
+function testDelete(elem,id) {
+    $(elem).remove();
+}
 function testControl() {
     var command = {
         "command":[
