@@ -312,7 +312,25 @@ var Database = function () {
             return dataTables.ctlpanel_list.filter(function (ctlpanel) {
                 return ctlpanel.room.id == roomid;
             })
+        },
+
+
+        /* --------------------------------- */
+        //楼层对象的方法
+
+        //向楼层添加一个房间
+        //参数: floor 楼层对象, room 房间
+        //返回: 无
+        'addRoomToFloor': function(floor, room) {
+            floor.rooms.push(room);
+        },
+
+        //查找楼层下特定id的房间
+        //参数 floor 楼层对象, roomid 房间Id
+        'findRoomInFloor': function (floor, roomid) {
+            return findEleWithId(id, floor.rooms);
         }
+
 
     }
 
@@ -917,17 +935,6 @@ function YN_Floor(name) {
     this.id = guid();
     this.rooms = [];
 
-    //向本楼层添加一个房间
-    this.addRoom = function (room) {
-        this.rooms.push(room);
-    }
-
-    //查找该楼层下特定id的房间
-    //返回: 房间对象或null
-    this.findRoom = function (id) {
-        return findEleWithId(id, this.rooms);
-
-    }
 }
 
 
