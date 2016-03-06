@@ -101,6 +101,9 @@
                 </div>
             </div>
         </div>
+        <div>
+            <p><a class="button button-delete"  onclick="showDeleteDevice();return false;">删除电器</a></p>
+        </div>
         <template id="template_panel">
             <li id="li_panel" class="li-panel">
                 <a onclick="return false;" class="item-content">
@@ -144,7 +147,7 @@
         <div  class="bottom-block">
             <div class="row">
                 <a class="button button-bottom back col-50">取消</a>
-                <a class="button button-bottom col-50 highlight" onclick="addNewHomeDevice();return false;">确定</a>
+                <a class="button button-bottom col-50 highlight" onclick="updateDevice();return false;">确定</a>
             </div>
         </div>
     </footer>
