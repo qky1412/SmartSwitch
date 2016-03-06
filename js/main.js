@@ -44,6 +44,14 @@ $(document).ready(function(){
         initFloorSelect();
         initRelaySelect();
     });
+    $(document).on("pageInit", "#page-edit-home-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        initRelaySelect();
+        refreshEditHomeDevice(getParameterByName("id"));
+    });
     $(document).on("pageInit", "#page-room", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
@@ -107,8 +115,112 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function enterPage(url) {
-    window.location.href = url;
+function enterPage(url, id) {
+    //window.location.href = url;
+    $.router.loadPage(url+"?id="+id);
+}
+function initFloorSelect() {
+    var floors = Database.getFloorList();
+    var selectFloor = document.getElementById("select-floor");
+    selectFloor.innerHTML = "";
+    for(var i = 0, length = floors.length; i < length; i++) {
+        if(floors[i].rooms.length > 0) {
+            var newOption = document.createElement("option");
+            newOption.value = floors[i].id;
+            newOption.text = floors[i].name;
+            selectFloor.add(newOption);
+        }
+    }
+    refreshRoomSelect();
+}
+
+function  refreshRoomSelect() {
+    var selectFloor = document.getElementById("select-floor");
+    var selectRoom = document.getElementById("select-room");
+    selectRoom.innerHTML = "";
+    var rooms = [];
+    var floors = Database.getFloorList();
+    for(var i = 0, floorCount = floors.length; i < floorCount; i++) {
+        if(selectFloor.value == floors[i].id) {
+            rooms = floors[i].rooms;
+            break;
+        }
+    }
+    for(var i = 0, length = rooms.length; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = rooms[i].id;
+        newOption.text = rooms[i].name;
+        selectRoom.add(newOption);
+    }
+
+}
+
+function initRelaySelect() {
+    var selectRelay = document.getElementById("select-relay");
+    selectRelay.innerHTML = '';
+    var relayList = Database.getRelayList();
+    for (var i = 0, length = relayList.length; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = relayList[i].id;
+        newOption.text = relayList[i].name;
+        selectRelay.add(newOption);
+    }
+    refreshRelaySlot();
+}
+
+function refreshRelaySlot() {
+    var selectRelay = document.getElementById("select-relay");
+    var selectRelaySlot = document.getElementById("select-relay-slot");
+    selectRelaySlot.innerHTML = '';
+    var selectedRelayId = selectRelay.value;
+    if(selectedRelayId != null && selectedRelayId != '') {
+        var relay = Database.getRelayByid(selectedRelayId);
+        if(relay != null) {
+            //TODO 插槽编号待定这里假设numberOfSlots + 1
+            for(var i = 0, length = relay.numberOfSlots + 1; i < length; i++) {
+                var newOption = document.createElement("option");
+                newOption.value = i;
+                newOption.text = i + 1;
+                selectRelaySlot.add(newOption);
+            }
+        }
+    }
+}
+
+function addPanel() {
+    var existPanelNumbers = $('.li-panel').length;
+    var ul = document.getElementById("ul_panel");
+    var template = document.getElementById("template_panel");
+    var tmp = template.content.cloneNode(true);
+    tmp.querySelector('#li_panel').id = "li_panel" + existPanelNumbers;
+    tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
+
+    var panelList = Database.getCtlPanelList();
+    for (var i = 0, length = panelList.length; i < length; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = panelList[i].id;
+        newOption.text = panelList[i].name;
+        tmp.querySelector('#select-panel').add(newOption);
+    }
+    //TODO 这里没做联动，默认显示1-5的按键
+
+    for(var i = 0; i< 5; i++) {
+        var newOption = document.createElement("option");
+        newOption.value = i;
+        newOption.text = i + 1;
+        tmp.querySelector('#select-panel-slot').add(newOption);
+    }
+    document.getElementById("ul_panel").appendChild(tmp);
+}
+
+function showDeletePanel(id) {
+    $.confirm('是否要删除该面板?', function () {
+        deletePanel(id);
+    });
+}
+
+function deletePanel(id) {
+    $('#' + "li_panel" +id).remove();
 }
 /**
  * 电器布局页面所需js
@@ -132,9 +244,11 @@ function refreshHomeDevicesList() {
             document.getElementById("list-device" +  rooms[j].id).innerHTML = '';
             for(var k = 0, length = devices.length; k < length; k++) {
                 var tmpDevice = templateDevice.content.cloneNode(true);
-                tmpDevice.querySelector('#device-title').innerText = devices[k].name;
-                tmpDevice.querySelector('#home-device-floor').innerText = devices[k].floor.name;
-                tmpDevice.querySelector('#home-device-room').innerText = devices[k].room.name;
+                var device = devices[k];
+                tmpDevice.querySelector('#device-title').innerText = device.name;
+                tmpDevice.querySelector('.device-edit').dataset.id = device.id;
+                tmpDevice.querySelector('#home-device-floor').innerText = device.floor.name;
+                tmpDevice.querySelector('#home-device-room').innerText = device.room.name;
                 document.getElementById("list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
         }
@@ -421,117 +535,13 @@ function deleteRoom(floorID, roomID) {
 /**
  * 添加电器页面所需js
  */
-function initFloorSelect() {
-    var floors = Database.getFloorList();
-    var selectFloor = document.getElementById("select-floor");
-    selectFloor.innerHTML = "";
-    for(var i = 0, length = floors.length; i < length; i++) {
-        if(floors[i].rooms.length > 0) {
-            var newOption = document.createElement("option");
-            newOption.value = floors[i].id;
-            newOption.text = floors[i].name;
-            selectFloor.add(newOption);
-        }
-    }
-    refreshRoomSelect();
-}
 
-function  refreshRoomSelect() {
-    var selectFloor = document.getElementById("select-floor");
-    var selectRoom = document.getElementById("select-room");
-    selectRoom.innerHTML = "";
-    var rooms = [];
-    var floors = Database.getFloorList();
-    for(var i = 0, floorCount = floors.length; i < floorCount; i++) {
-        if(selectFloor.value == floors[i].id) {
-            rooms = floors[i].rooms;
-            break;
-        }
-    }
-    for(var i = 0, length = rooms.length; i < length; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = rooms[i].id;
-        newOption.text = rooms[i].name;
-        selectRoom.add(newOption);
-    }
-
-}
-
-function initRelaySelect() {
-    var selectRelay = document.getElementById("add-home-device-select-relay");
-    selectRelay.innerHTML = '';
-    var relayList = Database.getRelayList();
-    for (var i = 0, length = relayList.length; i < length; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = relayList[i].id;
-        newOption.text = relayList[i].name;
-        selectRelay.add(newOption);
-    }
-    refreshRelaySlot();
-}
-
-function refreshRelaySlot() {
-    var selectRelay = document.getElementById("add-home-device-select-relay");
-    var selectRelaySlot = document.getElementById("add-home-device-select-relay-slot");
-    selectRelaySlot.innerHTML = '';
-    var selectedRelayId = selectRelay.value;
-    if(selectedRelayId != null && selectedRelayId != '') {
-        var relay = Database.getRelayByid(selectedRelayId);
-        if(relay != null) {
-            //TODO 插槽编号待定这里假设numberOfSlots + 1
-            for(var i = 0, length = relay.numberOfSlots + 1; i < length; i++) {
-                var newOption = document.createElement("option");
-                newOption.value = i;
-                newOption.text = i + 1;
-                selectRelaySlot.add(newOption);
-            }
-        }
-    }
-}
-
-function addPanelInAddHomeDevice() {
-    var existPanelNumbers = $('.li-panel').length;
-    var ul = document.getElementById("add_home_device_ul_panel");
-    var template = document.getElementById("add_home_device_template_panel");
-    var tmp = template.content.cloneNode(true);
-    tmp.querySelector('#add_home_device_li_panel').id = "add_home_device_li_panel" + existPanelNumbers;
-    tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
-
-    //TODO 给刚刚添加的开关面板增加select
-
-    var panelList = Database.getCtlPanelList();
-    for (var i = 0, length = panelList.length; i < length; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = panelList[i].id;
-        newOption.text = panelList[i].name;
-        tmp.querySelector('#add-home-device-select-panel').add(newOption);
-    }
-    //TODO 这里没做联动，默认显示1-5的按键
-
-    for(var i = 0; i< 5; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = i;
-        newOption.text = i + 1;
-        tmp.querySelector('#add-home-device-select-panel-slot').add(newOption);
-    }
-    document.getElementById("add_home_device_ul_panel").appendChild(tmp);
-}
-
-function showAddHomeDeviceDeletePanel(id) {
-    $.confirm('是否要删除该面板?', function () {
-        deletePanelInAddHomeDevice(id);
-    });
-}
-
-function deletePanelInAddHomeDevice(id) {
-    $('#' + "add_home_device_li_panel" +id).remove();
-}
 function addNewHomeDevice() {
     var name = document.getElementById("add-home-device-input-name").value.trim();
     var floorId = document.getElementById("select-floor").value.trim();
     var roomId = document.getElementById("select-room").value.trim();
-    var relayId = document.getElementById("add-home-device-select-relay").value.trim();
-    var relaySlot = document.getElementById("add-home-device-select-relay-slot").value.trim();
+    var relayId = document.getElementById("select-relay").value.trim();
+    var relaySlot = document.getElementById("select-relay-slot").value.trim();
     if(name == null || name == "") {
         alert("名称不能为空");
         return;
@@ -571,8 +581,9 @@ function addNewHomeDevice() {
     var relay_assoc = new YN_Relay_assoc(relay, relaySlot);
     //TODO  判断当前已添加面板个数 如果存在绑定的开关面板，则获取合法的面板数据
     //var existPanelNumbers = $('.li-panel').length;
-    var selectPanels = document.getElementsByClassName("add-home-device-select-panel");
-    var selectPanelSlots = document.getElementsByClassName("add-home-device-select-panel-slot");
+    var selectPanels = document.getElementsByClassName("select-panel");
+    var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
+    var panel_assocs = [];
     if(selectPanels.length > 0) {
         for(var i = 0, length = selectPanels.length; i < length; i++) {
             var selectedPanelId = selectPanels[i].value;
@@ -582,19 +593,63 @@ function addNewHomeDevice() {
                     var panel = Database.getCtlPanelByid(selectedPanelId);
                     if(panel != null && panel != "") {
                         var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
-                        var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assoc);
-                        Database.addElecEquiToList(newDevice);
+                        panel_assocs.push(panel_assoc);
                     }
                 }
             }
         }
-    } else {
-        var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, null);
-        Database.addElecEquiToList(newDevice);
     }
+    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs);
+    Database.addElecEquiToList(newDevice);
     $.router.back("../html/home.html");
 }
+/**
+ * 编辑电器页面所需js
+ */
+function refreshEditHomeDevice(deviceId) {
+    var device = Database.getElecEquiByid(deviceId);
+    if(device == null) {
+        alert("设备不存在");
+        $.router.back("../html/home.html");
+        return;
+    }
+    document.getElementById("edit-home-device-input-name").value = device.name;
+    document.getElementById("select-floor").value = device.floor.id;
+    document.getElementById("select-room").value = device.room.id;
+    document.getElementById("select-relay").value = device.relay_assoc.relay.id;
+    document.getElementById("select-relay-slot").value = device.relay_assoc.relay.slot_index;
+    document.getElementById("ul_panel").innerHTML = '';
+    var templatePanels = document.getElementById("template_panel");
+    var panel_assocs = device.panel_assocs;
+    alert(JSON.stringify(panel_assocs));
+    for(var i = 0, length = panel_assocs.length; i < length; i++) {
+        var panel_assoc = panel_assocs[i];
+        var tmp = templatePanels.content.cloneNode(true);
 
+        tmp.querySelector('#li_panel').id = "li_panel" + i;
+        tmp.querySelector('.device-delete').dataset.id = i;
+        var panelList = Database.getCtlPanelList();
+        for (var j = 0, panelListLength = panelList.length; j < panelListLength; j++) {
+            var newOption = document.createElement("option");
+            newOption.value = panelList[j].id;
+            newOption.text = panelList[j].name;
+            tmp.querySelector('#select-panel').add(newOption);
+        }
+        //TODO 这里没做联动，默认显示1-5的按键
+
+        for(var k = 0; k< 5; k++) {
+            var newOption = document.createElement("option");
+            newOption.value = k;
+            newOption.text = k + 1;
+            tmp.querySelector('#select-panel-slot').add(newOption);
+        }
+        alert("panel_assoc.panel.btn_index = " + panel_assoc.btn_index);
+        tmp.querySelector('#select-panel').value = panel_assoc.panel.id;
+        tmp.querySelector('#select-panel-slot').value = panel_assoc.btn_index;
+        document.getElementById("ul_panel").appendChild(tmp);
+    }
+
+}
 /**
  * 添加输出设备页面所需js
  */
@@ -617,7 +672,6 @@ function addNewOutputDevice() {
             var newOutputDevice = new YN_Relay(deviceId, deviceName, floor, floor.rooms[i], 2);
             Database.addRelayToList(newOutputDevice);
             $.router.back("../html/home.html");
-
             break;
         }
     }
@@ -659,33 +713,33 @@ function addNewInputDevice() {
 /**
  * 添加配置页面所需js
  */
-function addPanelInAddScene() {
-    var existPanelNumbers = $('.li-panel').length;
-    var ul = document.getElementById("add_scene_ul_panel");
-    var template = document.getElementById("add_scene_template_panel");
-    var tmp = template.content.cloneNode(true);
-    tmp.querySelector('#add_scene_li_panel').id = "add_scene_li_panel" + existPanelNumbers;
-    tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
-
-    //TODO 给刚刚添加的开关面板增加select
-
-    var panelList = Database.getCtlPanelList();
-    for (var i = 0, length = panelList.length; i < length; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = panelList[i].id;
-        newOption.text = panelList[i].name;
-        tmp.querySelector('#add-scene-select-panel').add(newOption);
-    }
-    //TODO 这里没做联动，默认显示1-5的按键
-
-    for(var i = 0; i< 5; i++) {
-        var newOption = document.createElement("option");
-        newOption.value = i;
-        newOption.text = i + 1;
-        tmp.querySelector('#add-scene-select-panel-slot').add(newOption);
-    }
-    document.getElementById("add_scene_ul_panel").appendChild(tmp);
-}
+//function addPanelInAddScene() {
+//    var existPanelNumbers = $('.li-panel').length;
+//    var ul = document.getElementById("add_scene_ul_panel");
+//    var template = document.getElementById("add_scene_template_panel");
+//    var tmp = template.content.cloneNode(true);
+//    tmp.querySelector('#add_scene_li_panel').id = "add_scene_li_panel" + existPanelNumbers;
+//    tmp.querySelector('.device-delete').dataset.id = existPanelNumbers;
+//
+//    //TODO 给刚刚添加的开关面板增加select
+//
+//    var panelList = Database.getCtlPanelList();
+//    for (var i = 0, length = panelList.length; i < length; i++) {
+//        var newOption = document.createElement("option");
+//        newOption.value = panelList[i].id;
+//        newOption.text = panelList[i].name;
+//        tmp.querySelector('#add-scene-select-panel').add(newOption);
+//    }
+//    //TODO 这里没做联动，默认显示1-5的按键
+//
+//    for(var i = 0; i< 5; i++) {
+//        var newOption = document.createElement("option");
+//        newOption.value = i;
+//        newOption.text = i + 1;
+//        tmp.querySelector('#add-scene-select-panel-slot').add(newOption);
+//    }
+//    document.getElementById("add_scene_ul_panel").appendChild(tmp);
+//}
 
 function onChangeAction1BrightnessInAddScene(datasetid, value) {
     document.getElementById("add-scene-action1-brightness" + datasetid).innerText = value;

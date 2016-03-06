@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <title>编辑电器设备</title>
+</head>
+<body>
+<div class="page" id="page-edit-home-device">
+    <div class="content">
+        <div class="list-config list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label">名称:</div>
+                            <div class="item-input">
+                                <input id="edit-home-device-input-name" type="text" placeholder="请输入名称（如左床头灯）">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-config list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label">楼层:</div>
+                            <div class="item-input">
+                                <select id="select-floor" onchange="refreshRoomSelect()"></select>
+                            </div>
+                            <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-config list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label">房间:</div>
+                            <div class="item-input">
+                                <select id="select-room" onchange="initRelaySelect()"></select>
+                            </div>
+                            <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-config list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label">输出模块:</div>
+                            <div class="item-input">
+                                <select id="select-relay" onchange="refreshRelaySlot()"></select>
+                            </div>
+                            <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-config list-block">
+            <ul>
+                <!-- Date -->
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">插槽编号:</div>
+                            <div class="item-input">
+                                <select id="select-relay-slot"></select>
+                            </div>
+                            <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                        </div>
+
+                    </div>
+                </li>
+                <!-- Switch (Checkbox) -->
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header" onclick="addPanel()">绑定开关<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
+            <div class="card-content">
+                <div class="list-config list-block">
+                    <ul id="ul_panel">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <template id="template_panel">
+            <li id="li_panel" class="li-panel">
+                <a onclick="return false;" class="item-content">
+                    <div class="item-inner">
+                        <table class="table-device" >
+                            <tr>
+                                <td class="panel-title">
+                                    开关面板
+                                </td>
+                                <td >
+                                    <select id="select-panel" class="select-panel">
+
+
+                                    </select>
+                                </td>
+                                <td width="8%">
+                                    <img src="../img/ic_more.png" class="more">
+                                </td>
+                                <td  rowspan="2" class="device-delete" style="width: 10%;" data-id="" onclick="showDeletePanel(this.dataset.id)"><img src="../img/ic_del_red.png" class="edit"></td>
+                            </tr>
+                            <tr>
+                                <td class="panel-title">
+                                    面板插槽
+                                </td>
+                                <td>
+                                    <select id="select-panel-slot" class="select-panel-slot" >
+
+                                    </select>
+                                </td>
+                                <td width="8%">
+                                    <img src="../img/ic_more.png" class="more">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </a>
+            </li>
+        </template>
+    </div>
+    <footer>
+        <div  class="bottom-block">
+            <div class="row">
+                <a class="button button-bottom back col-50">取消</a>
+                <a class="button button-bottom col-50 highlight" onclick="addNewHomeDevice();return false;">确定</a>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+
+</html>

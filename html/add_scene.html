@@ -30,10 +30,10 @@
                 <p><a class="button button-add-device" onclick="addNewDeviceInAddScene();return false;">添加电器</a></p>
             </div>
             <div class="card">
-                <div class="card-header" onclick="addPanelInAddScene()">绑定开关<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
+                <div class="card-header" onclick="addPanel()">绑定开关<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
                 <div class="card-content">
                     <div class="list-config list-block">
-                        <ul id="add_scene_ul_panel">
+                        <ul id="ul_panel">
 
                         </ul>
                     </div>
@@ -139,8 +139,8 @@
                     </div>
                 </div>
             </template>
-            <template id="add_scene_template_panel">
-                <li id="add_scene_li_panel" class="li-panel">
+            <template id="template_panel">
+                <li id="li_panel" class="li-panel">
                     <a onclick="return false;" class="item-content">
                         <div class="item-inner">
                             <table class="table-device" >
@@ -149,21 +149,21 @@
                                         开关面板
                                     </td>
                                     <td >
-                                        <select id="add-scene-select-panel" >
+                                        <select id="select-panel" >
 
                                         </select>
                                     </td>
                                     <td width="8%">
                                         <img src="../img/ic_more.png" class="more">
                                     </td>
-                                    <td  rowspan="2" class="device-delete" style="width: 10%;" data-id="" onclick="showAddSceneDeletePanel(this.dataset.id)"><img src="../img/ic_del_red.png" class="edit"></td>
+                                    <td  rowspan="2" class="device-delete" style="width: 10%;" data-id="" onclick="showDeletePanel(this.dataset.id)"><img src="../img/ic_del_red.png" class="edit"></td>
                                 </tr>
                                 <tr>
                                     <td class="panel-title">
                                         面板插槽
                                     </td>
                                     <td>
-                                        <select id="add-scene-select-panel-slot" >
+                                        <select id="select-panel-slot" >
 
                                         </select>
                                     </td>
