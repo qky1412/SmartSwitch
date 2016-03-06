@@ -194,10 +194,12 @@ a.item-content:active {
     border-left: 1px solid #eef2f7;
     border-top: 1px solid #eef2f7;
     background-color: white;
+    vertical-align: middle;
 }
 .control-grid .control-content {
     line-height: 100px;
     text-align: center;
+    vertical-align: middle;
 }
 
 .control-circle {
@@ -217,7 +219,7 @@ a.item-content:active {
     display: block;
 }
 
-.control-content span {
+.control-content span.scene {
     margin-left: -32px;
 }
 img.config {
@@ -306,4 +308,28 @@ td.add-scene-action1-brightness, td.add-scene-action2-brightness {
 
 select {
     font-size:0.75rem !important;
+}
+
+img.custom-icon {
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-top: 30px;
+    margin-left: 15px;
+}
+
+span.home-operation-device-name {
+    margin-left: -32px;
+}
+
+.device-on {
+    color: #68d68b;
+}
+
+img.custom-icon-edit {
+    width: 10px;
+    height: 10px;
+    float: right;
+    margin-top: 4px;
+    margin-right: 4px;
 }

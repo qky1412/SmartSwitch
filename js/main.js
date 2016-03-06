@@ -25,16 +25,11 @@ $(document).ready(function(){
         $("#tab-control4").click(function () {
             $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
         });
-        refreshHomeDevicesList();
-        refreshOutputDeviceList();
-        refreshInputDeviceList();
-        refreshSceneList();
+        refreshHomeData();
     });
+
     $(document).on("pageReinit", "#page-home", function (e, id, page) {
-        refreshHomeDevicesList();
-        refreshOutputDeviceList();
-        refreshInputDeviceList();
-        refreshSceneList();
+        refreshHomeData();
     });
     $(document).on("pageInit", "#page-floor", function (e, id, page) {
         JDSMART.ready(function () {
@@ -78,6 +73,14 @@ $(document).ready(function(){
 /**
  * 通用js代码
  */
+function refreshHomeData() {
+    refreshHomeDevicesList();
+    refreshOutputDeviceList();
+    refreshInputDeviceList();
+    refreshSceneList();
+    refreshOperationList();
+    refreshSingleDeviceList();
+}
 function showLoading() {
 
 }
@@ -135,46 +138,9 @@ function refreshHomeDevicesList() {
                 document.getElementById("list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
         }
-
-
-    }
-
-}
-
-/**
- * 场景配置页面所需js
- */
-//TODO 是否需要显示动作2 以及显示的格式  待商榷
-function refreshSceneList() {
-    var sceneList = Database.getSceneList();
-    var templateScene = document.getElementById("home-config-template-config");
-    var templateDevice = document.getElementById("home-config-template-device");
-    for(var i = 0, length = sceneList.length; i < length; i++) {
-        var scene = sceneList[i];
-        var tmpScene = templateScene.content.cloneNode(true);
-        tmpScene.querySelector('.scene-name').innerText = scene.name;
-        tmpScene.querySelector('.item-after').dataset.id = scene.id;
-        tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id
-        document.getElementById("home-config-list").appendChild(tmpScene);
-        for(var j = 0, length = scene.scene_steps.length; j < length; j++) {
-            var sceneStep = scene.scene_steps[j];
-            var tmpDevice = templateDevice.content.cloneNode(true);
-            tmpDevice.querySelector('.text-title').innerText = sceneStep.elec_equi.name;
-            if(sceneStep.action1.d1 != 0) {
-                tmpDevice.querySelector('#home-config-action1').innerText = "开启";
-            } else {
-                tmpDevice.querySelector('#home-config-action1').innerText = "关闭";
-            }
-            //TODO 延迟显示格式？
-            if(sceneStep.action1_delay != "0") {
-                tmpDevice.querySelector('#id-home-config-delay1').innerText = sceneStep.action1_delay;
-            } else {
-                tmpDevice.querySelector('#id-home-config-delay1').innerText = "否";
-            }
-            document.getElementById("home-config-ul-scene" + scene.id).appendChild(tmpDevice);
-        }
     }
 }
+
 
 /**
  * 智能模块页面所需js
@@ -208,6 +174,86 @@ function refreshInputDeviceList() {
         tmp.querySelector('#span-input-room').innerText = input.room.name;
         tmp.querySelector('#span-input-floor').innerText = input.floor.name;
         document.getElementById("home-input-module").appendChild(tmp);
+    }
+}
+
+/**
+ * 场景配置页面所需js
+ */
+//TODO 是否需要显示动作2 以及显示的格式  待商榷
+
+function refreshSceneList() {
+    document.getElementById("home-config-list").innerHTML = "";
+    var sceneList = Database.getSceneList();
+    var templateScene = document.getElementById("home-config-template-config");
+    var templateDevice = document.getElementById("home-config-template-device");
+    for(var i = 0, length = sceneList.length; i < length; i++) {
+        var scene = sceneList[i];
+        var tmpScene = templateScene.content.cloneNode(true);
+        //TODO Uncaught TypeError: Cannot read property 'name' of undefined ???!!!
+        tmpScene.querySelector('.scene-name').innerText = scene.name;
+        tmpScene.querySelector('.item-after').dataset.id = scene.id;
+        tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id
+        document.getElementById("home-config-list").appendChild(tmpScene);
+        for(var j = 0, deviceLength = scene.scene_steps.length; j < deviceLength; j++) {
+            var sceneStep = scene.scene_steps[j];
+            var tmpDevice = templateDevice.content.cloneNode(true);
+            tmpDevice.querySelector('.text-title').innerText = sceneStep.elec_equi.name;
+            if(sceneStep.action1.d1 != 0) {
+                tmpDevice.querySelector('#home-config-action1').innerText = "开启";
+            } else {
+                tmpDevice.querySelector('#home-config-action1').innerText = "关闭";
+            }
+            //TODO 延迟显示格式？
+            if(sceneStep.action1_delay != "0") {
+                tmpDevice.querySelector('#id-home-config-delay1').innerText = sceneStep.action1_delay;
+            } else {
+                tmpDevice.querySelector('#id-home-config-delay1').innerText = "否";
+            }
+            document.getElementById("home-config-ul-scene" + scene.id).appendChild(tmpDevice);
+        }
+    }
+}
+/**
+ * 操作模块页面所需js
+ */
+function refreshOperationList() {
+    document.getElementById("home-operation-scene").innerHTML = '';
+    var scenes = Database.getSceneList();
+    var templateScene = document.getElementById("home-operation-template-scene");
+    for(var i = 0, sceneLength = scenes.length; i < sceneLength; i++) {
+        var tmpScene = templateScene.content.cloneNode(true);
+        var scene = scenes[i];
+        tmpScene.querySelector('.control-digit').innerText = String(i + 2);
+        tmpScene.querySelector('.home-operation-scene-name').innerText = scene.name;
+        document.getElementById("home-operation-scene").appendChild(tmpScene)
+    }
+}
+function refreshSingleDeviceList() {
+    document.getElementById("home-operation-devices").innerHTML = '';
+    var floors = Database.getFloorList();
+    var floorNumbers = floors.length;
+    //先添加房间
+    var templateRoom = document.getElementById("home-operation-template-room");
+    var templateDevice = document.getElementById("home-operation-template-device");
+    for (var i = 0; i < floorNumbers; i++) {
+        var rooms = floors[i].rooms;
+        var roomNumbers = rooms.length;
+        for (var j = 0; j < roomNumbers; j++) {
+            var tmpRoom = templateRoom.content.cloneNode(true);
+            tmpRoom.querySelector('.content-block-title').innerText = floors[i].name + rooms[j].name;
+            tmpRoom.querySelector('#home-operation-list-device').id = "home-operation-list-device" + rooms[j].id;
+            document.getElementById("home-operation-devices").appendChild(tmpRoom);
+            var devices = Database.getElecEquicListInRoom(rooms[j].id);
+            document.getElementById("home-operation-list-device" +  rooms[j].id).innerHTML = '';
+            for(var k = 0, length = devices.length; k < length; k++) {
+                var device = devices[k];
+                var tmpDevice = templateDevice.content.cloneNode(true);
+                tmpDevice.querySelector('.home-operation-device-name').innerText = device.name;
+                tmpDevice.querySelector('#home-operation-device-id').id ="home-operation-device-id" + device.id;
+                document.getElementById("home-operation-list-device" +  rooms[j].id).appendChild(tmpDevice);
+            }
+        }
     }
 }
 /**
@@ -482,8 +528,8 @@ function deletePanelInAddHomeDevice(id) {
 }
 function addNewHomeDevice() {
     var name = document.getElementById("add-home-device-input-name").value.trim();
-    var floorId = document.getElementById("add-home-device-select-floor").value.trim();
-    var roomId = document.getElementById("add-home-device-select-room").value.trim();
+    var floorId = document.getElementById("select-floor").value.trim();
+    var roomId = document.getElementById("select-room").value.trim();
     var relayId = document.getElementById("add-home-device-select-relay").value.trim();
     var relaySlot = document.getElementById("add-home-device-select-relay-slot").value.trim();
     if(name == null || name == "") {
@@ -814,6 +860,7 @@ function addNewScene() {
     }
     var newScene = new YN_Scene(name, sceneSteps, ctrlPanelAssocs, null);
     Database.addSceneToList(newScene);
+    $.router.back("../html/home.html");
 }
 /**
  * only for test

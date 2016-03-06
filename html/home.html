@@ -168,78 +168,59 @@
             </div>
 
             <div id="tab4" class="tab">
-                    <div class="content-block-title">场景控制</div>
-                    <div id="list-scene-control">
-                        <div class="control-grid">
-                            <div class="control-content">
-                                <div class="control-circle">
-                                    <div class="control-digit">
-                                        1
-                                    </div>
-                                </div>
-                                <span>
-                                    全部关闭
-                                </span>
+                <div class="content-block-title">场景控制</div>
+                <div class="control-grid">
+                    <div class="control-content">
+                        <div class="control-circle">
+                            <div class="control-digit">
+                                1
                             </div>
                         </div>
-                        <div class="control-grid">
-                            <div class="control-content">
-                                <div class="control-circle">
-                                    <div class="control-digit">
-                                        1
-                                    </div>
-                                </div>
-                                <span>
-                                    到家
-                                </span>
-                            </div>
-                        </div><div class="control-grid">
+                        <span>
+                            全部关闭
+                        </span>
+                    </div>
+                </div>
+                <div id="home-operation-scene">
+                    <!-- here come the scenes -->
+                </div>
+                <div style="clear: both"></div>
+                <div id="home-operation-devices">
+                    <!-- here come the devices specified by room -->
+                </div>
+                <template id="home-operation-template-scene">
+                    <div class="control-grid">
                         <div class="control-content">
                             <div class="control-circle">
                                 <div class="control-digit">
                                     1
                                 </div>
                             </div>
-                                <span>
-                                    看电影
-                                </span>
-                        </div>
-                    </div><div class="control-grid">
-                        <div class="control-content">
-                            <div class="control-circle">
-                                <div class="control-digit">
-                                    1
-                                </div>
-                            </div>
-                                <span>
-                                    吃饭
-                                </span>
-                        </div>
-                    </div><div class="control-grid">
-                        <div class="control-content">
-                            <div class="control-circle">
-                                <div class="control-digit">
-                                    1
-                                </div>
-                            </div>
-                                <span>
-                                    睡觉
-                                </span>
+                        <span class="home-operation-scene-name scene">
+                            场景名称
+                        </span>
                         </div>
                     </div>
-                    </div>
+                </template>
+                <template id="home-operation-template-room">
+                    <div class="content-block-title">一楼客厅</div>
+                    <div id="home-operation-list-device"></div>
                     <div style="clear: both"></div>
-                    <div id="list-device-control">
-                        <div class="content-block-title">一楼客厅</div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                </template>
+                <template id="home-operation-template-device">
+                    <div class="control-grid">
+                        <div class="control-content device-on" id="home-operation-device-id">
+                            <img src="../img/ic_general.png" class="custom-icon">
+                            <span class="home-operation-device-name"></span>
+                            <img src="../img/ic_edit_gray.png" class="custom-icon-edit">
+                        </div>
                     </div>
+                </template>
             </div>
 
         </div>
+
+
 
 </div>
 
