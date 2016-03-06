@@ -144,6 +144,7 @@ function refreshHomeDevicesList() {
 /**
  * 场景配置页面所需js
  */
+//TODO 是否需要显示动作2 以及显示的格式  待商榷
 function refreshSceneList() {
     var sceneList = Database.getSceneList();
     var templateScene = document.getElementById("home-config-template-config");
@@ -151,7 +152,7 @@ function refreshSceneList() {
     for(var i = 0, length = sceneList.length; i < length; i++) {
         var scene = sceneList[i];
         var tmpScene = templateScene.content.cloneNode(true);
-        tmpScene.querySelector('.card-header').innerText = scene.name;
+        tmpScene.querySelector('.scene-name').innerText = scene.name;
         tmpScene.querySelector('.item-after').dataset.id = scene.id;
         tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id
         document.getElementById("home-config-list").appendChild(tmpScene);
@@ -159,6 +160,17 @@ function refreshSceneList() {
             var sceneStep = scene.scene_steps[j];
             var tmpDevice = templateDevice.content.cloneNode(true);
             tmpDevice.querySelector('.text-title').innerText = sceneStep.elec_equi.name;
+            if(sceneStep.action1.d1 != 0) {
+                tmpDevice.querySelector('#home-config-action1').innerText = "开启";
+            } else {
+                tmpDevice.querySelector('#home-config-action1').innerText = "关闭";
+            }
+            //TODO 延迟显示格式？
+            if(sceneStep.action1_delay != "0") {
+                tmpDevice.querySelector('#id-home-config-delay1').innerText = sceneStep.action1_delay;
+            } else {
+                tmpDevice.querySelector('#id-home-config-delay1').innerText = "否";
+            }
             document.getElementById("home-config-ul-scene" + scene.id).appendChild(tmpDevice);
         }
     }
@@ -469,11 +481,11 @@ function deletePanelInAddHomeDevice(id) {
     $('#' + "add_home_device_li_panel" +id).remove();
 }
 function addNewHomeDevice() {
-    var name = document.getElementById("add-home-device-input-name").value;
-    var floorId = document.getElementById("add-home-device-select-floor").value;
-    var roomId = document.getElementById("add-home-device-select-room").value;
-    var relayId = document.getElementById("add-home-device-select-relay").value;
-    var relaySlot = document.getElementById("add-home-device-select-relay-slot").value;
+    var name = document.getElementById("add-home-device-input-name").value.trim();
+    var floorId = document.getElementById("add-home-device-select-floor").value.trim();
+    var roomId = document.getElementById("add-home-device-select-room").value.trim();
+    var relayId = document.getElementById("add-home-device-select-relay").value.trim();
+    var relaySlot = document.getElementById("add-home-device-select-relay-slot").value.trim();
     if(name == null || name == "") {
         alert("名称不能为空");
         return;
@@ -629,10 +641,10 @@ function addPanelInAddScene() {
     document.getElementById("add_scene_ul_panel").appendChild(tmp);
 }
 
-function onChangeAction1Brightness(datasetid, value) {
+function onChangeAction1BrightnessInAddScene(datasetid, value) {
     document.getElementById("add-scene-action1-brightness" + datasetid).innerText = value;
 }
-function onChangeAction2Brightness(datasetid, value) {
+function onChangeAction2BrightnessInAddScene(datasetid, value) {
     document.getElementById("add-scene-action2-brightness" + datasetid).innerText = value;
 }
 function showDeleteDeviceInAddScene(id) {
@@ -662,6 +674,7 @@ function addNewDeviceInAddScene() {
     tmp.querySelector('.add-scene-action2-brightness').id = "add-scene-action2-brightness" + existDeviceNumbers;
     tmp.querySelector('.add-scene-action1-range').dataset.id = existDeviceNumbers;
     tmp.querySelector('.add-scene-action2-range').dataset.id = existDeviceNumbers;
+
     var devices = Database.getElecEquiList();
     for(var i = 0, length = devices.length; i < length; i++) {
         var newOption = document.createElement("option");
@@ -694,6 +707,113 @@ function addNewDeviceInAddScene() {
         tmp.querySelector('.add-scene-action2-delay-minute-select').add(newOption);
     }
     document.getElementById("add-scene-device-list").appendChild(tmp);
+}
+function addNewScene() {
+    var name = document.getElementById("add-scene-input-scene-name").value.trim();
+    if(name == null || name == "") {
+        alert("场景名称不能为空");
+        return;
+    }
+    var existDeviceNumbers = $('.add-scene-device-card').length;
+    if(existDeviceNumbers == 0) {
+        alert("至少选择一个电器");
+        return;
+    }
+    var sceneSteps = [];
+    for(var i = 0; i < existDeviceNumbers; i++) {
+        var deviceCard = document.getElementsByClassName("add-scene-device-card")[i];
+        var deviceId = deviceCard.getElementsByClassName("add-scene-select-device-name")[0].value;
+        var device = Database.getElecEquiByid(deviceId);
+        //action1 的各个值
+        var action1IsOn = deviceCard.getElementsByClassName("add-scene-action1-switch-checkbox")[0].checked;//true or false
+        var action1Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action1-range")[0].value);
+        if(!action1IsOn) {
+            //如果动作是关闭，则亮度值为0
+            action1Brightness = 0;
+        } else {
+            //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
+            if(action1Brightness == 0) {
+                action1Brightness = 100;
+            }
+        }
+        var action1IsDelay = deviceCard.getElementsByClassName("add-scene-action1-delay-checkbox")[0].checked;//true or false
+        //TODO 延迟时间的格式待商榷
+        var action1DelayTime = "0";
+        var action1DelayHours = 0;
+        var action1DelayMinute = 0;
+        if(action1IsDelay) {
+            action1DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-hour-select")[0].value);
+            action1DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-minute-select")[0].value);
+        }
+
+
+        //action2 的各个值
+        var action2IsOn = deviceCard.getElementsByClassName("add-scene-action2-switch-checkbox")[0].checked;//true or false
+        var action2Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action2-range")[0].value);
+        if(!action2IsOn) {
+            //如果动作是关闭，则亮度值为0
+            action2Brightness = 0;
+        } else {
+            //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
+            if(action2Brightness == 0) {
+                action2Brightness = 100;
+            }
+        }
+        var action2IsDelay = deviceCard.getElementsByClassName("add-scene-action2-delay-checkbox")[0].checked;//true or false
+        //TODO 延迟时间的格式待商榷
+        var action2DelayTime = "0";
+        var action2DelayHours = 0;
+        var action2DelayMinute = 0;
+        if(action2IsDelay) {
+            action2DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-hour-select")[0].value);
+            action2DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-minute-select")[0].value);
+        }
+        //TODO 需要组合2个action
+        var action1 = new YN_Elec_Equi_Action();
+        var action2 = new YN_Elec_Equi_Action();
+        if(action1IsOn) {
+            action1.d1 = action1Brightness;
+            action1.d2 = action1Brightness;
+            action1.d3 = action1Brightness;
+        } else {
+            action1.d1 = 0;
+            action1.d2 = 0;
+            action1.d3 = 0;
+        }
+        if(action2IsOn) {
+            action2.d1 = action2Brightness;
+            action2.d2 = action2Brightness;
+            action2.d3 = action2Brightness;
+        } else {
+            action2.d1 = 0;
+            action2.d2 = 0;
+            action2.d3 = 0;
+        }
+        var newSceneStep = new YN_Scene_Step(device, action1, action1DelayTime, action2, action2DelayTime);
+        sceneSteps.push(newSceneStep);
+    }
+
+    var selectPanels = document.getElementsByClassName("add-scene-select-panel");
+    var selectPanelSlots = document.getElementsByClassName("add-scene-select-panel-slot");
+    var ctrlPanelAssocs = [];
+    if(selectPanels.length > 0) {
+        for(var i = 0, length = selectPanels.length; i < length; i++) {
+            var selectedPanelId = selectPanels[i].value;
+            if(selectedPanelId != null && selectedPanelId != '') {
+                var selectedPanelSlot = selectPanelSlots[i].value;
+                if(selectedPanelSlot != null && selectedPanelSlot != '') {
+                    var panel = Database.getCtlPanelByid(selectedPanelId);
+                    if(panel != null && panel != "") {
+                        var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
+                        ctrlPanelAssocs.push(panel_assoc);
+                        alert(JSON.stringify(panel_assoc));
+                    }
+                }
+            }
+        }
+    }
+    var newScene = new YN_Scene(name, sceneSteps, ctrlPanelAssocs, null);
+    Database.addSceneToList(newScene);
 }
 /**
  * only for test

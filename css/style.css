@@ -297,9 +297,13 @@ td.add-scene-action1-brightness, td.add-scene-action2-brightness {
 
 .button-add-device {
     border: none;
-    margin: 20px;
+    margin: 10px;
     background-color: #68d68b;
     color: white;
     height: 40px;
     line-height: 40px;
+}
+
+select {
+    font-size:0.75rem !important;
 }
