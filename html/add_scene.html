@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <title>添加场景</title>
+</head>
+<body>
+    <div class="page" id="page-add-scene">
+        <div class="content">
+            <div class="list-config list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">名称:</div>
+                                <div class="item-input">
+                                    <input id="add-scene-input-scene-name" type="text" placeholder="请输入名称（如回家）">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div id="add-scene-device-list">
+
+            </div>
+            <div>
+                <p><a class="button button-add-device" onclick="addNewDeviceInAddScene();return false;">添加电器</a></p>
+            </div>
+            <div class="card">
+                <div class="card-header" onclick="addPanelInAddScene()">绑定开关<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
+                <div class="card-content">
+                    <div class="list-config list-block">
+                        <ul id="add_scene_ul_panel">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <template id="add_scene_template_device">
+                <div class="card add-scene-device-card" id="add-scene-device-card">
+                    <div class="card-header" >电器<div class="item-after add-scene-device-delete" data-id="" onclick="showDeleteDeviceInAddScene(this.dataset.id)"><img src="../img/ic_del_white.png" class="edit">删除</div></div>
+                    <div class="card-content">
+                        <div class="list-config list-block">
+                            <ul>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div class="item-title label">电器:</div>
+                                            <div class="item-input">
+                                                <select id="add-scene-select-device-name" class="add-scene-select-device-name">
+
+                                                </select>
+                                            </div>
+                                            <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <table class="table-device">
+                                                <tr>
+                                                    <td class="action">动作1:</td>
+                                                    <td class="switch">
+                                                        关
+                                                        <label class="label-switch">
+                                                            <input type="checkbox">
+                                                            <div class="checkbox"></div>
+                                                        </label> 开
+                                                    </td>
+                                                    <td  class="add-scene-action1-brightness">
+                                                        0
+                                                    </td>
+                                                    <td ><input class="add-scene-action1-range" type="range" name="slider" style="width: 100%;"  data-id="0" value="0" min="0" max="100" data-highlight="true" oninput="onChangeAction1Brightness(this.dataset.id,this.value)" onchange="onChangeAction1Brightness(this.dataset.id,this.value)"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="action">延迟:</td>
+                                                    <td class="switch">
+                                                        否
+                                                        <label class="label-switch">
+                                                            <input type="checkbox">
+                                                            <div class="checkbox"></div>
+                                                        </label> 是
+                                                    </td>
+                                                    <td class="switch">
+                                                        <select type="text" class="add-scene-action1-delay-hour-select" value="0小时"></select>
+                                                    </td>
+                                                    <td class="switch">
+                                                        <select type="text" class="add-scene-action1-delay-minute-select" value="0分钟"></select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <table class="table-device">
+                                                <tr>
+                                                    <td class="action">动作2:</td>
+                                                    <td class="switch">
+                                                        关
+                                                        <label class="label-switch">
+                                                            <input type="checkbox">
+                                                            <div class="checkbox"></div>
+                                                        </label> 开
+                                                    </td>
+                                                    <td  class="add-scene-action2-brightness">
+                                                        0
+                                                    </td>
+                                                    <td ><input class="add-scene-action2-range" type="range" name="slider" style="width: 100%;"  data-id="1" value="0" min="0" max="100" data-highlight="true" oninput="onChangeAction2Brightness(this.dataset.id, this.value)" onchange="onChangeAction2Brightness(this.dataset.id, this.value)"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="action">延迟:</td>
+                                                    <td class="switch">
+                                                        否
+                                                        <label class="label-switch">
+                                                            <input type="checkbox">
+                                                            <div class="checkbox"></div>
+                                                        </label> 是
+                                                    </td>
+                                                    <td class="switch">
+                                                        <select type="text"  class="add-scene-action2-delay-hour-select" value="0小时"></select>
+                                                    </td>
+                                                    <td class="switch">
+                                                        <select type="text" class="add-scene-action2-delay-minute-select" value="0分钟"></select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template id="add_scene_template_panel">
+                <li id="add_scene_li_panel" class="li-panel">
+                    <a onclick="return false;" class="item-content">
+                        <div class="item-inner">
+                            <table class="table-device" >
+                                <tr>
+                                    <td class="panel-title">
+                                        开关面板
+                                    </td>
+                                    <td >
+                                        <select id="add-scene-select-panel" >
+
+                                        </select>
+                                    </td>
+                                    <td width="8%">
+                                        <img src="../img/ic_more.png" class="more">
+                                    </td>
+                                    <td  rowspan="2" class="device-delete" style="width: 10%;" data-id="" onclick="showAddSceneDeletePanel(this.dataset.id)"><img src="../img/ic_del_red.png" class="edit"></td>
+                                </tr>
+                                <tr>
+                                    <td class="panel-title">
+                                        面板插槽
+                                    </td>
+                                    <td>
+                                        <select id="add-scene-select-panel-slot" >
+
+                                        </select>
+                                    </td>
+                                    <td width="8%">
+                                        <img src="../img/ic_more.png" class="more">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </a>
+                </li>
+            </template>
+        </div>
+        <footer>
+            <div  class="bottom-block">
+                <div class="row">
+                    <a class="button button-bottom back col-50">取消</a>
+                    <a class="button button-bottom col-50 highlight" onclick="addNewScene();return false;">确定</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

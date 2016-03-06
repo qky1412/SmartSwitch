@@ -17,6 +17,7 @@ body {
     padding-bottom: 50px;
 }
 td {
+    vertical-align: middle;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
@@ -142,12 +143,12 @@ td.panel-title {
 .text-content {
     color: #727272;
     padding-left: 15px;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 .text-content-black {
     color: #1e1e1e;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 
@@ -173,7 +174,7 @@ a.item-content:active {
 }
 .list-block .item-title.label {
     width: 25%;
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     color: black;
 }
 
@@ -276,5 +277,29 @@ img.down-arrow {
 .item-after img.edit{
    vertical-align: middle;
 }
+td.action {
+    width: 20%;
+    font-size: 0.75rem;
+}
 
+td.switch {
+    width: 35%;
+    font-size: 0.75rem;
+}
+td.add-scene-action1-brightness, td.add-scene-action2-brightness {
+    width: 22%;
+    font-size: 0.75rem;
+    text-align: center;
+}
+.custom-delay-hour-select, .custom-delay-minute-select {
+    font-size: 0.75rem;
+}
 
+.button-add-device {
+    border: none;
+    margin: 20px;
+    background-color: #68d68b;
+    color: white;
+    height: 40px;
+    line-height: 40px;
+}
