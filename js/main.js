@@ -64,11 +64,25 @@ $(document).ready(function(){
         });
         initFloorSelect();
     });
+    $(document).on("pageInit", "#page-edit-output-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        refreshEditOutputDevice(getParameterByName("id"));
+    });
     $(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
         });
         initFloorSelect();
+    });
+    $(document).on("pageInit", "#page-edit-input-device", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        initFloorSelect();
+        refreshEditInputDevice(getParameterByName("id"));
     });
     $(document).on("pageInit", "#page-add-scene", function (e, id, page) {
         JDSMART.ready(function () {
@@ -269,6 +283,7 @@ function refreshOutputDeviceList() {
         tmp.querySelector('a').dataset.id = output.id;
         tmp.querySelector('.text-title').innerText = output.name;
         tmp.querySelector('#span-output-id').innerText = output.id;
+        tmp.querySelector('.device-edit').dataset.id = output.id;
         tmp.querySelector('#span-output-room').innerText = output.room.name;
         tmp.querySelector('#span-output-floor').innerText = output.floor.name;
         document.getElementById("home-output-module").appendChild(tmp);
@@ -285,6 +300,7 @@ function refreshInputDeviceList() {
         tmp.querySelector('a').dataset.id = input.id;
         tmp.querySelector('.text-title').innerText = input.name;
         tmp.querySelector('#span-input-id').innerText = input.id;
+        tmp.querySelector('.device-edit').dataset.id = input.id;
         tmp.querySelector('#span-input-room').innerText = input.room.name;
         tmp.querySelector('#span-input-floor').innerText = input.floor.name;
         document.getElementById("home-input-module").appendChild(tmp);
@@ -762,7 +778,27 @@ function addNewOutputDevice() {
     //TODO 这里的findRoom有问题
     //var room = floor.findRoom(roomId);
     //TODO 不知道这里是否需要绑定继电器已接路数
+}
+/**
+ * 编辑输出设备页面所需js
+ */
+function refreshEditOutputDevice(id) {
+    var output = Database.getRelayByid(id);
+    document.getElementById("input-id").value = output.id;
+    document.getElementById("input-name").value = output.name;
+    document.getElementById("select-floor").value = output.floor.id;
+    document.getElementById("select-room").value = output.room.id;
+}
 
+function showDeleteOutputDevice() {
+    $.confirm('是否要删除该输出设备?', function () {
+        deleteOutputDevice(getParameterByName("id"));
+    });
+}
+function deleteOutputDevice(id) {
+    var deviceToDelete = Database.getRelayByid(id)
+    Database.deleteRelayFromList(deviceToDelete);
+    $.router.back("../html/home.html");
 }
 /**
  * 添加输入设备页面所需js
@@ -793,6 +829,27 @@ function addNewInputDevice() {
     //var room = floor.findRoom(roomId);
     //TODO 不知道这里是否需要绑定继电器已接路数
 
+}
+/**
+ * 编辑输入设备页面所需js
+ */
+function refreshEditInputDevice(id) {
+    var input = Database.getCtlPanelByid(id);
+    document.getElementById("input-id").value = input.id;
+    document.getElementById("input-name").value = input.name;
+    document.getElementById("select-floor").value = input.floor.id;
+    document.getElementById("select-room").value = input.room.id;
+}
+
+function showDeleteInputDevice() {
+    $.confirm('是否要删除该输入设备?', function () {
+        deleteInputDevice(getParameterByName("id"));
+    });
+}
+function deleteInputDevice(id) {
+    var deviceToDelete = Database.getRelayByid(id)
+    Database.deleteRelayFromList(deviceToDelete);
+    $.router.back("../html/home.html");
 }
 /**
  * 添加配置页面所需js
