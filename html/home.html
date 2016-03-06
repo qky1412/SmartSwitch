@@ -54,23 +54,32 @@
                 </div>
             </template>
             <template id="template-list-home-device">
-                        <li>
-                            <a class="item-content" >
-                                <div class="item-inner">
-                                    <table class="table-device" >
-                                        <tr>
-                                            <td><span class="text-title col-80" id="device-title">{{Title}}</span></td>
-                                            <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span >编辑</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="text-content">楼层:</span><span id="home-device-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="home-device-room" class="text-content-black">{{Room}}</span></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </a>
-                        </li>
+                <li>
+                    <a class="item-content">
+                        <div class="item-inner">
+                            <table class="table-device">
+                                <tr>
+                                    <td>
+                                        <span class="text-title col-80" id="device-title">{{Title}}</span>
+                                    </td>
+                                    <td rowspan="2" class="device-edit">
+                                        <img src="../img/ic_edit_gray.png" class="edit">
+                                        <span>编辑</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="text-content">楼层:</span>
+                                        <span id="home-device-floor" class="text-content-black">{{Floor}}</span>
+                                        <span class="text-content">房间:</span>
+                                        <span id="home-device-room" class="text-content-black">{{Room}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </a>
+                </li>
             </template>
-
 
             <div id="tab2" class="tab">
                 <div class="content-block">
@@ -93,11 +102,21 @@
                             <div class="item-inner">
                                 <table class="table-device" >
                                     <tr>
-                                        <td><span class="text-title col-80">继电器1</span><span id="span-output-id"class="text-second-title">ID:123456</span></td>
-                                        <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span>编辑</span></td>
+                                        <td>
+                                            <span class="text-title col-80">继电器1</span>
+                                            <span id="span-output-id"class="text-second-title">ID:123456</span>
+                                        </td>
+                                        <td  rowspan="2" class="device-edit">
+                                            <img src="../img/ic_edit_gray.png" class="edit">
+                                            <span>编辑</span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="text-content">楼层:</span><span id="span-output-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="span-output-room" class="text-content-black">{{Room}}</span></td>
+                                        <td><span class="text-content">楼层:</span>
+                                            <span id="span-output-floor" class="text-content-black">{{Floor}}</span>
+                                            <span class="text-content">房间:</span>
+                                            <span id="span-output-room" class="text-content-black">{{Room}}</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -110,11 +129,20 @@
                             <div class="item-inner">
                                 <table class="table-device" >
                                     <tr>
-                                        <td><span class="text-title col-80">继电器1</span><span id="span-input-id"class="text-second-title">ID:123456</span></td>
-                                        <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span>编辑</span></td>
+                                        <td><span class="text-title col-80">继电器1</span>
+                                            <span id="span-input-id"class="text-second-title">ID:123456</span>
+                                        </td>
+                                        <td  rowspan="2" class="device-edit">
+                                            <img src="../img/ic_edit_gray.png" class="edit">
+                                            <span>编辑</span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="text-content">楼层:</span><span id="span-input-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="span-input-room" class="text-content-black">{{Room}}</span></td>
+                                        <td><span class="text-content">楼层:</span>
+                                            <span id="span-input-floor" class="text-content-black">{{Floor}}</span>
+                                            <span class="text-content">房间:</span>
+                                            <span id="span-input-room" class="text-content-black">{{Room}}</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -126,7 +154,11 @@
             <div id="tab3" class="tab">
                 <div class="content-block">
                     <div class="card">
-                        <div class="card-header">全部关闭<div class="item-after"><img src="../img/ic_edit_white.png" class="edit">编辑</div></div>
+                        <div class="card-header">全部关闭
+                            <div class="item-after">
+                                <img src="../img/ic_edit_white.png" class="edit">编辑
+                            </div>
+                        </div>
                         <div class="card-content">
                             <div  class="list-config list-block">
                                 <ul>
@@ -141,7 +173,11 @@
                 </div>
                 <template id="home-config-template-config">
                     <div class="card">
-                        <div class="card-header"><div class="scene-name">全部关闭</div><div class="item-after" data-id="" onclick="editConfig(this.dataset.id);"><img src="../img/ic_edit_white.png" class="edit">编辑</div></div>
+                        <div class="card-header"><div class="scene-name">全部关闭</div>
+                            <div class="item-after" data-id="" onclick="editConfig(this.dataset.id);">
+                                <img src="../img/ic_edit_white.png" class="edit">编辑
+                            </div>
+                        </div>
                         <div class="card-content">
                             <div  class="list-config list-block">
                                 <ul id="home-config-ul-scene">
@@ -156,10 +192,17 @@
                         <div class="item-inner">
                             <table class="table-device" >
                                 <tr>
-                                    <td><span class="text-title col-80">继电器1</span></td>
+                                    <td>
+                                        <span class="text-title col-80">继电器1</span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="text-content">动作:</span><span id="home-config-action1" class="text-content-black">{{Floor}}</span><span class="text-content">延迟:</span><span id="id-home-config-delay1" class="text-content-black">{{Room}}</span></td>
+                                    <td>
+                                        <span class="text-content">动作:</span>
+                                        <span id="home-config-action1" class="text-content-black">{{Floor}}</span>
+                                        <span class="text-content">延迟:</span>
+                                        <span id="id-home-config-delay1" class="text-content-black">{{Room}}</span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -217,11 +260,7 @@
                     </div>
                 </template>
             </div>
-
         </div>
-
-
-
 </div>
 
 <footer>
