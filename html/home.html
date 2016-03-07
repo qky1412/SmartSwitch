@@ -6,6 +6,7 @@
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
     <meta name="format-detection" content="telephone=no">
     <link href="../css/light7.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/jqueryui/1.11.3/jquery-ui.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css"/>
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://static.360buyimg.com/smart/jdsmart-1.0.1.js"></script>
@@ -53,23 +54,32 @@
                 </div>
             </template>
             <template id="template-list-home-device">
-                        <li>
-                            <a class="item-content" >
-                                <div class="item-inner">
-                                    <table class="table-device" >
-                                        <tr>
-                                            <td><span class="text-title col-80" id="device-title">{{Title}}</span></td>
-                                            <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span >编辑</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><span class="text-content">楼层:</span><span id="home-device-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="home-device-room" class="text-content-black">{{Room}}</span></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </a>
-                        </li>
+                <li>
+                    <a class="item-content">
+                        <div class="item-inner">
+                            <table class="table-device">
+                                <tr>
+                                    <td>
+                                        <span class="text-title col-80" id="device-title">{{Title}}</span>
+                                    </td>
+                                    <td rowspan="2" class="device-edit" data-id="" onclick="enterPage('edit_home_device.html', this.dataset.id)">
+                                        <img src="../img/ic_edit_gray.png" class="edit">
+                                        <span>编辑</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="text-content">楼层:</span>
+                                        <span id="home-device-floor" class="text-content-black">{{Floor}}</span>
+                                        <span class="text-content">房间:</span>
+                                        <span id="home-device-room" class="text-content-black">{{Room}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </a>
+                </li>
             </template>
-
 
             <div id="tab2" class="tab">
                 <div class="content-block">
@@ -92,11 +102,21 @@
                             <div class="item-inner">
                                 <table class="table-device" >
                                     <tr>
-                                        <td><span class="text-title col-80">继电器1</span><span id="span-output-id"class="text-second-title">ID:123456</span></td>
-                                        <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span>编辑</span></td>
+                                        <td>
+                                            <span class="text-title col-80">继电器1</span>
+                                            <span id="span-output-id"class="text-second-title">ID:123456</span>
+                                        </td>
+                                        <td  rowspan="2" class="device-edit" onclick="enterPage('edit_output_device.html', this.dataset.id)">
+                                            <img src="../img/ic_edit_gray.png" class="edit">
+                                            <span>编辑</span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="text-content">楼层:</span><span id="span-output-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="span-output-room" class="text-content-black">{{Room}}</span></td>
+                                        <td><span class="text-content">楼层:</span>
+                                            <span id="span-output-floor" class="text-content-black">{{Floor}}</span>
+                                            <span class="text-content">房间:</span>
+                                            <span id="span-output-room" class="text-content-black">{{Room}}</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -109,11 +129,20 @@
                             <div class="item-inner">
                                 <table class="table-device" >
                                     <tr>
-                                        <td><span class="text-title col-80">继电器1</span><span id="span-input-id"class="text-second-title">ID:123456</span></td>
-                                        <td  rowspan="2" class="device-edit"><img src="../img/ic_edit_gray.png" class="edit"><span>编辑</span></td>
+                                        <td><span class="text-title col-80">继电器1</span>
+                                            <span id="span-input-id"class="text-second-title">ID:123456</span>
+                                        </td>
+                                        <td  rowspan="2" class="device-edit" onclick="enterPage('edit_input_device.html', this.dataset.id)">
+                                            <img src="../img/ic_edit_gray.png" class="edit">
+                                            <span>编辑</span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="text-content">楼层:</span><span id="span-input-floor" class="text-content-black">{{Floor}}</span><span class="text-content">房间:</span><span id="span-input-room" class="text-content-black">{{Room}}</span></td>
+                                        <td><span class="text-content">楼层:</span>
+                                            <span id="span-input-floor" class="text-content-black">{{Floor}}</span>
+                                            <span class="text-content">房间:</span>
+                                            <span id="span-input-room" class="text-content-black">{{Room}}</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -125,34 +154,15 @@
             <div id="tab3" class="tab">
                 <div class="content-block">
                     <div class="card">
-                        <div class="card-header">全部关闭<div class="item-after"><img src="../img/ic_edit_white.png" class="edit">编辑</div></div>
+                        <div class="card-header">全部关闭
+                            <div class="item-after">
+                                <img src="../img/ic_edit_white.png" class="edit">编辑
+                            </div>
+                        </div>
                         <div class="card-content">
                             <div  class="list-config list-block">
                                 <ul>
-                                    <li class="item-content">
-                                        <div class="item-inner">
-                                            <table class="table-device" >
-                                                <tr>
-                                                    <td><span class="text-title col-80">继电器1</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="text-content">动作:</span><span class="text-content-black">{{Floor}}</span><span class="text-content">延迟:</span><span class="text-content-black">{{Room}}</span></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </li>
-                                    <li class="item-content">
-                                        <div class="item-inner">
-                                            <table class="table-device" >
-                                                <tr>
-                                                    <td><span class="text-title col-80">继电器1</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="text-content">动作:</span><span class="text-content-black">{{Floor}}</span><span class="text-content">延迟:</span><span class="text-content-black">{{Room}}</span></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </li>
+
                                 </ul>
                             </div>
                         </div>
@@ -163,7 +173,11 @@
                 </div>
                 <template id="home-config-template-config">
                     <div class="card">
-                        <div class="card-header">全部关闭<div class="item-after" data-id="" onclick="editConfig(this.dataset.id);"><img src="../img/ic_edit_white.png" class="edit">编辑</div></div>
+                        <div class="card-header"><div class="scene-name">全部关闭</div>
+                            <div class="item-after" data-id="" onclick="enterPage('edit_scene.html', this.dataset.id);">
+                                <img src="../img/ic_edit_white.png" class="edit">编辑
+                            </div>
+                        </div>
                         <div class="card-content">
                             <div  class="list-config list-block">
                                 <ul id="home-config-ul-scene">
@@ -178,10 +192,17 @@
                         <div class="item-inner">
                             <table class="table-device" >
                                 <tr>
-                                    <td><span class="text-title col-80">继电器1</span></td>
+                                    <td>
+                                        <span class="text-title col-80">继电器1</span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="text-content">动作:</span><span id="home-config-action1" class="text-content-black">{{Floor}}</span><span class="text-content">延迟:</span><span id="id=home-config-delay1" class="text-content-black">{{Room}}</span></td>
+                                    <td>
+                                        <span class="text-content">动作:</span>
+                                        <span id="home-config-action1" class="text-content-black">{{Floor}}</span>
+                                        <span class="text-content">延迟:</span>
+                                        <span id="id-home-config-delay1" class="text-content-black">{{Room}}</span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -190,79 +211,56 @@
             </div>
 
             <div id="tab4" class="tab">
-                    <div class="content-block-title">场景控制</div>
-                    <div id="list-scene-control">
-                        <div class="control-grid">
-                            <div class="control-content">
-                                <div class="control-circle">
-                                    <div class="control-digit">
-                                        1
-                                    </div>
-                                </div>
-                                <span>
-                                    全部关闭
-                                </span>
+                <div class="content-block-title">场景控制</div>
+                <div class="control-grid">
+                    <div class="control-content">
+                        <div class="control-circle">
+                            <div class="control-digit">
+                                1
                             </div>
                         </div>
-                        <div class="control-grid">
-                            <div class="control-content">
-                                <div class="control-circle">
-                                    <div class="control-digit">
-                                        1
-                                    </div>
-                                </div>
-                                <span>
-                                    到家
-                                </span>
-                            </div>
-                        </div><div class="control-grid">
+                        <span>
+                            全部关闭
+                        </span>
+                    </div>
+                </div>
+                <div id="home-operation-scene">
+                    <!-- here come the scenes -->
+                </div>
+                <div style="clear: both"></div>
+                <div id="home-operation-devices">
+                    <!-- here come the devices specified by room -->
+                </div>
+                <template id="home-operation-template-scene">
+                    <div class="control-grid">
                         <div class="control-content">
                             <div class="control-circle">
                                 <div class="control-digit">
                                     1
                                 </div>
                             </div>
-                                <span>
-                                    看电影
-                                </span>
-                        </div>
-                    </div><div class="control-grid">
-                        <div class="control-content">
-                            <div class="control-circle">
-                                <div class="control-digit">
-                                    1
-                                </div>
-                            </div>
-                                <span>
-                                    吃饭
-                                </span>
-                        </div>
-                    </div><div class="control-grid">
-                        <div class="control-content">
-                            <div class="control-circle">
-                                <div class="control-digit">
-                                    1
-                                </div>
-                            </div>
-                                <span>
-                                    睡觉
-                                </span>
+                        <span class="home-operation-scene-name scene">
+                            场景名称
+                        </span>
                         </div>
                     </div>
-                    </div>
+                </template>
+                <template id="home-operation-template-room">
+                    <div class="content-block-title">一楼客厅</div>
+                    <div id="home-operation-list-device"></div>
                     <div style="clear: both"></div>
-                    <div id="list-device-control">
-                        <div class="content-block-title">一楼客厅</div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
-                        <div class="control-grid"><div class="control-content"><img src="../img/i-list-chevron-right.png"  width="10px" height="10px">1</div></div>
+                </template>
+                <template id="home-operation-template-device">
+                    <div class="control-grid">
+                        <div class="control-content device-on" id="home-operation-device-id">
+                            <img src="../img/ic_general.png" class="custom-icon">
+                            <span class="home-operation-device-name"></span>
+                            <img src="../img/ic_edit_gray.png" class="custom-icon-edit">
+                        </div>
                     </div>
+                </template>
             </div>
-
         </div>
-
 </div>
 
 <footer>
@@ -281,7 +279,7 @@
     </div>
     <div id="bottom-control3" class="bottom-block" style="display: none">
         <div class="row">
-            <a class="button button-bottom">添加配置</a>
+            <a href="add_scene.html" class="button button-bottom highlight">添加配置</a>
         </div>
     </div>
 </footer>

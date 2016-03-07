@@ -17,6 +17,7 @@ body {
     padding-bottom: 50px;
 }
 td {
+    vertical-align: middle;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
@@ -142,12 +143,12 @@ td.panel-title {
 .text-content {
     color: #727272;
     padding-left: 15px;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 .text-content-black {
     color: #1e1e1e;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 
@@ -173,7 +174,7 @@ a.item-content:active {
 }
 .list-block .item-title.label {
     width: 25%;
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     color: black;
 }
 
@@ -193,10 +194,12 @@ a.item-content:active {
     border-left: 1px solid #eef2f7;
     border-top: 1px solid #eef2f7;
     background-color: white;
+    vertical-align: middle;
 }
 .control-grid .control-content {
     line-height: 100px;
     text-align: center;
+    vertical-align: middle;
 }
 
 .control-circle {
@@ -216,7 +219,7 @@ a.item-content:active {
     display: block;
 }
 
-.control-content span {
+.control-content span.scene {
     margin-left: -32px;
 }
 img.config {
@@ -276,5 +279,65 @@ img.down-arrow {
 .item-after img.edit{
    vertical-align: middle;
 }
+td.action {
+    width: 20%;
+    font-size: 0.75rem;
+}
 
+td.switch {
+    width: 35%;
+    font-size: 0.75rem;
+}
+td.add-scene-action1-brightness, td.add-scene-action2-brightness {
+    width: 22%;
+    font-size: 0.75rem;
+    text-align: center;
+}
+.custom-delay-hour-select, .custom-delay-minute-select {
+    font-size: 0.75rem;
+}
 
+.button-add-device {
+    border: none;
+    margin: 10px;
+    background-color: #68d68b;
+    color: white;
+    height: 40px;
+    line-height: 40px;
+}
+.button-delete {
+    border: none;
+    margin: 20px;
+    background-color: red;
+    color: white;
+    height: 40px;
+    line-height: 40px;
+}
+
+select {
+    font-size:0.75rem !important;
+}
+
+img.custom-icon {
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-top: 30px;
+    margin-left: 15px;
+}
+
+span.home-operation-device-name {
+    margin-left: -32px;
+}
+
+.device-on {
+    color: #68d68b;
+}
+
+img.custom-icon-edit {
+    width: 10px;
+    height: 10px;
+    float: right;
+    margin-top: 4px;
+    margin-right: 4px;
+}
