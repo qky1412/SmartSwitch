@@ -945,14 +945,14 @@ function YN_Room(name) {
 }
 
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs) {
+function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
     this.room = room; //电器所处的房间
     this.relay_assoc = relay_assoc; //关联的继电器
     this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
-
+    this.iconType = iconType;
     //生成YN_s_key 关联按钮组
     this.to_s_key = function () {
         var rt = '';

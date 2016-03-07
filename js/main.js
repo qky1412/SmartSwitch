@@ -582,6 +582,7 @@ function addNewHomeDevice() {
     var roomId = document.getElementById("select-room").value.trim();
     var relayId = document.getElementById("select-relay").value.trim();
     var relaySlot = document.getElementById("select-relay-slot").value.trim();
+    var iconType = document.getElementById("device_type").value
     if(name == null || name == "") {
         alert("名称不能为空");
         return;
@@ -639,7 +640,7 @@ function addNewHomeDevice() {
             }
         }
     }
-    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs);
+    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType);
     Database.addElecEquiToList(newDevice);
     $.router.back("../html/home.html");
 }
