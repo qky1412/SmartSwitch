@@ -149,6 +149,41 @@ function enterPageWithType(url, id, isScene) {
     //window.location.href = url;
     $.router.loadPage(url+"?id="+id + "&isScene=" + isScene);
 }
+
+function getImageUrlByType(type) {
+    var imageUrl = '';
+    switch(type) {
+        case '0':
+            imageUrl = "../img/ic_general.png";
+            break;
+        case '1':
+            imageUrl = "../img/ic_table_lamp.png";
+            break;
+        case '2':
+            imageUrl = "../img/ic_bulb.png";
+            break;
+        case '3':
+            imageUrl = "../img/ic_wall_lamp.png";
+            break;
+        case '4':
+            imageUrl = "../img/ic_fan.png";
+            break;
+        case '5':
+            imageUrl = "../img/ic_water_heater.png";
+            break;
+        case '6':
+            imageUrl = "../img/ic_wifi.png";
+            break;
+        case '7':
+            imageUrl = "../img/ic_bath_heater.png";
+            break;
+
+        default:
+            imageUrl = "../img/ic_general.png";
+    }
+    return imageUrl;
+}
+
 function initFloorSelect() {
     var floors = Database.getFloorList();
     var selectFloor = document.getElementById("select-floor");
@@ -405,6 +440,7 @@ function refreshSingleDeviceList() {
                 tmpDevice.querySelector('.home-operation-device-name').innerText = device.name;
                 tmpDevice.querySelector('.custom-icon-edit').dataset.id = device.id;
                 tmpDevice.querySelector('#home-operation-device-id').id ="home-operation-device-id" + device.id;
+                tmpDevice.querySelector('.custom-icon').src =getImageUrlByType(device.iconType);
                 document.getElementById("home-operation-list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
         }
