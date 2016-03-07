@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <title>定制任务</title>
+</head>
+<body>
+<div class="page" id="page-control-detail">
+    <div class="content">
+        <div class="card">
+            <div class="card-header">场景或电器名称<div class="item-after"><img src="../img/ic_add.png" class="edit">添加</div></div>
+            <div class="card-content">
+                <div class="list-config list-block">
+                    <ul id="ul_task">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <template id="template-task">
+            <li class="item-content" id="home-config-li-device">
+                <div class="item-inner">
+                    <table class="table-device" >
+                        <tr>
+                            <td class="control-status">
+                                <span class="text-status">开启</span>
+                            </td>
+                            <td class="control-time">
+                                <span class="text-time">13:24</span>
+                            </td>
+                            <td class="control-date">
+                                <span class="text-date">2016/10/23</span>
+                            </td>
+                            <td class="control-switch">
+                                <label class="label-switch">
+                                    <input type="checkbox"  id="control-checkbox">
+                                    <div class="checkbox"></div>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </li>
+        </template>
+    </div>
+    <footer>
+        <div  class="bottom-block">
+            <div class="row">
+                <a class="button button-bottom back col-50">取消</a>
+                <a class="button button-bottom col-50 highlight open-popup open-about" data-popup=".popup-about">添加定时任务</a>
+            </div>
+        </div>
+    </footer>
+</div>
+<div class="popup popup-about">
+    <div class="content-block">
+        <div class="list-config list-block">
+            <ul>
+                <!-- Text inputs -->
+                <li id="control-action">
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label col-40" >动作: <span class="text-brightness">100</span></div>
+                            <div class="item-input">
+                                <input id="input-brightness" type="range" max="100" min="0" value="100" onchange="controlRangeChange(this.value)" oninput="controlRangeChange(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label col-40">日期: </div>
+                            <div class="item-input">
+                                <input id="input-date" type="date">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label col-40" >时间: </div>
+                            <div class="item-input">
+                                <input id="input-time" type="time" value="09:00">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title label col-40">
+                                重复:
+                                <label class="label-switch">
+                                <input type="checkbox" class="checkbox-repeat" id="checkbox-repeat">
+                                    <div class="checkbox">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="item-input">
+                                <select multiple="true">
+                                    <option value="0">周一</option>
+                                    <option value="1">周二</option>
+                                    <option value="2">周三</option>
+                                    <option value="3">周四</option>
+                                    <option value="4">周五</option>
+                                    <option value="5">周六</option>
+                                    <option value="6">周日</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div  class="bottom-block">
+            <div class="row">
+                <a class="button button-bottom close-popup col-50">取消</a>
+                <a class="button button-bottom col-50 highlight close-popup" onclick="addNewTask()">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

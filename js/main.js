@@ -95,6 +95,13 @@ $(document).ready(function(){
         });
         initEditSceneData();
     });
+    $(document).on("pageInit", "#page-control-detail", function (e, id, page) {
+        JDSMART.ready(function () {
+            showButton(false);
+        });
+        refreshTaskList();
+        initTaskPopup();
+    });
     $.init();
 });
 /**
@@ -137,6 +144,10 @@ function getParameterByName(name, url) {
 function enterPage(url, id) {
     //window.location.href = url;
     $.router.loadPage(url+"?id="+id);
+}
+function enterPageWithType(url, id, isScene) {
+    //window.location.href = url;
+    $.router.loadPage(url+"?id="+id + "&isScene=" + isScene);
 }
 function initFloorSelect() {
     var floors = Database.getFloorList();
@@ -241,6 +252,12 @@ function showDeletePanel(id) {
 function deletePanel(id) {
     $('#' + "li_panel" +id).remove();
 }
+
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
 /**
  * 电器布局页面所需js
  */
@@ -361,6 +378,7 @@ function refreshOperationList() {
         var scene = scenes[i];
         tmpScene.querySelector('.control-digit').innerText = String(i + 2);
         tmpScene.querySelector('.home-operation-scene-name').innerText = scene.name;
+        tmpScene.querySelector('.custom-icon-edit').dataset.id = scene.id;
         document.getElementById("home-operation-scene").appendChild(tmpScene)
     }
 }
@@ -385,6 +403,7 @@ function refreshSingleDeviceList() {
                 var device = devices[k];
                 var tmpDevice = templateDevice.content.cloneNode(true);
                 tmpDevice.querySelector('.home-operation-device-name').innerText = device.name;
+                tmpDevice.querySelector('.custom-icon-edit').dataset.id = device.id;
                 tmpDevice.querySelector('#home-operation-device-id').id ="home-operation-device-id" + device.id;
                 document.getElementById("home-operation-list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
@@ -1029,7 +1048,7 @@ function addNewScene() {
             }
         }
     }
-    var newScene = new YN_Scene(name, sceneSteps, ctrlPanelAssocs, null);
+    var newScene = new YN_Scene(name, sceneSteps, ctrlPanelAssocs, []);
     Database.addSceneToList(newScene);
     $.router.back("../html/home.html");
 }
@@ -1251,6 +1270,103 @@ function deleteScene() {
     var sceneToDelete = Database.getSceneByid(getParameterByName("id"));
     Database.deleteSceneFromList(sceneToDelete);
     $.router.back("../html/home.html");
+}
+/**
+ * 场景或单一电器的定制任务界面所需js
+ */
+function refreshTaskList() {
+    document.getElementById("ul_task").innerHTML = '';
+    var template = document.getElementById("template-task");
+    var isScene = getParameterByName("isScene") == "1" ? true:false;
+    if(isScene) {
+        var scene = Database.getSceneByid(getParameterByName("id"));
+        if(scene.timing_tasks != null) {
+            for(var i = 0, length = scene.timing_tasks.length; i < length; i++) {
+                var tmp = template.content.cloneNode(true);
+                var timeTask = scene.timing_tasks[i];
+                var timeConfig = timeTask.timing_config;
+                tmp.querySelector('.text-status').text = '';
+                //TODO 时间格式待商榷
+                //tmp.querySelector('.text-time').text = timeConfig.datetime;
+                //tmp.querySelector('.text-date').text = timeConfig.datetime;
+                tmp.querySelector('#control-checkbox').checked = timeConfig.status;
+                document.getElementById("ul_task").appendChild(tmp);
+            }
+        }
+    } else {
+        //TODO 如果是单一设备
+    }
+}
+function initTaskPopup() {
+    if(getParameterByName("isScene") == "1" ? true:false) {
+        $("#control-action").hide();
+    } else {
+        $("#control-action").show();
+    }
+    document.getElementById("input-date").value = new Date().toDateInputValue();
+
+}
+function controlRangeChange(value) {
+    if(value == "0") {
+        document.getElementsByClassName("text-brightness")[0].innerText = "关闭";
+    } else {
+        document.getElementsByClassName("text-brightness")[0].innerText = value;
+    }
+
+}
+function addNewTask() {
+    var isScene = getParameterByName("isScene") == "1" ? true:false;
+    var id = getParameterByName("id");
+    var actionValue = document.getElementById("input-brightness").value;
+    var time = document.getElementById("input-time").value;
+    var isRepeat = document.getElementById("checkbox-repeat").checked;
+    var date;
+    var repeatValueArrays = [false,false,false,false,false,false,false];
+    if(isRepeat) {
+        var repeat = document.getElementById("mySelect");
+        for(var i = 0;i < 7; i++) {
+            if(repeat.options[i].selected) {
+                repeatValueArrays[i] = true;
+            }
+        }
+
+    } else {
+        if(time != null) {
+            date = document.getElementById("input-date").value;
+            if(date == null)  {
+                alert("请选择任务执行日期");
+                return;
+            }
+        } else {
+            alert("请选择任务执行时间");
+            return;
+        }
+    }
+    //TODO 这里需要组合日期和时间
+    var timingConfig = new YN_Timing_Config(isRepeat? 2:1, time, false);
+    var timingTask = new YN_Timing_Task("fakepid", timingConfig);
+    var o;
+    if(isScene) {
+        o = Database.getSceneByid(id);
+        if(o == null) {
+            alert("场景不存在");
+            $.closeModal(popup);
+            $.router.back("../html/home.html");
+            return;
+        }
+        if(o.timing_tasks == null || o.timing_tasks.length == 0) {
+            //TODO here we should fetch pid
+            o.timing_tasks = [];
+
+        }
+        o.timing_tasks.push(timingTask);
+
+        alert(JSON.stringify(o.timing_tasks));
+        Database.updateSceneList(o);
+    } else {
+        //TODO 如果是单一设备
+    }
+    $.closeModal();
 }
 /**
  * only for test

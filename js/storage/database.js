@@ -1094,16 +1094,15 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
 }
 
 //定时配置对象
-function YN_Timing_Config(type, datetime, status) {
-    this.type = type; // 01代表单次定时,02代表每周循环
+function YN_Timing_Config(type, datetime, repeatArray, status) {
+    this.type = type; // 1代表单次定时,2代表每周循环
     // todo: 配置的具体格式待定
     this.datetime = datetime;
-    this.status = status; //开启或是关闭
-
+    this.repeatArray = repeatArray;
+    this.status = status; //true开启false是关闭
     this.getDatetime = function () {
         return datetime;
     }
-
 }
 
 //定时任务
