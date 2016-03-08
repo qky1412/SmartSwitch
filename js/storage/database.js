@@ -1134,14 +1134,14 @@ function YN_Room(name) {
 }
 
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs) {
+function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
     this.room = room; //电器所处的房间
     this.relay_assoc = relay_assoc; //关联的继电器
     this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
-
+    this.iconType = iconType;
 
 }
 
@@ -1219,12 +1219,15 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
 }
 
 //定时配置对象
-function YN_Timing_Config(type, datetime, status) {
-    this.type = type; // 01代表单次定时,02代表每周循环
+function YN_Timing_Config(type, datetime, repeatArray, status) {
+    this.type = type; // 1代表单次定时,2代表每周循环
     // todo: 配置的具体格式待定
     this.datetime = datetime;
-    this.status = status; //开启或是关闭
-
+    this.repeatArray = repeatArray;
+    this.status = status; //true开启false是关闭
+    this.getDatetime = function () {
+        return datetime;
+    }
 }
 
 //定时任务

@@ -31,6 +31,31 @@
                 <div class="item-content">
 
                     <div class="item-inner">
+                        <div class="item-title label">电器类型:</div>
+                        <div class="item-input">
+                            <select id="device_type">
+                                <option selected value="0">通用</option>
+                                <option value="1">台灯</option>
+                                <option value="2">电灯</option>
+                                <option value="3">壁灯</option>
+                                <option value="5">风扇</option>
+                                <option value="6">热水器</option>
+                                <option value="8">路由器</option>
+                                <option value="9">浴霸</option>
+                            </select>
+                        </div>
+                        <div class="item-after"><img src="../img/ic_more.png" class="more"></div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="list-config list-block">
+        <ul>
+            <li>
+                <div class="item-content">
+
+                    <div class="item-inner">
                         <div class="item-title label">楼层:</div>
                         <div class="item-input">
                             <select id="select-floor" onchange="refreshRoomSelect()"></select>
