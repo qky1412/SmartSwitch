@@ -2,6 +2,8 @@
  * Created by tonychen on 16/2/24.
  */
 
+
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -29,13 +31,143 @@ function indexOfItemInArray(ary, ele, filter_func) {
 
 function findEleWithId(id, list) {
     var i = indexOfItemInArray(list, {'id': id}, function (ele, ary_ele) {
-        return ele.id == ary_ele.id;
+        return ele.id === ary_ele.id;
     });
 
-    if (i != -1) {
+    if (i !== -1) {
         return list[i];
     }
     return null;
+}
+
+function addEleToList(ele, list) {
+    list.push(ele);
+    return list;
+}
+
+function updateEleInList(ele, list) {
+    var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
+        return ele.id === ary_ele.id;
+    });
+
+    if (i !== -1) {
+        list[i] = ele;
+    }
+    return list;
+}
+
+function deleteEleFromList(ele, list) {
+    var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
+        return ele.id === ary_ele.id;
+    });
+    if (i !== -1) {
+        list.splice(i, 1);
+    }
+    return list;
+}
+
+
+/* ------------------------- */
+//一些对象方法
+
+//*YN_CtlPanel_assoc对象方法
+//生成YN_s_key
+function CtlPanel_Assoc_to_s_key(ctlpanel) {
+    //组成为: SN（id）+ 按键编号 + 按键类型
+    return '' + ctlpanel.panel.id + ctlpanel.btn_index + ctlpanel.panel.type;
+}
+
+
+//*YN_Elec_Equi对象方法
+//生成YN_s_key 关联按钮组
+//参数: elec_equic电器对象
+function Elec_equic_to_s_key(elec_equic) {
+    var rt = '';
+    for (var as_panel in elec_equic.panel_assocs) {
+        rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
+    }
+    return rt;
+}
+
+//YN_s_key按钮组的长度
+//参数: 电器对象
+function Elec_equic_len_s_key(elec_equic) {
+    return elec_equic.panel_assocs.length;
+}
+
+
+//生成YN_s_driver
+//参数: YN_Scene_Step对象
+function Scene_Step_to_s_driver(scene_step) {
+    //组成驱动SN+驱动编号+3位初始状态+2位延时时间+3位结束状态+2位延时时间
+    return '' + scene_step.elec_equi.relay_assoc.relay.id +
+        scene_step.elec_equi.relay_assoc.slot_index +
+        scene_step.action1 +
+        scene_step.action1_delay +
+        scene_step.action2 +
+        scene_step.action2_delay;
+}
+
+//*YN_Scene对象方法
+//删除指面板
+//参数: scene YN_Scene对象, panel: YN_CtlPanel对象
+//返回: 更新后的scene对象
+function deleteCtlPanel(scene, panel) {
+    scene.ctlpanel_assocs = deleteEleFromList(panel, scene.ctlpanel_assocs);
+    return scene;
+}
+
+
+//删除指定场景里的动作
+//参数: scene YN_Scene对象, sceneStep: YN_Scene_Step对象
+//返回: 更新后的scene对象
+function deleteSceneStep(scene, sceneStep) {
+    scene.scene_steps = deleteEleFromList(sceneStep, scene.scene_steps);
+    return scene;
+}
+
+//生成场景YN_s_key 场景关联按键
+//参数: scene YN_Scene对象
+function Scene_to_s_key(scene) {
+    var rt = '';
+    for (var as_panel in scene.panel_assocs) {
+        rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
+    }
+    return rt;
+}
+
+//生成场景关联子设备驱动组
+//参数: scene YN_Scene对象
+function Scene_to_s_driver(scene) {
+    var rt = '';
+    for (var step in this.scene_steps) {
+        rt = rt.concat(Scene_Step_to_s_driver(step));
+    }
+    return rt;
+}
+
+//场景中关联按键的个数
+//参数: scene YN_Scene对象
+function Scene_len_s_key(scene) {
+    return scene.ctlpanel_assocs.length;
+}
+
+//场景中关联按键的驱动个数
+//参数: scene YN_Scene对象
+function Scene_len_s_driver(scene) {
+    return scene.scene_steps.length;
+
+}
+
+
+//*YN_Timing_Config定时配置对象方法
+
+//参数: YN_Timing_Config对象
+//返回定时配置的时候格式,根据具体的定时配置对象类型
+function Timing_Config_getdatetime(timing_config) {
+    //todo 根据timing_config的类型进行
+    return timing_config.datetime;
+
 }
 
 
@@ -52,42 +184,42 @@ var Database = function () {
     }
 
     function writeToDb() {
-        for (key_table in dataTables) {
+        for (var key_table in dataTables) {
             Lockr.set(key_table, dataTables[key_table]);
         }
     }
 
 
     function readFromDb() {
-        for (key_table in dataTables) {
+        for (var key_table in dataTables) {
             dataTables[key_table] = Lockr.get(key_table) || [];
         }
     }
 
 
-    function addEleToList(ele, list) {
+    function addEleToListDb(ele, list) {
         list.push(ele);
         writeToDb();
         return list;
     }
 
-    function updateEleInList(ele, list) {
+    function updateEleInListDb(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id == ary_ele.id;
+            return ele.id === ary_ele.id;
         });
 
-        if (i != -1) {
+        if (i !== -1) {
             list[i] = ele;
         }
         writeToDb();
         return list;
     }
 
-    function deleteEleFromList(ele, list) {
+    function deleteEleFromListDb(ele, list) {
         var i = indexOfItemInArray(list, ele, function (ele, ary_ele) {
-            return ele.id == ary_ele.id;
+            return ele.id === ary_ele.id;
         });
-        if (i != -1) {
+        if (i !== -1) {
             list.splice(i, 1);
         }
         writeToDb();
@@ -104,8 +236,8 @@ var Database = function () {
 
         //获取指定Id的电器对象
         //返回: 电器对象 or null
-        'getElecEquiByid': function(id) {
-            return  findEleWithId(id, dataTables.elec_equi_list);
+        'getElecEquiByid': function (id) {
+            return findEleWithId(id, dataTables.elec_equi_list);
         },
 
         //获取电器列表
@@ -116,19 +248,19 @@ var Database = function () {
         //参数: 需新增的电器
         //返回: 新的电器列表
         'addElecEquiToList': function (elec_equi) {
-            return addEleToList(elec_equi, dataTables.elec_equi_list);
+            return addEleToListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待更新的电器
         //返回: 新的电器列表
         'updateElecEqui': function (elec_equi) {
-            return updateEleInList(elec_equi, dataTables.elec_equi_list);
+            return updateEleInListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         //参数: 待删除的电器
         //返回: 新的电器列表
         'deleteElecEquiFromList': function (elec_equi) {
-            return deleteEleFromList(elec_equi, dataTables.elec_equi_list);
+            return deleteEleFromListDb(elec_equi, dataTables.elec_equi_list);
         },
 
         /* ------------------------------------ */
@@ -136,7 +268,7 @@ var Database = function () {
 
         //获取指定Id的继电器对象
         //返回: 继电器对象 or null
-        'getRelayByid' : function(id) {
+        'getRelayByid': function (id) {
             return findEleWithId(id, dataTables.relay_list);
         },
 
@@ -148,19 +280,19 @@ var Database = function () {
         //参数: 需新增的继电器
         //返回: 新的继电器列表
         'addRelayToList': function (relay) {
-            return addEleToList(relay, dataTables.relay_list);
+            return addEleToListDb(relay, dataTables.relay_list);
         },
 
         //参数: 待更新的继电器
         //返回: 新的继电器列表
         'updateRelayList': function (relay) {
-            return updateEleInList(relay, dataTables.relay_list);
+            return updateEleInListDb(relay, dataTables.relay_list);
         },
 
         //参数: 待删除的继电器
         //返回: 新的继电器列表
         'deleteRelayFromList': function (relay) {
-            deleteEleFromList(relay, dataTables.relay_list);
+            deleteEleFromListDb(relay, dataTables.relay_list);
         },
 
         /* ------------------------------------ */
@@ -169,7 +301,7 @@ var Database = function () {
         //获取指定Id的控制面板对象
         //返回: 控制面板对象 or null
 
-        'getCtlPanelByid':function(id) {
+        'getCtlPanelByid': function (id) {
             return findEleWithId(id, dataTables.ctlpanel_list);
         },
 
@@ -182,19 +314,19 @@ var Database = function () {
         //参数: 需新增的控制面板
         //返回: 新的控制面板列表
         'addCtlPanelToList': function (panel) {
-            return addEleToList(panel, dataTables.ctlpanel_list);
+            return addEleToListDb(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待更新的控制面板
         //返回: 新的控制面板列表
         'updateCtlPanelList': function (panel) {
-            return updateEleInList(panel, dataTables.ctlpanel_list);
+            return updateEleInListDb(panel, dataTables.ctlpanel_list);
         },
 
         //参数: 待删除的控制面板
         //返回: 新的控制面板列表
         'deleteCtlPanelFromList': function (panel) {
-            deleteEleFromList(panel, dataTables.ctlpanel_list);
+            deleteEleFromListDb(panel, dataTables.ctlpanel_list);
         },
 
         /* -------------------------------- */
@@ -203,7 +335,7 @@ var Database = function () {
         //获取指定Id的场景对象
         //返回: 场景对象 or null
 
-        'getSceneByid': function(id) {
+        'getSceneByid': function (id) {
             return findEleWithId(id, dataTables.scene_list);
         },
 
@@ -215,19 +347,19 @@ var Database = function () {
         //参数: 需新增的场景
         //返回: 新的场景列表
         'addSceneToList': function (scene) {
-            return addEleToList(scene, dataTables.scene_list);
+            return addEleToListDb(scene, dataTables.scene_list);
         },
 
         //参数: 待更新的场景
         //返回: 新的场景列表
         'updateSceneList': function (scene) {
-            return updateEleInList(scene, dataTables.scene_list);
+            return updateEleInListDb(scene, dataTables.scene_list);
         },
 
         //参数: 待删除的场景
         //返回: 新的场景列表
         'deleteSceneFromList': function (scene) {
-            deleteEleFromList(scene, dataTables.scene_list);
+            deleteEleFromListDb(scene, dataTables.scene_list);
         },
 
 
@@ -237,7 +369,7 @@ var Database = function () {
         //获取指定Id的楼层对象
         //返回: 楼层对象 or null
 
-        'getFloorByid' : function (id) {
+        'getFloorByid': function (id) {
             return findEleWithId(id, dataTables.floor_list);
         },
 
@@ -249,14 +381,14 @@ var Database = function () {
         //参数: 需新增的楼层
         //返回: 新的楼层列表
         'addFloorToList': function (floor) {
-            return addEleToList(floor, dataTables.floor_list);
+            return addEleToListDb(floor, dataTables.floor_list);
         },
 
 
         //参数: 待更新的楼层
         //返回: 新的楼层列表
         'updateFloorList': function (floor) {
-            return updateEleInList(floor, dataTables.floor_list);
+            return updateEleInListDb(floor, dataTables.floor_list);
 
         },
 
@@ -264,7 +396,7 @@ var Database = function () {
         //返回: 新的楼层列表
 
         'deleteFloorFromList': function (floor) {
-            deleteEleFromList(floor, dataTables.floor_list);
+            deleteEleFromListDb(floor, dataTables.floor_list);
         },
 
         //参数楼层id
@@ -282,18 +414,15 @@ var Database = function () {
         },
 
 
-
-
-
         /* ------------------------ */
         /* 一些定制的api */
 
         //参数: 房间id
         //返回: 该房间下所有的电器, 如果一个电器都没,则返回空列表([])
-        'getElecEquicListInRoom': function(roomid) {
+        'getElecEquicListInRoom': function (roomid) {
 
-            return dataTables.elec_equi_list.filter(function(elec_equi){
-                return elec_equi.room.id == roomid;
+            return dataTables.elec_equi_list.filter(function (elec_equi) {
+                return elec_equi.room.id === roomid;
             });
 
         },
@@ -301,16 +430,16 @@ var Database = function () {
         //参数:房间id
         //返回: 该房间下所有的继电器,若无则返回[]
         'getRelayListInRoom': function (roomid) {
-            return dataTables.relay_list.filter(function(relay){
-                return relay.room.id == roomid;
+            return dataTables.relay_list.filter(function (relay) {
+                return relay.room.id === roomid;
             });
         },
 
         //参数: 房间id
         //返回: 该房间下所有的控制面板, 若无则返回[]
-        'getCtlPanelListInRoom' : function (roomid) {
+        'getCtlPanelListInRoom': function (roomid) {
             return dataTables.ctlpanel_list.filter(function (ctlpanel) {
-                return ctlpanel.room.id == roomid;
+                return ctlpanel.room.id === roomid;
             })
         },
 
@@ -321,7 +450,7 @@ var Database = function () {
         //向楼层添加一个房间
         //参数: floor 楼层对象, room 房间
         //返回: 无
-        'addRoomToFloor': function(floor, room) {
+        'addRoomToFloor': function (floor, room) {
             floor.rooms.push(room);
         },
 
@@ -329,8 +458,65 @@ var Database = function () {
         //参数 floor 楼层对象, roomid 房间Id
         'findRoomInFloor': function (floor, roomid) {
             return findEleWithId(roomid, floor.rooms);
-        }
+        },
 
+        //电器对象方法
+
+        //生成YN_s_key 关联按钮组
+        //参数: elec_equic电器对象
+        'Elec_equic_to_s_key': Elec_equic_to_s_key,
+
+        //YN_s_key按钮组的长度
+        'Elec_equic_len_s_key': Elec_equic_len_s_key,
+
+
+        //YN_CtlPanel_assoc对象方法
+        //生成YN_s_key, 参数: ctlpanel对象
+        'CtlPanel_Assoc_to_s_key': CtlPanel_Assoc_to_s_key,
+
+        //*YN_Scene_Step对象方法
+        //生成YN_s_driver
+        //参数: YN_Scene_Step对象
+        'Scene_Step_to_s_driver': Scene_Step_to_s_driver,
+
+
+        //*YN_Scene对象方法
+        //删除指面板
+        //参数: scene YN_Scene对象, panel: YN_CtlPanel对象
+        //返回: 更新后的scene对象
+        'Scene_deleteCtlPanel': deleteCtlPanel,
+
+
+        //删除指定场景里的动作
+        //参数: scene YN_Scene对象, sceneStep: YN_Scene_Step对象
+        //返回: 更新后的scene对象
+        'Scene_deleteSceneStep': deleteSceneStep,
+
+        //生成场景YN_s_key 场景关联按键
+        //参数: scene YN_Scene对象
+        'Scene_to_s_key': Scene_to_s_key,
+
+
+        //生成场景关联子设备驱动组
+        //参数: scene YN_Scene对象
+        'Scene_to_s_driver': Scene_to_s_driver,
+
+        //场景中关联按键的个数
+        //参数: scene YN_Scene对象
+        'Scene_len_s_key': Scene_len_s_key,
+
+
+        //场景中关联按键的驱动个数
+        //参数: scene YN_Scene对象
+
+        'Scene_len_s_driver': Scene_len_s_driver,
+
+
+        //*YN_Timing_Config定时配置对象方法
+
+        //参数: YN_Timing_Config对象
+        //返回定时配置的时候格式,根据具体的定时配置对象类型
+        'Timing_Config_getdatetime': Timing_Config_getdatetime
 
     }
 
@@ -354,11 +540,14 @@ var CmdGen = function () {
             "q+": Math.floor((this.getMonth() + 3) / 3), //季度
             "S": this.getMilliseconds()             //毫秒
         };
-        if (/(y+)/.test(fmt))
+        if (/(y+)/.test(fmt)) {
             fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
-            if (new RegExp("(" + k + ")").test(fmt))
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
         return fmt;
     }
 
@@ -368,7 +557,7 @@ var CmdGen = function () {
 
     function to_stream_value(kv) {
         var cmds = []
-        for (key in kv) {
+        for (var key in kv) {
             cmds.push({
                 "stream_id": key,
                 "current_value": kv[key]
@@ -507,10 +696,10 @@ var CmdGen = function () {
                 'YN_mac': gateway.mac,
                 'YN_pid': "", //pid编号,返回
                 'YN_pid_s': "", //Pid的状态,返回
-                'YN_s_key': scene.to_s_key(),
-                'YN_s_key_n': scene.len_s_key(),//按键组数
-                'YN_s_driver': scene.to_s_driver(),//关联驱动组
-                'YN_s_driver_n': scene.len_s_driver() //驱动组数
+                'YN_s_key': Scene_to_s_key(scene),
+                'YN_s_key_n': Scene_len_s_key(scene),//按键组数
+                'YN_s_driver': Scene_to_s_driver(scene),//关联驱动组
+                'YN_s_driver_n': Scene_len_s_driver(scene)  //驱动组数
             });
         },
 
@@ -523,10 +712,10 @@ var CmdGen = function () {
                 'YN_mac': gateway.mac,
                 'YN_pid': scene.pid, //pid编号
                 'YN_pid_s': "", //Pid的状态,返回
-                'YN_s_key': scene.to_s_key(),
-                'YN_s_key_n': scene.len_s_key(),//按键组数
-                'YN_s_driver': scene.to_s_driver(),//关联驱动组
-                'YN_s_driver_n': scene.len_s_driver() //驱动组数
+                'YN_s_key': Scene_to_s_key(scene),
+                'YN_s_key_n': Scene_len_s_key(scene),//按键组数
+                'YN_s_driver': Scene_to_s_driver(scene),//关联驱动组
+                'YN_s_driver_n': Scene_len_s_driver(scene) //驱动组数
             });
         },
 
@@ -548,8 +737,8 @@ var CmdGen = function () {
                 'YN_msg_id': String.fromCharCode(13),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
-                'YN_s_key': elec_equi.to_s_key(),
-                'YN_s_key_n': elec_equi.len_s_key(),
+                'YN_s_key': Elec_equic_to_s_key(elec_equi),
+                'YN_s_key_n': Elec_equic_len_s_key(elec_equi),
                 'YN_subdev_id': elec_equi.relay_assoc.relay.id,
                 'YN_pid': elec_equi.relay_assoc.relay.pid,
                 'YN_pid_s': "" //返回
@@ -567,7 +756,7 @@ var CmdGen = function () {
                 'YN_time_n': timing_task.id,
                 'YN_pid': timing_task.pid,
                 'YN_timer_t': timing_task.timing_config,
-                'YN_datetime': timing.timing_config.getDatetime(),
+                'YN_datetime': Timing_Config_getdatetime(timing_task.timing_config),
                 'YN_time_s': timing.timing_config.status, //定时的任务状态 ??
 
             });
@@ -643,7 +832,7 @@ var CmdGen = function () {
                 'YN_msg_id': String.fromCharCode(0x98),
                 'YN_device_id': gateway.device_id,
                 'YN_mac': gateway.mac,
-                'YN_s_driver': step.to_s_driver(),
+                'YN_s_driver': Scene_Step_to_s_driver(step),
                 'YN_pid': '', //返回 ?
                 'YN_pid_s': '', //返回, 执行后的状态
             });
@@ -706,7 +895,7 @@ var CloudApi = function () {
 
     function parseWithSnapShop(streams, keys) {
         var rt = {};
-        for (s in streams) {
+        for (var s in streams) {
             if (contains(keys, s['stream_id'])) {
                 rt[s['stream_id']] = s['current_value'];
             }
@@ -726,7 +915,7 @@ var CloudApi = function () {
                     }
                 }, function (error) {
                     if (callback) {
-                        callback(false, err);
+                        callback(false, error);
                     }
                 });
             },
@@ -916,7 +1105,7 @@ var CloudApi = function () {
             }, callback, keys);
         }
 
-    }
+    };
 
 }();
 
@@ -953,19 +1142,7 @@ function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType) {
     this.relay_assoc = relay_assoc; //关联的继电器
     this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
     this.iconType = iconType;
-    //生成YN_s_key 关联按钮组
-    this.to_s_key = function () {
-        var rt = '';
-        for (as_panel in this.panel_assocs) {
-            rt = rt.concat(as_panel.to_s_key());
-        }
-        return rt;
-    }
 
-    //YN_s_key按钮组的长度
-    this.len_s_key = function () {
-        this.panel_assocs.length;
-    }
 }
 
 //对电器对象执行的操作, 如调光\打开\关闭\调色
@@ -1017,10 +1194,6 @@ function YN_CtlPanel_assoc(panel, btn_index) {
     this.panel = panel;
     this.btn_index = btn_index; //
 
-    this.to_s_key = function () {
-        //组成为: SN（id）+ 按键编号 + 按键类型
-        return '' + this.panel.id + btn_index + this.panel.type;
-    }
 
 }
 
@@ -1032,17 +1205,6 @@ function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
     this.action1_delay = delay1; //第一个动作的相应延时
     this.action2 = action2; //需要执行的第二个动作
     this.action2_delay = delay2;  //第二个动作的相应延时
-
-
-    this.to_s_driver = function () {
-        //组成驱动SN+驱动编号+3位初始状态+2位延时时间+3位结束状态+2位延时时间
-        return '' + this.elec_equi.relay_assoc.relay.id +
-            this.elec_equi.relay_assoc.slot_index +
-            this.action1 +
-            this.action1_delay +
-            this.action2 +
-            this.action2_delay;
-    }
 }
 
 //场景对象
@@ -1054,43 +1216,6 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
     this.timing_tasks = timing_tasks; //场景的定时配置列表
     this.pid = null; //场景的pid
 
-    //删除指面板
-    this.deleteCtlPanel = function (panel) {
-        this.ctlpanel_assocs = deleteEleFromList(panel, this.ctlpanel_assocs);
-    }
-
-    //删除指定场景里的动作
-    this.deleteSceneStep = function (sceneStep) {
-        this.scene_steps = deleteEleFromList(sceneStep, this.scene_steps);
-    }
-
-    //生成场景YN_s_key 场景关联按键
-    this.to_s_key = function () {
-        var rt = '';
-        for (as_panel in this.panel_assocs) {
-            rt = rt.concat(as_panel.to_s_key());
-        }
-        return rt;
-    }
-
-    //生成场景关联子设备驱动组
-    this.to_s_driver = function () {
-        var rt = '';
-        for (step in this.scene_steps) {
-            rt = rt.concat(step.to_s_driver());
-        }
-        return rt;
-    }
-
-    //场景中关联按键的个数
-    this.len_s_key = function () {
-        return this.ctlpanel_assocs.length;
-    }
-
-    //场景中关联按键的驱动个数
-    this.len_s_driver = function () {
-        return this.scene_steps.length;
-    }
 }
 
 //定时配置对象
