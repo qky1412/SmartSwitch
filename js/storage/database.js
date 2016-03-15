@@ -181,6 +181,7 @@ var Database = function () {
         'scene_list': [],  //场景列表
         'floor_list': [], //楼层列表
         'gateway': undefined, //网关对象
+        'default_scene': undefined, //默认场景
     }
 
     function writeToDb() {
@@ -192,8 +193,19 @@ var Database = function () {
 
     function readFromDb() {
         for (var key_table in dataTables) {
+            if (key_table == 'default_scene') {
+                continue;
+            }
             dataTables[key_table] = Lockr.get(key_table) || [];
         }
+
+        //获取默认场景
+        dataTables['default_scene'] = Lockr.get('default_scene') || createDefaultScene();
+
+    }
+    //创建一个默认场景
+    function createDefaultScene() {
+        return new YN_Scene("默认场景",null, null, null, 0);
     }
 
 
@@ -1134,7 +1146,7 @@ function YN_Room(name) {
 }
 
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType) {
+function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType, timing_tasks) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
@@ -1142,6 +1154,8 @@ function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType) {
     this.relay_assoc = relay_assoc; //关联的继电器
     this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
     this.iconType = iconType;
+
+    this.timing_tasks = timing_tasks; //电器的定时配置任务
 
 }
 
@@ -1218,8 +1232,8 @@ function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
 
 }
 
-//定时配置对象
-function YN_Timing_Config(type, datetime, repeatArray, status) {
+//定时配置对象, 可用于电器与场景; 当于用一个场景的定时时,elec_equi_action传递为null; 当用于一个电器的定时时, elec_equi_action代表电器定时所要执行的动作
+function YN_Timing_Config(type, datetime, repeatArray, status, elec_equi_action) {
     this.type = type; // 1代表单次定时,2代表每周循环
     // todo: 配置的具体格式待定
     this.datetime = datetime;
@@ -1228,6 +1242,8 @@ function YN_Timing_Config(type, datetime, repeatArray, status) {
     this.getDatetime = function () {
         return datetime;
     }
+
+    this.elec_equi_action = elec_equi_action || null ; //YN_Elec_Equi_Action 对象; 表示当此配置用于一个电器时,电器所要执行的动作
 }
 
 //定时任务
@@ -1237,3 +1253,5 @@ function YN_Timing_Task(pid, timing_config) {
     this.pid = pid; //定时任务针对的pid
 
 }
+
+
