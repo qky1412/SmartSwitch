@@ -145,7 +145,7 @@ td.panel-title {
     padding-left: 0px !important;
 }
 .text-second-title {
-    color: #c6c6c6;
+    color: #727272;
     padding-left: 10px;
     font-size: .75rem;
 }
@@ -153,12 +153,12 @@ td.panel-title {
 .text-content {
     color: #727272;
     padding-left: 15px;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 .text-content-black {
     color: #1e1e1e;
-    font-size: .5rem;
+    font-size: .75rem;
 }
 
 

@@ -339,7 +339,7 @@ function refreshOutputDeviceList() {
         var tmp = template.content.cloneNode(true);
         tmp.querySelector('a').dataset.id = output.id;
         tmp.querySelector('.text-title').innerText = output.name;
-        tmp.querySelector('#span-output-id').innerText = output.id;
+        tmp.querySelector('#span-output-id').innerText = "ID:" + output.id;
         tmp.querySelector('.device-edit').dataset.id = output.id;
         tmp.querySelector('#span-output-room').innerText = output.room.name;
         tmp.querySelector('#span-output-floor').innerText = output.floor.name;
@@ -640,7 +640,7 @@ function addNewHomeDevice() {
         return;
     }
     var floor = Database.findFloorFromList(floorId);
-    if(floor == null || floor =="") {
+    if(floor == null || floor == "") {
         alert("楼层无效");
         return;
     }
@@ -676,7 +676,7 @@ function addNewHomeDevice() {
             }
         }
     }
-    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType);
+    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType, []);
     Database.addElecEquiToList(newDevice);
     $.router.back("../html/home.html");
 }
@@ -879,15 +879,13 @@ function addNewInputDevice() {
     }
     var floor = Database.findFloorFromList(floorId);
     for(var i = 0, length = floor.rooms.length; i < length; i++) {
-        if(floor.rooms[i].id == roomId) {
+        if (floor.rooms[i].id == roomId) {
             var newInputDevice = new YN_CtlPanel(deviceId, deviceName, floor, floor.rooms[i]);
             Database.addCtlPanelToList(newInputDevice);
             $.router.back("../html/home.html");
             break;
         }
     }
-    //TODO 这里的findRoom有问题
-    //var room = floor.findRoom(roomId);
     //TODO 不知道这里是否需要绑定继电器已接路数
 
 }
@@ -981,6 +979,7 @@ function addNewDeviceInAddScene() {
         tmp.querySelector('.add-scene-action2-delay-minute-select').add(newOption);
     }
     document.getElementById("add-scene-device-list").appendChild(tmp);
+
 }
 function addNewScene() {
     var name = document.getElementById("add-scene-input-scene-name").value.trim();
@@ -1011,6 +1010,7 @@ function addNewScene() {
             }
         }
         var action1IsDelay = deviceCard.getElementsByClassName("add-scene-action1-delay-checkbox")[0].checked;//true or false
+
         //TODO 延迟时间的格式待商榷
         var action1DelayTime = "0";
         var action1DelayHours = 0;
@@ -1018,6 +1018,7 @@ function addNewScene() {
         if(action1IsDelay) {
             action1DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-hour-select")[0].value);
             action1DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-minute-select")[0].value);
+            action1DelayTime = action1DelayHours + action1DelayMinute
         }
 
 
@@ -1034,6 +1035,7 @@ function addNewScene() {
             }
         }
         var action2IsDelay = deviceCard.getElementsByClassName("add-scene-action2-delay-checkbox")[0].checked;//true or false
+
         //TODO 延迟时间的格式待商榷
         var action2DelayTime = "0";
         var action2DelayHours = 0;
@@ -1041,6 +1043,8 @@ function addNewScene() {
         if(action2IsDelay) {
             action2DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-hour-select")[0].value);
             action2DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-minute-select")[0].value);
+            action2DelayTime = action2DelayHours + "" + action2DelayMinute
+            alert("action2DelayTime = " + action2DelayTime);
         }
         //TODO 需要组合2个action
         var action1 = new YN_Elec_Equi_Action();
@@ -1140,6 +1144,7 @@ function initEditSceneData() {
             newOption.text = i + "分钟";
             tmpDevice.querySelector('.add-scene-action2-delay-minute-select').add(newOption);
         }
+        alert("step = " + JSON.stringify(step));
         tmpDevice.querySelector('.add-scene-select-device-name').value = step.elec_equi.id;
         tmpDevice.querySelector('.add-scene-action1-brightness').innerText = step.action1.d1;
         tmpDevice.querySelector('.add-scene-action2-brightness').innerText = step.action2.d1;
@@ -1152,7 +1157,17 @@ function initEditSceneData() {
             tmpDevice.querySelector('.add-scene-action2-switch-checkbox').checked = true;
         }
         //TODO 这里需要显示两个动作的延迟状态，需要时间显示规则，待商榷
+        if(step.action1_delay != "0") {
+            tmpDevice.querySelector(".add-scene-action1-delay-checkbox").checked = true;
+        } else {
+            tmpDevice.querySelector(".add-scene-action1-delay-checkbox").checked = false;
+        }
+        if(step.action2_delay != "0") {
+            tmpDevice.querySelector(".add-scene-action2-delay-checkbox").checked = true;
 
+        } else {
+            tmpDevice.querySelector(".add-scene-action2-delay-checkbox").checked = false;
+        }
         document.getElementById("add-scene-device-list").appendChild(tmpDevice);
 
     }
@@ -1174,7 +1189,6 @@ function initEditSceneData() {
                 newOption.text = panelList[j].name;
                 tmp.querySelector('#select-panel').add(newOption);
             }
-            //TODO 这里没做联动，默认显示1-5的按键
 
             for(var k = 0; k< 5; k++) {
                 var newOption = document.createElement("option");
@@ -1322,7 +1336,7 @@ function refreshTaskList() {
                 var tmp = template.content.cloneNode(true);
                 var timeTask = scene.timing_tasks[i];
                 var timeConfig = timeTask.timing_config;
-                tmp.querySelector('.text-status').text = '';
+                tmp.querySelector('.text-status').innerText = '开启';
                 //TODO 时间格式待商榷
                 //tmp.querySelector('.text-time').text = timeConfig.datetime;
                 //tmp.querySelector('.text-date').text = timeConfig.datetime;
@@ -1332,6 +1346,20 @@ function refreshTaskList() {
         }
     } else {
         //TODO 如果是单一设备
+        var device = Database.getElecEquiByid(getParameterByName("id"));
+        if(device.timing_tasks != null) {
+            for(var i = 0, length = device.timing_tasks.length; i < length; i++) {
+                var tmp = template.content.cloneNode(true);
+                var timeTask = device.timing_tasks[i];
+                var timeConfig = timeTask.timing_config;
+                tmp.querySelector('.text-status').innerText = '关闭';
+                //TODO 时间格式待商榷
+                //tmp.querySelector('.text-time').text = timeConfig.datetime;
+                //tmp.querySelector('.text-date').text = timeConfig.datetime;
+                tmp.querySelector('#control-checkbox').checked = timeConfig.status;
+                document.getElementById("ul_task").appendChild(tmp);
+            }
+        }
     }
 }
 function initTaskPopup() {
@@ -1379,9 +1407,8 @@ function addNewTask() {
             return;
         }
     }
-    //TODO 这里需要组合日期和时间
-    var timingConfig = new YN_Timing_Config(isRepeat? 2:1, time, false);
-    var timingTask = new YN_Timing_Task("fakepid", timingConfig);
+    //TODO 这里需要组合日期和时间, 需要获取pid
+
     var o;
     if(isScene) {
         o = Database.getSceneByid(id);
@@ -1391,19 +1418,35 @@ function addNewTask() {
             $.router.back("../html/home.html");
             return;
         }
+        var timingConfig = new YN_Timing_Config(isRepeat? 2:1, time, false, null);
+        var timingTask = new YN_Timing_Task("fakepid", timingConfig);
         if(o.timing_tasks == null || o.timing_tasks.length == 0) {
             //TODO 需要给新的timing_task赋予pid
             o.timing_tasks = new Array();
-
         }
         o.timing_tasks.push(timingTask);
-
-        alert(JSON.stringify(o.timing_tasks));
         Database.updateSceneList(o);
     } else {
         //TODO 如果是单一设备
+        o = Database.getElecEquiByid(id);
+        if(o == null) {
+            alert("电器不存在");
+            $.closeModal(popup);
+            $.router.back("../html/home.html");
+            return;
+        }
+        //TODO action配置规则需要确认
+        var timeAction = YN_Elec_Equi_Action(actionValue, actionValue, actionValue);
+        var timingConfig = new YN_Timing_Config(isRepeat? 2:1, time, false, timeAction);
+        var timingTask = new YN_Timing_Task("fakepid", timingConfig);
+        if(o.timing_tasks == null || o.timing_tasks.length == 0) {
+            //TODO 需要给新的timing_task赋予pid
+            o.timing_tasks = new Array();
+        }
+        o.timing_tasks.push(timingTask);
     }
     $.closeModal();
+    refreshTaskList();
 }
 /**
  * only for test
@@ -1416,11 +1459,11 @@ function testControl() {
         "command":[
             {
                 "stream_id": "test",
-                "current_value":"fuckme"
+                "current_value":"ssss"
             },
             {
                 "stream_id": "test2",
-                "current_value":"shittyhead"
+                "current_value":"safad"
             }
         ]
     }
