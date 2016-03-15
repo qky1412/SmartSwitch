@@ -518,7 +518,7 @@ function refreshRoomList() {
             var floorTmp = floorTpl.content.cloneNode(true);
             floorTmp.querySelector('.room-title').innerText = floors[i].name;
             floorTmp.querySelector('#room-list-floor-id').id = "room-list-floor-id" + floors[i].id;
-            floorTmp.querySelector('.icon').dataset.floorID = floors[i].id;
+            floorTmp.querySelector('.item-after').dataset.floorID = floors[i].id;
             document.getElementById("room-list-floor").appendChild(floorTmp);
         }
 
@@ -1392,8 +1392,8 @@ function addNewTask() {
             return;
         }
         if(o.timing_tasks == null || o.timing_tasks.length == 0) {
-            //TODO here we should fetch pid
-            o.timing_tasks = [];
+            //TODO 需要给新的timing_task赋予pid
+            o.timing_tasks = new Array();
 
         }
         o.timing_tasks.push(timingTask);

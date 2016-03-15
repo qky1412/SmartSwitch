@@ -16,7 +16,11 @@
         </div>
         <template id="room-template-floor">
             <div class="card">
-                <div class="card-header"><span class="room-title">一楼 厨房</span><span class="icon icon-edit" data-floorID="" onclick="showAddRoom(this.dataset.floorID);"></span></div>
+                <div class="card-header"><span class="room-title">一楼 厨房</span>
+                    <div class="item-after" data-floorID="" onclick="showAddRoom(this.dataset.floorID)">
+                        <img src="../img/ic_edit_white.png" class="edit">
+                    </div>
+                </div>
                 <div class="card-content">
                     <div  class="list-config list-block">
                         <ul id="room-list-floor-id">
