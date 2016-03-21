@@ -23,13 +23,42 @@ td {
     text-overflow:ellipsis;
     white-space: nowrap;
 }
-
+.header-image {
+    position: fixed;
+    width: 100%;
+    height: 150px;
+    text-align: center;
+    background-color: #68d68b;
+    z-index: 99;
+}
+.header-image span {
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.header-image img {
+    vertical-align: middle;
+}
+#top {
+    position: fixed;
+    top: 150px;
+    overflow: hidden;
+    z-index: 99;
+    width: 100%;
+    height: 50px;
+    padding: 0px;
+}
+#tab1, #tab2, #tab3, #tab4 {
+    padding-top: 200px;
+    padding-bottom: 50px;
+}
 .buttons-tab .button {
     height: 50px;
     line-height: 50px;
     color: #c6c6c6;
     border-color: #e7e8ee;
     border-right: 1px solid #e7e8ee;
+    border-top: 1px solid #e7e8ee;
 }
 .buttons-tab .button.active {
     height: 50px;
@@ -121,21 +150,6 @@ td.panel-title {
     width: 50%;
     margin-left: 0;
 }
-#top {
-    position: fixed;
-    top: 0px;
-    overflow: hidden;
-    z-index: 99;
-    width: 100%;
-    height: 50px;
-    padding: 0px;
-}
-#tab1, #tab2, #tab3, #tab4 {
-    padding-top: 50px;
-    padding-bottom: 50px;
-}
-
-
 
 .text-title {
     color: #68d68b;
