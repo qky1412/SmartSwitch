@@ -420,7 +420,7 @@ function refreshSceneList() {
         var tmpScene = templateScene.content.cloneNode(true);
         tmpScene.querySelector('.scene-name').innerText = scene.name;
         tmpScene.querySelector('.item-after').dataset.id = scene.id;
-        tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id
+        tmpScene.querySelector('#home-config-ul-scene').id = "home-config-ul-scene" + scene.id;
         document.getElementById("home-config-list").appendChild(tmpScene);
         for(var j = 0, deviceLength = scene.scene_steps.length; j < deviceLength; j++) {
             var sceneStep = scene.scene_steps[j];
@@ -547,7 +547,7 @@ function showAddFloor() {
 function addFloor(floorName) {
     //TODO new a floor by given name
     if(floorName != null && floorName != '') {
-        var newFloor = new YN_Floor(floorName)
+        var newFloor = new YN_Floor(floorName);
         Database.addFloorToList(newFloor);
         refreshFloorList();
     }
@@ -667,7 +667,7 @@ function addNewHomeDevice() {
     var roomId = document.getElementById("select-room").value.trim();
     var relayId = document.getElementById("select-relay").value.trim();
     var relaySlot = document.getElementById("select-relay-slot").value.trim();
-    var iconType = document.getElementById("device_type").value
+    var iconType = document.getElementById("device_type").value;
     if(name == null || name == "") {
         alert("名称不能为空");
         return;
