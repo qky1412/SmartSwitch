@@ -252,7 +252,7 @@ function  refreshRoomSelect() {
             break;
         }
     }
-    for(var j = 0, length = rooms.length; j < length; i++) {
+    for(var j = 0, length = rooms.length; j < length; j++) {
         var newOption = document.createElement("option");
         newOption.value = rooms[j].id;
         newOption.text = rooms[j].name;
