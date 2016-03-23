@@ -258,7 +258,7 @@
                     <div class="control-grid">
                         <div class="control-content control-device" id="home-operation-device-id" onclick="toggle(this, this.dataset.id);">
                             <span class="home-operation-device-name"></span>
-                            <img src="../img/ic_edit_gray.png" class="custom-icon-edit" onclick="enterPageWithType('control_detail.html', this.dataset.id, 0)">
+                            <img src="../img/ic_edit_gray.png" class="custom-icon-edit" onclick="enterPageWithType('control_detail.html', this.dataset.id, 0);event.cancelBubble=true;">
                         </div>
                     </div>
                 </template>
