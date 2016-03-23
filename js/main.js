@@ -132,12 +132,18 @@ function showButton(flag) {
         });
 }
 function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
+    if (!url) {
+        url = window.location.href;
+    }
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
+    if (!results) {
+        return null;
+    }
+    if (!results[2]) {
+        return '';
+    }
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
@@ -155,6 +161,41 @@ function getImageUrlByType(type) {
     switch(type) {
         case '0':
             imageUrl = "../img/ic_general.png";
+            break;
+        case '1':
+            imageUrl = "../img/ic_table_lamp.png";
+            break;
+        case '2':
+            imageUrl = "../img/ic_bulb.png";
+            break;
+        case '3':
+            imageUrl = "../img/ic_wall_lamp.png";
+            break;
+        case '4':
+            imageUrl = "../img/ic_fan.png";
+            break;
+        case '5':
+            imageUrl = "../img/ic_water_heater.png";
+            break;
+        case '6':
+            imageUrl = "../img/ic_wifi.png";
+            break;
+        case '7':
+            imageUrl = "../img/ic_bath_heater.png";
+            break;
+
+        default:
+            imageUrl = "../img/ic_general.png";
+    }
+    return imageUrl;
+}
+
+function getImageUrlByTypeAndStatus(type, isOn) {
+    var imageUrl = '';
+    switch(type) {
+        case '0':
+            imageUrl = "../img/ic_general.png";
+
             break;
         case '1':
             imageUrl = "../img/ic_table_lamp.png";
@@ -211,10 +252,10 @@ function  refreshRoomSelect() {
             break;
         }
     }
-    for(var i = 0, length = rooms.length; i < length; i++) {
+    for(var j = 0, length = rooms.length; j < length; i++) {
         var newOption = document.createElement("option");
-        newOption.value = rooms[i].id;
-        newOption.text = rooms[i].name;
+        newOption.value = rooms[j].id;
+        newOption.text = rooms[j].name;
         selectRoom.add(newOption);
     }
 
@@ -414,7 +455,7 @@ function refreshOperationList() {
         tmpScene.querySelector('.control-digit').innerText = String(i + 2);
         tmpScene.querySelector('.home-operation-scene-name').innerText = scene.name;
         tmpScene.querySelector('.custom-icon-edit').dataset.id = scene.id;
-        document.getElementById("home-operation-scene").appendChild(tmpScene)
+        document.getElementById("home-operation-scene").appendChild(tmpScene);
     }
 }
 function refreshSingleDeviceList() {
@@ -440,10 +481,18 @@ function refreshSingleDeviceList() {
                 tmpDevice.querySelector('.home-operation-device-name').innerText = device.name;
                 tmpDevice.querySelector('.custom-icon-edit').dataset.id = device.id;
                 tmpDevice.querySelector('#home-operation-device-id').id ="home-operation-device-id" + device.id;
-                tmpDevice.querySelector('.custom-icon').src =getImageUrlByType(device.iconType);
+                //tmpDevice.querySelector('.custom-icon').src =getImageUrlByType(device.iconType);
                 document.getElementById("home-operation-list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
         }
+    }
+}
+
+function toggle(elem, deviceId) {
+    if($(elem).hasClass("on")) {
+        $(elem).removeClass("on");
+    } else {
+        $(elem).addClass("on");
     }
 }
 /**
@@ -720,7 +769,6 @@ function refreshEditHomeDevice(deviceId) {
                 newOption.text = k + 1;
                 tmp.querySelector('#select-panel-slot').add(newOption);
             }
-            alert("panel_assoc.panel.btn_index = " + panel_assoc.btn_index);
             tmp.querySelector('#select-panel').value = panel_assoc.panel.id;
             tmp.querySelector('#select-panel-slot').value = panel_assoc.btn_index;
             document.getElementById("ul_panel").appendChild(tmp);
@@ -1044,7 +1092,6 @@ function addNewScene() {
             action2DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-hour-select")[0].value);
             action2DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-minute-select")[0].value);
             action2DelayTime = action2DelayHours + "" + action2DelayMinute
-            alert("action2DelayTime = " + action2DelayTime);
         }
         //TODO 需要组合2个action
         var action1 = new YN_Elec_Equi_Action();
@@ -1144,7 +1191,6 @@ function initEditSceneData() {
             newOption.text = i + "分钟";
             tmpDevice.querySelector('.add-scene-action2-delay-minute-select').add(newOption);
         }
-        alert("step = " + JSON.stringify(step));
         tmpDevice.querySelector('.add-scene-select-device-name').value = step.elec_equi.id;
         tmpDevice.querySelector('.add-scene-action1-brightness').innerText = step.action1.d1;
         tmpDevice.querySelector('.add-scene-action2-brightness').innerText = step.action2.d1;
