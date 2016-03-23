@@ -351,7 +351,7 @@ img.custom-icon {
 }
 
 span.home-operation-device-name {
-    margin-left: -24px;
+
 }
 
 .device-on {
@@ -444,4 +444,18 @@ input[type="range"]::-webkit-slider-thumb:before{
 input[type="range"]::-webkit-slider-thumb:after {
     left: 10px;
     background: #edc;
+}
+
+
+
+.control-device {
+
+    background: url(../img/ic_general.png) no-repeat;
+    background-size: 20px 20px;
+    background-position: 20px 50%;
+}
+
+.on {
+    color: white;
+    background-color: #68d68b;;
 }
