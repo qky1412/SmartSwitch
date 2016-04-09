@@ -7,6 +7,7 @@ $(document).ready(function(){
             showButton(true);
             showLoading();
         });
+
         //动态配置选项卡对应页面的底部操作面板
         $("#tab-control1").click(function () {
             $("#bottom-control1").show();
@@ -107,6 +108,19 @@ $(document).ready(function(){
 /**
  * 通用js代码
  */
+function initData() {
+    JDSMART.io.initDeviceData(
+        function (res) {
+            // 执行初始化的回调
+            alert(JSON.stringify(res));
+            
+        });
+}
+function addSubDevice(){
+    JDSMART.app.addSubDevice(function(suc){
+    });
+}
+
 function refreshHomeData() {
     refreshHomeDevicesList();
     refreshOutputDeviceList();
