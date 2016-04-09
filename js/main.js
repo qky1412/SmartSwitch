@@ -129,6 +129,13 @@ function refreshHomeData() {
     refreshOperationList();
     refreshSingleDeviceList();
 }
+function testConnection() {
+    CloudApi.testConnection(function(suc) {
+        alert("testConnection suc" + JSON.stringify((suc)));
+    }, function(err) {
+        alert("testConnection err" + JSON.stringify((err)));
+    });
+}
 function showLoading() {
 
 }

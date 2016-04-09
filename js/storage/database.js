@@ -941,7 +941,22 @@ var CloudApi = function () {
 
 
     return {
-
+        'testConnection': function(cb_suc, cb_fail) {
+            JDSMART.io.controlDevice(
+                {
+                    "command":[{
+                        "stream_id": "mac",
+                        "current_value": "1"
+                    }, 
+                        {
+                            "stream_id": "message_id",
+                            "current_value": 0x10
+                        }]
+                },
+                cb_suc,
+                cb_fail
+            );
+        },
 
         //注册网关
         //参数: gateway网关
