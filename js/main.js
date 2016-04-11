@@ -6,6 +6,7 @@ $(document).ready(function(){
         JDSMART.ready(function () {
             showButton(true);
             showLoading();
+            initData();
         });
 
         //动态配置选项卡对应页面的底部操作面板
@@ -110,21 +111,62 @@ $(document).ready(function(){
  */
 function initData() {
     JDSMART.io.initDeviceData(
-        function (res) {
+        function (suc) {
             // 执行初始化的回调
-            alert(JSON.stringify(res));
+            refreshInitData(suc);
             
         });
+}
+function refreshInitData(suc) {
+    if(typeof(suc)=="string") {
+        suc = JSON.parse(suc);
+    }
+    if(suc.device.status) {
+        var status = suc.device.status;
+        status = parseInt(status);
+        if(status == 0) {
+            alert("设备不在线");
+        }else {
+
+        }
+    }
+    var subDevices = suc.device.sub_devices;
+    if(subDevices) {
+        if(subDevices.length > 0) {
+            alert("子设备不为空");
+            refreshSubDevices(subDevices);
+        } else {
+            alert("子设备为空");
+        }
+    }
+}
+//TODO 刷新子设备列表
+function refreshSubDevices(subDevices) {
+    document.getElementById("home-output-module").innerHTML = '';
+    //var outputs = Database.getRelayList();
+    var template = document.getElementById("template-output-device");
+    for(var i = 0, length = subDevices.length; i < length; i++) {
+        var device = subDevices[i];
+        var tmp = template.content.cloneNode(true);
+        tmp.querySelector('a').dataset.id = device.device.feed_id;
+        tmp.querySelector('.text-title').innerText = device.product.product_uuid;
+        tmp.querySelector('#span-output-id').innerText = "ID:" + device.device.device_id;
+       // tmp.querySelector('.device-edit').dataset.id = output.id;
+        //tmp.querySelector('#span-output-room').innerText = output.room.name;
+        //tmp.querySelector('#span-output-floor').innerText = output.floor.name;
+        document.getElementById("home-output-module").appendChild(tmp);
+    }
 }
 function addSubDevice(){
     JDSMART.app.addSubDevice(function(suc){
     });
 }
-
+function jumpSubDevice(data) {
+    JDSMART.app.jumpSubDevice(data,function(suc){
+    });
+}
 function refreshHomeData() {
     refreshHomeDevicesList();
-    refreshOutputDeviceList();
-    refreshInputDeviceList();
     refreshSceneList();
     refreshOperationList();
     refreshSingleDeviceList();
@@ -392,6 +434,7 @@ function refreshHomeDevicesList() {
 /**
  * 智能模块页面所需js
  */
+//TODO
 function refreshOutputDeviceList() {
     document.getElementById("home-output-module").innerHTML = '';
     var outputs = Database.getRelayList();
@@ -408,7 +451,7 @@ function refreshOutputDeviceList() {
         document.getElementById("home-output-module").appendChild(tmp);
     }
 }
-
+//TODO
 function refreshInputDeviceList() {
     document.getElementById("home-input-module").innerHTML = '';
     var inputs = Database.getCtlPanelList();
