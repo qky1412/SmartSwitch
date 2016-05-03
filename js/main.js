@@ -159,6 +159,7 @@ function refreshSubDevices(subDevices) {
 }
 function addSubDevice(){
     JDSMART.app.addSubDevice(function(suc){
+        alert("添加子设备成功" + JSON.stringify(suc));
     });
 }
 function jumpSubDevice(data) {
