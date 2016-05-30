@@ -104,11 +104,13 @@ $(document).ready(function(){
         refreshTaskList();
         initTaskPopup();
     });
+    
     $.init();
 });
 /**
  * 通用js代码
  */
+//初始化主设备数据
 function initData() {
     JDSMART.io.initDeviceData(
         function (suc) {
@@ -117,6 +119,7 @@ function initData() {
             
         });
 }
+
 function refreshInitData(suc) {
     if(typeof(suc)=="string") {
         suc = JSON.parse(suc);
@@ -143,35 +146,55 @@ function refreshInitData(suc) {
 //TODO 刷新子设备列表
 function refreshSubDevices(subDevices) {
     document.getElementById("home-output-module").innerHTML = '';
+    document.getElementById("home-input-module").innerHTML = '';
+    //todo 本来是本地取，现在每次进入界面都需要取一次
     //var outputs = Database.getRelayList();
-    var template = document.getElementById("template-output-device");
+    var templateOutput = document.getElementById("template-output-device");
+    var templateInput = document.getElementById("template-input-device");
     for(var i = 0, length = subDevices.length; i < length; i++) {
         var device = subDevices[i];
-        var tmp = template.content.cloneNode(true);
-        tmp.querySelector('a').dataset.id = device.device.feed_id;
-        tmp.querySelector('.text-title').innerText = device.product.product_uuid;
-        tmp.querySelector('#span-output-id').innerText = "ID:" + device.device.device_id;
+        if(device.product.product_uuid.toUpperCase() === "V8YKNE") {
+            var tmp1 = templateOutput.content.cloneNode(true);
+            tmp1.querySelector('a').dataset.id = device.device.feed_id;
+            tmp1.querySelector('.text-title').innerText = device.product.product_uuid;
+            tmp1.querySelector('#span-output-id').innerText = "ID:" + device.device.device_id;
+            document.getElementById("home-output-module").appendChild(tmp1);
+        } else if(device.product.product_uuid.toUpperCase() === "X6WIMG") {
+            var tmp2 = templateInput.content.cloneNode(true);
+            tmp2.querySelector('a').dataset.id = device.device.feed_id;
+            tmp2.querySelector('.text-title').innerText = device.product.product_uuid;
+            tmp2.querySelector('#span-input-id').innerText = "ID:" + device.device.device_id;
+            document.getElementById("home-input-module").appendChild(tmp2);
+        }
+
        // tmp.querySelector('.device-edit').dataset.id = output.id;
         //tmp.querySelector('#span-output-room').innerText = output.room.name;
         //tmp.querySelector('#span-output-floor').innerText = output.floor.name;
-        document.getElementById("home-output-module").appendChild(tmp);
+
     }
 }
+//添加子设备
 function addSubDevice(){
     JDSMART.app.addSubDevice(function(suc){
-        alert("添加子设备成功" + JSON.stringify(suc));
+        alert("添加子设备回调:" + JSON.stringify(suc));
     });
 }
+//跳转至子设备
 function jumpSubDevice(data) {
     JDSMART.app.jumpSubDevice(data,function(suc){
     });
 }
+//刷新主界面UI所需数据
 function refreshHomeData() {
+    //刷新首页
     refreshHomeDevicesList();
+    //刷新场景
     refreshSceneList();
+    //刷新操作
     refreshOperationList();
-    refreshSingleDeviceList();
+
 }
+//测试连接
 function testConnection() {
     CloudApi.testConnection(function(suc) {
         alert("testConnection suc" + JSON.stringify((suc)));
@@ -195,6 +218,7 @@ function showButton(flag) {
             showTitle: flag
         });
 }
+//获取当前地址参数
 function getParameterByName(name, url) {
     if (!url) {
         url = window.location.href;
@@ -210,7 +234,7 @@ function getParameterByName(name, url) {
     }
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
+//进入指定页面
 function enterPage(url, id) {
     //window.location.href = url;
     $.router.loadPage(url+"?id="+id);
@@ -423,7 +447,7 @@ function refreshHomeDevicesList() {
                 var device = devices[k];
                 tmpDevice.querySelector('#device-title').innerText = device.name;
                 tmpDevice.querySelector('.device-edit').dataset.id = device.id;
-                tmpDevice.querySelector('#home-device-floor').innerText = device.floor.name;
+                tmpDevice.querySelector('#home-device-floor').innerText = device.floor.name + "-";
                 tmpDevice.querySelector('#home-device-room').innerText = device.room.name;
                 document.getElementById("list-device" +  rooms[j].id).appendChild(tmpDevice);
             }

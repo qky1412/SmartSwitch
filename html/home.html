@@ -14,7 +14,6 @@
     <script src="../js/storage/database.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/light7.js"></script>
-    <!-- Include the compiled Ratchet JS -->
 
     <title>智能网关</title>
 
@@ -129,7 +128,7 @@
                 </template>
                 <template id="template-input-device">
                     <li>
-                        <a class="item-content" data-id="">
+                        <a class="item-content" data-id="" onclick="jumpSubDevice(this.dataset.id);return false;">
                             <div class="item-inner">
                                 <table class="table-device" >
                                     <tr>
