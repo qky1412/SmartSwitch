@@ -60,32 +60,32 @@ $(document).ready(function(){
         });
         refreshRoomList();
     });
-    $(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-    });
-    $(document).on("pageInit", "#page-edit-output-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-        refreshEditOutputDevice(getParameterByName("id"));
-    });
-    $(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-    });
-    $(document).on("pageInit", "#page-edit-input-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-        refreshEditInputDevice(getParameterByName("id"));
-    });
+    //$(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //});
+    //$(document).on("pageInit", "#page-edit-output-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //    refreshEditOutputDevice(getParameterByName("id"));
+    //});
+    //$(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //});
+    //$(document).on("pageInit", "#page-edit-input-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //    refreshEditInputDevice(getParameterByName("id"));
+    //});
     $(document).on("pageInit", "#page-add-scene", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
@@ -123,25 +123,33 @@ function initData() {
 function refreshInitData(suc) {
     if(typeof(suc)=="string") {
         suc = JSON.parse(suc);
-    }
-    if(suc.device.status) {
-        var status = suc.device.status;
-        status = parseInt(status);
-        if(status == 0) {
-            alert("设备不在线");
-        }else {
+        alert(suc);
+        if(suc.device.status) {
+            var status = suc.device.status;
+            status = parseInt(status);
+            if(status == 0) {
+                alert("设备不在线");
+            }else {
 
+            }
         }
-    }
-    var subDevices = suc.device.sub_devices;
-    if(subDevices) {
-        if(subDevices.length > 0) {
-            alert("子设备不为空");
-            refreshSubDevices(subDevices);
-        } else {
-            alert("子设备为空");
+        var subDevices = suc.device.sub_devices;
+        if(subDevices) {
+            if(subDevices.length > 0) {
+                saveSubDevicesToDatabase(subDevices);
+                refreshSubDevices(subDevices);
+            } else {
+                alert("子设备为空");
+            }
         }
+    }else {
+        return;
     }
+
+}
+//TODO 每次读取子设备列表后都和数据库存的比对一下，如有必要，保存至数据库
+function  saveSubDevicesToDatabase(subDevices) {
+
 }
 //TODO 刷新子设备列表
 function refreshSubDevices(subDevices) {
@@ -191,7 +199,7 @@ function refreshHomeData() {
     //刷新场景
     refreshSceneList();
     //刷新操作
-    refreshOperationList();
+    //refreshOperationList();
 
 }
 //测试连接
@@ -447,7 +455,7 @@ function refreshHomeDevicesList() {
                 var device = devices[k];
                 tmpDevice.querySelector('#device-title').innerText = device.name;
                 tmpDevice.querySelector('.device-edit').dataset.id = device.id;
-                tmpDevice.querySelector('#home-device-floor').innerText = device.floor.name + "-";
+                tmpDevice.querySelector('#home-device-floor').innerText = device.floor.name;
                 tmpDevice.querySelector('#home-device-room').innerText = device.room.name;
                 document.getElementById("list-device" +  rooms[j].id).appendChild(tmpDevice);
             }
