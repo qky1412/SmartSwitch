@@ -917,8 +917,8 @@ var CloudApi = function () {
                 CmdParserGen.queryInputDevStatus.parsergen,
                 business_cb
             );
-        },
 
+        },
 
         //查询驱动子设备状态（07H）,APP端查询关联驱动子设备当前工作状态
         //business_cb:function(true,{cmdCode,numberOfDrivers,driverStates,subdevpid})

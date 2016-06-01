@@ -6,7 +6,9 @@ $(document).ready(function(){
         JDSMART.ready(function () {
             showButton(true);
             showLoading();
+            initData();
         });
+
         //动态配置选项卡对应页面的底部操作面板
         $("#tab-control1").click(function () {
             $("#bottom-control1").show();
@@ -58,32 +60,32 @@ $(document).ready(function(){
         });
         refreshRoomList();
     });
-    $(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-    });
-    $(document).on("pageInit", "#page-edit-output-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-        refreshEditOutputDevice(getParameterByName("id"));
-    });
-    $(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-    });
-    $(document).on("pageInit", "#page-edit-input-device", function (e, id, page) {
-        JDSMART.ready(function () {
-            showButton(false);
-        });
-        initFloorSelect();
-        refreshEditInputDevice(getParameterByName("id"));
-    });
+    //$(document).on("pageInit", "#page-add-output-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //});
+    //$(document).on("pageInit", "#page-edit-output-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //    refreshEditOutputDevice(getParameterByName("id"));
+    //});
+    //$(document).on("pageInit", "#page-add-input-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //});
+    //$(document).on("pageInit", "#page-edit-input-device", function (e, id, page) {
+    //    JDSMART.ready(function () {
+    //        showButton(false);
+    //    });
+    //    initFloorSelect();
+    //    refreshEditInputDevice(getParameterByName("id"));
+    //});
     $(document).on("pageInit", "#page-add-scene", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
@@ -102,18 +104,110 @@ $(document).ready(function(){
         refreshTaskList();
         initTaskPopup();
     });
+    
     $.init();
 });
 /**
  * 通用js代码
  */
+//初始化主设备数据
+function initData() {
+    JDSMART.io.initDeviceData(
+        function (suc) {
+            // 执行初始化的回调
+            refreshInitData(suc);
+            
+        });
+}
+
+function refreshInitData(suc) {
+    if(typeof(suc)=="string") {
+        suc = JSON.parse(suc);
+        if(suc.device.status) {
+            var status = suc.device.status;
+            status = parseInt(status);
+            if(status == 0) {
+                alert("设备不在线");
+            }else {
+
+            }
+        }
+
+    }else {
+
+    }
+    var subDevices = suc.device.sub_devices;
+    if(subDevices) {
+        if(subDevices.length > 0) {
+            //saveSubDevicesToDatabase(subDevices);
+            refreshSubDevices(subDevices);
+        } else {
+            alert("子设备为空");
+        }
+    }
+}
+//TODO 每次读取子设备列表后都和数据库存的比对一下，如有必要，保存至数据库
+function  saveSubDevicesToDatabase(subDevices) {
+
+}
+//TODO 刷新子设备列表
+function refreshSubDevices(subDevices) {
+    document.getElementById("home-output-module").innerHTML = '';
+    document.getElementById("home-input-module").innerHTML = '';
+    //todo 本来是本地取，现在每次进入界面都需要取一次
+    //var outputs = Database.getRelayList();
+    var templateOutput = document.getElementById("template-output-device");
+    var templateInput = document.getElementById("template-input-device");
+    for(var i = 0, length = subDevices.length; i < length; i++) {
+        var device = subDevices[i];
+        if(device.product.product_uuid.toUpperCase() === "V8YKNE") {
+            var tmp1 = templateOutput.content.cloneNode(true);
+            tmp1.querySelector('a').dataset.id = device.device.feed_id;
+            tmp1.querySelector('.text-title').innerText = device.product.product_uuid;
+            tmp1.querySelector('#span-output-id').innerText = "ID:" + device.device.device_id;
+            document.getElementById("home-output-module").appendChild(tmp1);
+        } else if(device.product.product_uuid.toUpperCase() === "X6WIMG") {
+            var tmp2 = templateInput.content.cloneNode(true);
+            tmp2.querySelector('a').dataset.id = device.device.feed_id;
+            tmp2.querySelector('.text-title').innerText = device.product.product_uuid;
+            tmp2.querySelector('#span-input-id').innerText = "ID:" + device.device.device_id;
+            document.getElementById("home-input-module").appendChild(tmp2);
+        }
+
+       // tmp.querySelector('.device-edit').dataset.id = output.id;
+        //tmp.querySelector('#span-output-room').innerText = output.room.name;
+        //tmp.querySelector('#span-output-floor').innerText = output.floor.name;
+
+    }
+}
+//添加子设备
+function addSubDevice(){
+    JDSMART.app.addSubDevice(function(suc){
+        alert("添加子设备回调:" + JSON.stringify(suc));
+    });
+}
+//跳转至子设备
+function jumpSubDevice(data) {
+    JDSMART.app.jumpSubDevice(data,function(suc){
+    });
+}
+//刷新主界面UI所需数据
 function refreshHomeData() {
+    //刷新首页
     refreshHomeDevicesList();
-    refreshOutputDeviceList();
-    refreshInputDeviceList();
+    //刷新场景
     refreshSceneList();
-    refreshOperationList();
-    refreshSingleDeviceList();
+    //刷新操作
+    //refreshOperationList();
+
+}
+//测试连接
+function testConnection() {
+    CloudApi.testConnection(function(suc) {
+        alert("testConnection suc" + JSON.stringify((suc)));
+    }, function(err) {
+        alert("testConnection err" + JSON.stringify((err)));
+    });
 }
 function showLoading() {
 
@@ -131,6 +225,7 @@ function showButton(flag) {
             showTitle: flag
         });
 }
+//获取当前地址参数
 function getParameterByName(name, url) {
     if (!url) {
         url = window.location.href;
@@ -146,7 +241,7 @@ function getParameterByName(name, url) {
     }
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
+//进入指定页面
 function enterPage(url, id) {
     //window.location.href = url;
     $.router.loadPage(url+"?id="+id);
@@ -371,6 +466,7 @@ function refreshHomeDevicesList() {
 /**
  * 智能模块页面所需js
  */
+//TODO
 function refreshOutputDeviceList() {
     document.getElementById("home-output-module").innerHTML = '';
     var outputs = Database.getRelayList();
@@ -387,7 +483,7 @@ function refreshOutputDeviceList() {
         document.getElementById("home-output-module").appendChild(tmp);
     }
 }
-
+//TODO
 function refreshInputDeviceList() {
     document.getElementById("home-input-module").innerHTML = '';
     var inputs = Database.getCtlPanelList();

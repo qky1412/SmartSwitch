@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no">
+    <link href="../css/light7.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/jqueryui/1.11.3/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://static.360buyimg.com/smart/jdsmart-1.0.2.js"></script>
+    <script src="../js/storage/lockr.js"></script>
+    <script src="../js/storage/database.js"></script>
+    <script src="../js/light7.js"></script>
+    <script src="../js/subdevice_output.js"></script>
+    <title>输出设备</title>
+</head>
+<body>
+    <div class="page" id="page_subdevice_output">
+        <div class="content">
+            <div  class="list-block media-list">
+                <ul id="subdevice-output-slot-list">
+
+                </ul>
+            </div>
+        </div>
+        <template id="template-output-device-slot">
+            <li>
+                <a class="item-content" data-id="" onclick=";return false;">
+                    <div class="item-inner">
+                        <table class="table-device" >
+                            <tr>
+                                <td>
+                                    <span class="text-title col-80">插槽1</span>
+                                    <span id="span-output-id" class="text-second-title">ID:</span>
+                                </td>
+                                <td  rowspan="2" class="device-edit" onclick="">
+                                    <img src="../img/ic_edit_gray.png" class="edit">
+                                    <span>编辑</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-content">楼层:</span>
+                                    <span id="span-output-floor" class="text-content-black"></span>
+                                    <span class="text-content">房间:</span>
+                                    <span id="span-output-room" class="text-content-black"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </a>
+            </li>
+        </template>
+    </div>
+</body>
+</html>
