@@ -43,6 +43,14 @@ function FormatArrayNumberLengthToString(arrayNumberLength) {
 
 
 
+function StringArrayToInt(strArray) {
+    var hexStr = strArray.map(function(currentVal){
+        return parseInt(currentVal,10).toString(16);
+    }).join("");
+
+    return parseInt(hexStr,16);
+}
+
 
 
 
@@ -589,7 +597,7 @@ var Database = function (gatewayid) {
 
  */
 
-var CmdGen = function () {
+var CmdParserGen = function () {
 
     Date.prototype.format = function (fmt) { //author: meizz
         var o = {
@@ -628,110 +636,249 @@ var CmdGen = function () {
         return cmds;
     }
 
+    function getValueOfKey(streams, key) {
+        for (var s in streams) {
+            if (s['stream_id']===key) {
+                return s['current_value'];
+            }
+        }
+
+        return "";
+    }
+
     return {
 
 
         // 查询载波按键子设备状态（06H）,APP端查询关联载波按键子设备当前工作状态
-        'queryInputDevStatus':function() {
+        'queryInputDevStatus':{
+            'cmdgen':function() {
             return to_stream_value({'keymemo':FormatArrayNumberLengthToString([{num:0x06,len:3}])});
         },
+            //callback:function(cmdCode,btnStates) cmdCode:命令字,btnStates:按键状态集合;工作状态，0x00-关，0x7F-开，0xff是反转，默认为0x00-关
+        'parsergen':function(streams, callback){
+            var val = getValueOfKey(streams,'mac');
+            var ary = val.match(/.{1,6}/g);
+            var cmdCode = parseInt(ary[0],10);
+            var btnStates = ary.shift().map(function(currentVal){
+                return parseInt(currentVal,10);
+            });
+            callback(cmdCode, btnStates);
+
+        }},
 
 
         //查询驱动子设备状态（07H）,APP端查询关联驱动子设备当前工作状态
 
-        'queryOutputDevStatus': function() {
-            return to_stream_value({'powermemo':FormatArrayNumberLengthToString([{num:0x07,len:3}])});
+        'queryOutputDevStatus':{
+            'cmdgen': function() {
+                return to_stream_value({'powermemo':FormatArrayNumberLengthToString([{num:0x07,len:3}])});
+            },
+            //callback:function(cmdCode,numberOfDrivers,driverStates,subdevpid)
+            //cmdCode:命令字, numberOfDrivers:有效驱动数,driverStates:驱动状态集合,subdevpid子设备pid
+            //驱动 状态:
+            //bit7:为1时，有新触发信号时反转整个字节；为0时，依据bit6~bit0数值执行；
+            //bit6~bit0:当前驱动口输出灰度，x1111111-最大输出（最亮），x0000000-最小输出（不亮），
+            //    中间值对应不同的灰度（亮度）。
+
+            'parsergen':function(streams, callback){
+                var val = getValueOfKey(streams, 'powermemo');
+                var ary = val.match(/.{1,6}/g);
+                var cmdCode = parseInt(ary[0],10);
+                var numberOfDrivers = parseInt(ary[1],16);
+                var driverStates = ary.slice(2,ary.length-2).map(function(currentVal){
+                    return parseInt(currentVal,10);
+                });
+
+                var pid = StringArrayToInt(ary.slice(ary.length-2,ary.length));
+                callback(cmdCode, numberOfDrivers, driverStates, pid);
+
+
+            }
         },
 
 
         // 配置驱动子设备场景
         //参数: scenepid场景Pid, drivernumber驱动口号,  sceneinfo场景信息（SceneInfo类型）
-        'configScene': function(scenepid, drivernumber, sceneinfo ) {
-            var val = FormatArrayNumberLengthToString([{num:0x0a,len:3},{num:scenepid,len:6},{num:drivernumber,len:3}]) + FormatArrayNumberLengthToString([{num:sceneinfo.latencyBeforeaAtion,len:6},{num:sceneinfo.stateBeforeAction,len:3},
-                    {num:sceneinfo.latencyAfterAction,len:6},{num:sceneinfo.stateAfterAction,len:3}]);
-             return to_stream_value({
-                 'powermemo':val
-             });
+        'configScene':{
+            'cmdgen': function(scenepid, drivernumber, sceneinfo ) {
+                var val = FormatArrayNumberLengthToString([{num:0x0a,len:3},{num:scenepid,len:6},{num:drivernumber,len:3}]) + FormatArrayNumberLengthToString([{num:sceneinfo.latencyBeforeaAtion,len:6},{num:sceneinfo.stateBeforeAction,len:3},
+                        {num:sceneinfo.latencyAfterAction,len:6},{num:sceneinfo.stateAfterAction,len:3}]);
+                return to_stream_value({
+                    'powermemo':val
+                });
+            },
+            //callback:function(cmdCode, scenepid, drivernumber)
+            //参数:cmdCode命令字, scenepid场景pid,drivernumber驱动口号
+            'parsergen':function(streams, callback) {
+                var val = getValueOfKey(streams, 'mac');
+                var cmdCode = parseInt(val[0],10);
+                var scenepid = StringArrayToInt(val.slice(1,1+2));
+                var drivernumber = parseInt(val[val.length-1],16);
+                callback(cmdCode, scenepid, drivernumber);
+
+            }
         },
 
 
 
         //删除场景
         //参数: 场景pid
-        'deleteScene':function(pid){
-              return to_stream_value({
-                  'message_id':0x0c,
-                  'scene_id':pid,
-              });
+        'deleteScene':{
+            'cmdgen':function(pid){
+                return to_stream_value({
+                    'message_id':0x0c,
+                    'scene_id':pid,
+                });
+            },
+            //callback:function(cmdCode,scenepid)
+            //参数cmdCode命令字, scenepid场景pid
+            'parsergen':function(streams, callback){
+                var val = getValueOfKey(streams, 'mac');
+                var cmdCode = parseInt(val[0],10);
+                var scenepid = StringArrayToInt(val.slice(1,val.length));
+                callback(cmdCode, scenepid);
+
+            }
         },
 
 
         //场景关联载波按键子设备
         //参数: scenepid场景Pid，btnnumber按键编号,btntype按键类型
-        'connectScenepidWithInputDevice':function(scenepid, btnnumber,btntype){
-            var val = FormatArrayNumberLengthToString([{num:0x21,len:3},
-                {num:scenepid,len:6},{num:btnnumber,len:3},{num:btntype,len:3}]);
-            return to_stream_value({'keymemo':val});
+        'connectScenepidWithInputDevice':{
+            'cmdgen':function(scenepid, btnnumber,btntype){
+                var val = FormatArrayNumberLengthToString([{num:0x21,len:3},
+                    {num:scenepid,len:6},{num:btnnumber,len:3},{num:btntype,len:3}]);
+                return to_stream_value({'keymemo':val});
+            },
+            //callback:function(cmdCode,scenepid,btnNumber,btnStates)
+            'parsergen':function(streams,callback){
+                var val = getValueOfKey(streams, 'keymemo');
+                var cmdCode = parseInt(val[0],10);
+                var scenepid = StringArrayToInt(val.slice(1,1+2));
+                var btnNumber = parseInt(val[3],10);
+                var btnStates = val.slice(4,val.length).map(function(currentVal){
+                    return parseInt(currentVal,10);
+                });
+
+                callback(cmdCode, scenepid, btnNumber, btnStates);
+            }
+
         },
 
 
         // 删除驱动子设备场景, 将某个驱动口从某个场景中删除
         //参数:pid场景pid, drivernumber驱动号
-        'deleteOutputDeviceFromScene':function(pid,drivernumber){
-            var val = FormatArrayNumberLengthToString([{num:0x22,len:3},
-                {num:pid,len:6},{num:drivernumber,len:3}]);
-            return to_stream_value({'powermemo':val});
+        'deleteOutputDeviceFromScene':{
+            'cmdgen':function(pid,drivernumber){
+                var val = FormatArrayNumberLengthToString([{num:0x22,len:3},
+                    {num:pid,len:6},{num:drivernumber,len:3}]);
+                return to_stream_value({'powermemo':val});
+            },
+            //callback:function(cmdCode,scenepid,drivernumber)
+            //drivernumber:驱动口号
+            'parsergen':function(streams, callback){
+                var val = getValueOfKey(streams, 'mac');
+                var cmdcode = parseInt(val[0],10);
+                var scenepid = StringArrayToInt(val.slice(1,1+2));
+                var drivernumber = parseInt(val[val.length-1],10);
+                callback(cmdcode,scenepid, drivernumber);
+
+            }
         },
 
         //网关获取当前时间
-        'sendDatatimeToGateway':function() {
-            var now = new Date();
-            var val = FormatArrayNumberLengthToString([
-                {num:now.getFullYear(),len:6},
-                {num:now.getMonth()+1,len:3},
-                {num:now.getDate(),len:3},
-                {num:now.getHours()+1,len:3},
-                {num:now.getMinutes(),len:3},
-                {num:now.get.getSeconds(),len:3}
-            ]);
-            return to_stream_value({'message_id':0x25,
-            'memo':val});
+        'sendDatatimeToGateway':{
+            'cmdgen':function() {
+                var now = new Date();
+                var val = FormatArrayNumberLengthToString([
+                    {num:now.getFullYear(),len:6},
+                    {num:now.getMonth()+1,len:3},
+                    {num:now.getDate(),len:3},
+                    {num:now.getHours()+1,len:3},
+                    {num:now.getMinutes(),len:3},
+                    {num:now.get.getSeconds(),len:3}
+                ]);
+                return to_stream_value({'message_id':0x25,
+                    'memo':val});
+            },
+            //callback:function(success)
+            //success="success"字串
+            'parsercmd':function(streams,callback) {
+                callback("success");
+            }
         },
 
         //全局场景控制
         //参数: pid场景pid, exec:执行要求：0x00-关，0x7F-开，0xff-反转
-        'sceneControl': function (pid, exec) {
-            return to_stream_value({'message_id': FormatArrayNumberLengthToString([{num:0x99,len:3}]),
-               'scene_id':FormatArrayNumberLengthToString([{num:pid,len:6}]),
-                'memo':FormatArrayNumberLengthToString([{num:exec,len:3}])
-            });
+        'sceneControl': {
+            'cmdgen':function (pid, exec) {
+                return to_stream_value({'message_id': FormatArrayNumberLengthToString([{num:0x99,len:3}]),
+                    'scene_id':FormatArrayNumberLengthToString([{num:pid,len:6}]),
+                    'memo':FormatArrayNumberLengthToString([{num:exec,len:3}])
+                });
+            },
+            //callback:function(cmdcode,scenepid,exec_result)
+            //exec_result:执行结果： 0x7F -场景打开成功 ， 0 -场景打开失败
+            'parsergen':function(streams,callback){
+                var val = getValueOfKey(streams, 'mac');
+                var cmdcode = parseInt(val[0],10);
+                var scenepid = StringArrayToInt(val.slice(1,1+2));
+                var execresult = parseInt(val[val.length-1],10);
+                callback(cmdcode,scenepid,execresult);
+            }
         },
-
         //独立场景控制, 单独控制一个驱动设备
         //参数:drivernumber驱动号,sceneinfo场景信息YN_SceneInfo
-        'independentSceneControl': function(drivernumber,sceneinfo) {
-            var val = FormatArrayNumberLengthToString([
-                {num:0x98,len:3},
-                {num:drivernumber,len:3},
-                {num:sceneinfo.latencyBeforeaAtion,len:6},
-                {num:sceneinfo.stateBeforeAction,len:3},
-                {num:sceneinfo.latencyAfterAction,len:6},
-                {num:sceneinfo.stateAfterAction,len:3}
-            ]);
-            return to_stream_value({
-                'powermemo':val
-            });
+        'independentSceneControl': {
+            'cmdgen':function(drivernumber,sceneinfo) {
+                var val = FormatArrayNumberLengthToString([
+                    {num:0x98,len:3},
+                    {num:drivernumber,len:3},
+                    {num:sceneinfo.latencyBeforeaAtion,len:6},
+                    {num:sceneinfo.stateBeforeAction,len:3},
+                    {num:sceneinfo.latencyAfterAction,len:6},
+                    {num:sceneinfo.stateAfterAction,len:3}
+                ]);
+                return to_stream_value({
+                    'powermemo':val
+                });
+            },
+            //callback:function(cmdcode,subdevtype, numberofdrivers,driverStates)
+            //参数:cmdcode命令字, subdevtype子设备类型,numberofdrivers有效驱动数量, driverStates驱动状态集合
+            'parsergen':function(streams,callback){
+                var val = getValueOfKey(streams, 'mac');
+                var cmdcode = parseInt(val[0],10);
+                var subdevtype = parseInt(val[1],10);
+                var numberofdrivers = parseInt(val[2],10);
+                var driverStates = val.slice(3,val.length).map(function(currentVal){
+                    return parseInt(currentVal,10);
+                });
+
+                callback(cmdcode,subdevtype, numberofdrivers, driverStates);
+
+            }
         },
 
         //标准控制模式 用途：APP端独立控制指定驱动子设备某个驱动子设备的端口号。
         //即对设备进行单独的控制
         //参数: drivernumber驱动设备口, exec执行要求,执行要求：0x00-关，0x7F-开，0xff-反转
-        'standardControl': function(drivernumber,exec) {
-            var val = FormatArrayNumberLengthToString([{num:0x96,len:3},
-                {num:drivernumber,len:3},{num:exec,len:3}]);
+        'standardControl':{
+            'cmdgen': function(drivernumber,exec) {
+                var val = FormatArrayNumberLengthToString([{num:0x96,len:3},
+                    {num:drivernumber,len:3},{num:exec,len:3}]);
 
-            return to_stream_value({'powermemo':val});
-        },
+                return to_stream_value({'powermemo':val});
+            },
+            //callback:function(cmdcode,exec_result)
+            //参数cmdcode:命令字,exec_result:执行结果
+            //注：0x7F-成功，0x00-失败
+            'parsergen':function(streams,callback){
+                var val = getValueOfKey(streams, 'mac');
+                var cmdcode = parseInt(val[0],10);
+                var execresult = parseInt(val[1],10);
+                callback(cmdcode, execresult);
+            }
+        }
 
     };
 
@@ -740,28 +887,9 @@ var CmdGen = function () {
 
 /* 用于与京东交互的api */
 var CloudApi = function () {
+    
 
-    function contains(a, obj) {
-        for (var i = 0; i < a.length; i++) {
-            if (a[i] === obj) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function parseWithSnapShop(streams, keys) {
-        var rt = {};
-        for (var s in streams) {
-            if (contains(keys, s['stream_id'])) {
-                rt[s['stream_id']] = s['current_value'];
-            }
-        }
-
-        return rt;
-    }
-
-    function JDIOCtl(cmdgen_f, callback, keys) {
+    function JDIOCtl(cmdgen_f, parser_f, callback) {
 
         JDSMART.io.controlDevice(
             {"command": cmdgen_f()},
@@ -794,7 +922,7 @@ var CloudApi = function () {
             Database.setGateway(gateway);
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_msg_id', 'YN_datetime'];
             JDIOCtl(function () {
-                    return CmdGen.regGateway(gateway);
+                    return CmdParserGen.regGateway(gateway);
                 }, callback,
                 keys);
 
@@ -805,7 +933,7 @@ var CloudApi = function () {
         'registerCtlPanel': function (panel, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_subdev_t', 'YN_subdev_n'];
             JDIOCtl(function () {
-                    return CmdGen.regBtnSubDev(Database.gateway, panel);
+                    return CmdParserGen.regBtnSubDev(Database.gateway, panel);
                 }, callback,
                 keys);
 
@@ -818,7 +946,7 @@ var CloudApi = function () {
                 'YN_subdev_s'];
 
             JDIOCtl(function () {
-                return CmdGen.regDrvSubDev(Database.gateway, relay);
+                return CmdParserGen.regDrvSubDev(Database.gateway, relay);
             }, callback, keys);
 
         },
@@ -827,7 +955,7 @@ var CloudApi = function () {
         'deleteCtlPanel': function (panel, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id'];
             JDIOCtl(function () {
-                return CmdGen.deleteBtnSubDev(Database.gateway, panel);
+                return CmdParserGen.deleteBtnSubDev(Database.gateway, panel);
 
             }, callback, keys);
         },
@@ -836,7 +964,7 @@ var CloudApi = function () {
         'deleteRelay': function (relay, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_subdev_n', 'YN_pid'];
             JDIOCtl(function () {
-                return CmdGen.deleteDrvSubDev(Database.gateway, relay);
+                return CmdParserGen.deleteDrvSubDev(Database.gateway, relay);
             }, callback, keys);
         },
 
@@ -845,7 +973,7 @@ var CloudApi = function () {
         'replaceOldCtlPanel': function (old_panel, new_panel, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_psubdev_id'];
             JDIOCtl(function () {
-                return CmdGen.replaceBtnSubDev(Database.gateway, old_panel, new_panel);
+                return CmdParserGen.replaceBtnSubDev(Database.gateway, old_panel, new_panel);
             }, callback, keys);
         },
 
@@ -854,7 +982,7 @@ var CloudApi = function () {
         'replaceOldRelay': function (old_relay, new_relay, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_t', 'YN_subdev_n', 'YN_subdev_s'];
             JDIOCtl(function () {
-                return CmdGen.replaceDrvSubDev(Database.gateway, old_relay, new_relay);
+                return CmdParserGen.replaceDrvSubDev(Database.gateway, old_relay, new_relay);
             }, callback, keys);
         },
 
@@ -863,7 +991,7 @@ var CloudApi = function () {
         'createScene': function (scene, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.createScene(Database.gateway, scene);
+                return CmdParserGen.createScene(Database.gateway, scene);
             }, callback, keys);
 
         },
@@ -873,7 +1001,7 @@ var CloudApi = function () {
         'updateScene': function (scene, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.updateScene(Database.gateway, scene);
+                return CmdParserGen.updateScene(Database.gateway, scene);
             }, callback, keys);
         },
 
@@ -885,7 +1013,7 @@ var CloudApi = function () {
                 if (!scene.pid) {
                     throw "scene.pid is null";
                 }
-                return CmdGen.deleteScene(scene);
+                return CmdParserGen.deleteScene(scene);
             }, callback, keys);
         },
 
@@ -894,7 +1022,7 @@ var CloudApi = function () {
         'configElecEqui': function (elec_equi, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.configElecEqui(Database.gateway, elec_equi);
+                return CmdParserGen.configElecEqui(Database.gateway, elec_equi);
             }, callback, keys);
         },
 
@@ -902,7 +1030,7 @@ var CloudApi = function () {
         'configTimingTask': function (timing_task, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_time_n', 'YN_pid', 'YN_timer_t', 'YN_datetime', 'YN_timer_s'];
             JDIOCtl(function () {
-                return CmdGen.configTiming(Database.gateway, timing_task);
+                return CmdParserGen.configTiming(Database.gateway, timing_task);
             }, callback, keys);
         },
 
@@ -912,7 +1040,7 @@ var CloudApi = function () {
         'deleteTimingTask': function (timing_id, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_time_n'];
             JDIOCtl(function () {
-                return CmdGen.deleteTiming(Database.gateway, timing_id);
+                return CmdParserGen.deleteTiming(Database.gateway, timing_id);
             }, callback, keys);
 
         },
@@ -922,7 +1050,7 @@ var CloudApi = function () {
         'queryAllPidStatus': function (pid_b, pid_e, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid_b', 'YN_pid_e', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.queryAllPidStatus(Database.gateway, pid_b, pid_e);
+                return CmdParserGen.queryAllPidStatus(Database.gateway, pid_b, pid_e);
             }, callback, keys);
         },
 
@@ -931,7 +1059,7 @@ var CloudApi = function () {
         'queryPidStatus': function (pid, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.queryPidStatus(Database.gateway, pid);
+                return CmdParserGen.queryPidStatus(Database.gateway, pid);
             }, callback, keys);
         },
 
@@ -940,7 +1068,7 @@ var CloudApi = function () {
         'queryAllTimingPidStatus': function (pid_b, pid_e, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid_b', 'YN_pid_e', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.queryAllTimingPidStatus(Database.gateway, pid_b, pid_e);
+                return CmdParserGen.queryAllTimingPidStatus(Database.gateway, pid_b, pid_e);
             }, callback, keys);
         },
 
@@ -949,7 +1077,7 @@ var CloudApi = function () {
         'controlScene': function (pid, status, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_msgpack'];
             JDIOCtl(function () {
-                return CmdGen.controlScene(Database.gateway, pid, status);
+                return CmdParserGen.controlScene(Database.gateway, pid, status);
 
             }, callback, keys);
         },
@@ -958,7 +1086,7 @@ var CloudApi = function () {
         'controlElecEquiOnce': function (step, callback) {
             var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
             JDIOCtl(function () {
-                return CmdGen.controlElecEquiOnce(Database.gateway, step);
+                return CmdParserGen.controlElecEquiOnce(Database.gateway, step);
             }, callback, keys);
         }
 
