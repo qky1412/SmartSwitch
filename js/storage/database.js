@@ -654,7 +654,7 @@ var CmdParserGen = function () {
             'cmdgen':function() {
             return to_stream_value({'keymemo':FormatArrayNumberLengthToString([{num:0x06,len:3}])});
         },
-            //callback:function(cmdCode,btnStates) cmdCode:命令字,btnStates:按键状态集合;工作状态，0x00-关，0x7F-开，0xff是反转，默认为0x00-关
+            //callback:function({cmdCode,btnStates}) cmdCode:命令字,btnStates:按键状态集合;工作状态，0x00-关，0x7F-开，0xff是反转，默认为0x00-关
         'parsergen':function(streams, callback){
             var val = getValueOfKey(streams,'mac');
             var ary = val.match(/.{1,6}/g);
@@ -662,7 +662,7 @@ var CmdParserGen = function () {
             var btnStates = ary.shift().map(function(currentVal){
                 return parseInt(currentVal,10);
             });
-            callback(cmdCode, btnStates);
+            callback({'cmdCode':cmdCode, 'btnStates':btnStates});
 
         }},
 
@@ -690,7 +690,7 @@ var CmdParserGen = function () {
                 });
 
                 var pid = StringArrayToInt(ary.slice(ary.length-2,ary.length));
-                callback(cmdCode, numberOfDrivers, driverStates, pid);
+                callback({'cmdCode':cmdCode,'numberOfDrivers': numberOfDrivers,'driverStates':driverStates, 'subdevpid':pid});
 
 
             }
@@ -707,14 +707,14 @@ var CmdParserGen = function () {
                     'powermemo':val
                 });
             },
-            //callback:function(cmdCode, scenepid, drivernumber)
+            //callback:function({cmdCode, scenepid, drivernumber})
             //参数:cmdCode命令字, scenepid场景pid,drivernumber驱动口号
             'parsergen':function(streams, callback) {
                 var val = getValueOfKey(streams, 'mac');
                 var cmdCode = parseInt(val[0],10);
                 var scenepid = StringArrayToInt(val.slice(1,1+2));
                 var drivernumber = parseInt(val[val.length-1],16);
-                callback(cmdCode, scenepid, drivernumber);
+                callback({'cmdCode':cmdCode, 'scenepid':scenepid, 'drivernumber':drivernumber});
 
             }
         },
@@ -730,13 +730,13 @@ var CmdParserGen = function () {
                     'scene_id':pid,
                 });
             },
-            //callback:function(cmdCode,scenepid)
+            //callback:function({cmdCode,scenepid})
             //参数cmdCode命令字, scenepid场景pid
             'parsergen':function(streams, callback){
                 var val = getValueOfKey(streams, 'mac');
                 var cmdCode = parseInt(val[0],10);
                 var scenepid = StringArrayToInt(val.slice(1,val.length));
-                callback(cmdCode, scenepid);
+                callback({'cmdCode':cmdCode, 'scenepid':scenepid});
 
             }
         },
@@ -750,7 +750,7 @@ var CmdParserGen = function () {
                     {num:scenepid,len:6},{num:btnnumber,len:3},{num:btntype,len:3}]);
                 return to_stream_value({'keymemo':val});
             },
-            //callback:function(cmdCode,scenepid,btnNumber,btnStates)
+            //callback:function({cmdCode,scenepid,btnNumber,btnStates})
             'parsergen':function(streams,callback){
                 var val = getValueOfKey(streams, 'keymemo');
                 var cmdCode = parseInt(val[0],10);
@@ -760,7 +760,7 @@ var CmdParserGen = function () {
                     return parseInt(currentVal,10);
                 });
 
-                callback(cmdCode, scenepid, btnNumber, btnStates);
+                callback({'cmdCode':cmdCode,'scenepid': scenepid,'btnNumber': btnNumber,'btnStates': btnStates});
             }
 
         },
@@ -774,14 +774,14 @@ var CmdParserGen = function () {
                     {num:pid,len:6},{num:drivernumber,len:3}]);
                 return to_stream_value({'powermemo':val});
             },
-            //callback:function(cmdCode,scenepid,drivernumber)
+            //callback:function({cmdCode,scenepid,drivernumber})
             //drivernumber:驱动口号
             'parsergen':function(streams, callback){
                 var val = getValueOfKey(streams, 'mac');
                 var cmdcode = parseInt(val[0],10);
                 var scenepid = StringArrayToInt(val.slice(1,1+2));
                 var drivernumber = parseInt(val[val.length-1],10);
-                callback(cmdcode,scenepid, drivernumber);
+                callback({'cmdCode':cmdcode,'scenepid':scenepid, 'drivernumber':drivernumber});
 
             }
         },
@@ -817,14 +817,14 @@ var CmdParserGen = function () {
                     'memo':FormatArrayNumberLengthToString([{num:exec,len:3}])
                 });
             },
-            //callback:function(cmdcode,scenepid,exec_result)
+            //callback:function({cmdcode,scenepid,exec_result})
             //exec_result:执行结果： 0x7F -场景打开成功 ， 0 -场景打开失败
             'parsergen':function(streams,callback){
                 var val = getValueOfKey(streams, 'mac');
                 var cmdcode = parseInt(val[0],10);
                 var scenepid = StringArrayToInt(val.slice(1,1+2));
                 var execresult = parseInt(val[val.length-1],10);
-                callback(cmdcode,scenepid,execresult);
+                callback({'cmdcode':cmdcode,'scenepid':scenepid,'exec_result':execresult});
             }
         },
         //独立场景控制, 单独控制一个驱动设备
@@ -843,7 +843,7 @@ var CmdParserGen = function () {
                     'powermemo':val
                 });
             },
-            //callback:function(cmdcode,subdevtype, numberofdrivers,driverStates)
+            //callback:function({cmdcode,subdevtype, numberofdrivers,driverStates})
             //参数:cmdcode命令字, subdevtype子设备类型,numberofdrivers有效驱动数量, driverStates驱动状态集合
             'parsergen':function(streams,callback){
                 var val = getValueOfKey(streams, 'mac');
@@ -854,7 +854,7 @@ var CmdParserGen = function () {
                     return parseInt(currentVal,10);
                 });
 
-                callback(cmdcode,subdevtype, numberofdrivers, driverStates);
+                callback({'cmdcode':cmdcode,'subdevtype':subdevtype, 'numberofdrivers':numberofdrivers, 'driverStates':driverStates});
 
             }
         },
@@ -869,14 +869,14 @@ var CmdParserGen = function () {
 
                 return to_stream_value({'powermemo':val});
             },
-            //callback:function(cmdcode,exec_result)
+            //callback:function({cmdCode,exec_result})
             //参数cmdcode:命令字,exec_result:执行结果
             //注：0x7F-成功，0x00-失败
             'parsergen':function(streams,callback){
                 var val = getValueOfKey(streams, 'mac');
                 var cmdcode = parseInt(val[0],10);
                 var execresult = parseInt(val[1],10);
-                callback(cmdcode, execresult);
+                callback({'cmdCode':cmdcode, 'exec_result':execresult});
             }
         }
 
@@ -887,21 +887,15 @@ var CmdParserGen = function () {
 
 /* 用于与京东交互的api */
 var CloudApi = function () {
-    
+
 
     function JDIOCtl(cmdgen_f, parser_f, callback) {
 
         JDSMART.io.controlDevice(
             {"command": cmdgen_f()},
             function (suc) {
-                JDSMART.io.getSnapshot(function (success) {
-                    if (callback) {
-                        callback(true, parseWithSnapShop(success["streams"], keys));
-                    }
-                }, function (error) {
-                    if (callback) {
-                        callback(false, error);
-                    }
+                parser_f(suc.streams,function(resultobject){
+                    callback(true, resultobject);
                 });
             },
             function (err) {
@@ -915,179 +909,117 @@ var CloudApi = function () {
 
     return {
 
-
-        //注册网关
-        //参数: gateway网关
-        'registerGateway': function (gateway, callback) {
-            Database.setGateway(gateway);
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_msg_id', 'YN_datetime'];
-            JDIOCtl(function () {
-                    return CmdParserGen.regGateway(gateway);
-                }, callback,
-                keys);
-
+        // 查询载波按键子设备状态（06H）,APP端查询关联载波按键子设备当前工作状态
+        //business_cb:function(true,{cmdCode,btnStates})
+        //      or function(false,err);
+        'queryInputDevStatus':function(business_cb) {
+            JDIOCtl(CmdParserGen.queryInputDevStatus.cmdgen,
+                CmdParserGen.queryInputDevStatus.parsergen,
+                business_cb
+            );
         },
 
-        //注册按键设备
-        //参数: Panel按键设备
-        'registerCtlPanel': function (panel, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_subdev_t', 'YN_subdev_n'];
-            JDIOCtl(function () {
-                    return CmdParserGen.regBtnSubDev(Database.gateway, panel);
-                }, callback,
-                keys);
 
+        //查询驱动子设备状态（07H）,APP端查询关联驱动子设备当前工作状态
+        //business_cb:function(true,{cmdCode,numberOfDrivers,driverStates,subdevpid})
+        //cmdCode:命令字, numberOfDrivers:有效驱动数,driverStates:驱动状态集合,subdevpid子设备pid
+        //      or function(false,err);
+        //驱动 状态:
+        //bit7:为1时，有新触发信号时反转整个字节；为0时，依据bit6~bit0数值执行；
+        //bit6~bit0:当前驱动口输出灰度，x1111111-最大输出（最亮），x0000000-最小输出（不亮），
+        //    中间值对应不同的灰度（亮度）。
+        'queryOutputDevStatus':function(business_cb) {
+            JDIOCtl(CmdParserGen.queryOutputDevStatus.cmdgen,
+                CmdParserGen.queryOutputDevStatus.parsergen,
+                business_cb
+            );
         },
 
-        //注册驱动(继电器)子设备
-        'registerRelay': function (relay, callback) {
 
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_subdev_t', 'YN_subdev_n', 'YN_pid',
-                'YN_subdev_s'];
-
-            JDIOCtl(function () {
-                return CmdParserGen.regDrvSubDev(Database.gateway, relay);
-            }, callback, keys);
-
-        },
-
-        //删除按键设备
-        'deleteCtlPanel': function (panel, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id'];
-            JDIOCtl(function () {
-                return CmdParserGen.deleteBtnSubDev(Database.gateway, panel);
-
-            }, callback, keys);
-        },
-
-        //删除驱动（继电器）子设备
-        'deleteRelay': function (relay, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_subdev_n', 'YN_pid'];
-            JDIOCtl(function () {
-                return CmdParserGen.deleteDrvSubDev(Database.gateway, relay);
-            }, callback, keys);
-        },
-
-        //更换按键子设备
-        //参数: old_panel 旧的控制面板, new_panel新的控制面板
-        'replaceOldCtlPanel': function (old_panel, new_panel, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_psubdev_id'];
-            JDIOCtl(function () {
-                return CmdParserGen.replaceBtnSubDev(Database.gateway, old_panel, new_panel);
-            }, callback, keys);
-        },
-
-        //更换驱动(继电器)子设备
-        //参数: old_relay旧的继电器 new_relay新的继电器
-        'replaceOldRelay': function (old_relay, new_relay, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_t', 'YN_subdev_n', 'YN_subdev_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.replaceDrvSubDev(Database.gateway, old_relay, new_relay);
-            }, callback, keys);
-        },
-
-        //创建场景
-        //参数 : scene 场景
-        'createScene': function (scene, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.createScene(Database.gateway, scene);
-            }, callback, keys);
-
-        },
-
-        //更新场景
-        //参数: scene需更新的场景
-        'updateScene': function (scene, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.updateScene(Database.gateway, scene);
-            }, callback, keys);
+        // 配置驱动子设备场景
+        //business_cb:function(true,{cmdCode, scenepid, drivernumber})
+        //  or function(false,err)
+        'configScene':function(business_cb){
+            JDIOCtl(CmdParserGen.configScene.cmdgen,
+                CmdParserGen.configScene.parsergen,
+                business_cb
+            );
         },
 
         //删除场景
-        //参数: scene 要删除的场景;必须带有正确的pid
-        'deleteScene': function (scene, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid'];
-            JDIOCtl(function () {
-                if (!scene.pid) {
-                    throw "scene.pid is null";
-                }
-                return CmdParserGen.deleteScene(scene);
-            }, callback, keys);
-        },
-
-        //配置单一驱动场景<其实就是为某个电器配置按钮>
-        //参数 elec_equi
-        'configElecEqui': function (elec_equi, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_subdev_id', 'YN_pid', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.configElecEqui(Database.gateway, elec_equi);
-            }, callback, keys);
-        },
-
-        //配置定时任务
-        'configTimingTask': function (timing_task, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_time_n', 'YN_pid', 'YN_timer_t', 'YN_datetime', 'YN_timer_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.configTiming(Database.gateway, timing_task);
-            }, callback, keys);
+        //business_cb:function(true,{cmdCode,scenepid})
+        //  or function(false,err)
+        'deleteScene':function(business_cb){
+            JDIOCtl(CmdParserGen.deleteScene.cmdgen,
+                CmdParserGen.deleteScene.parsergen,
+                business_cb
+            );
         },
 
 
-        //删除定时任务
-        //参数: timer_id 定时Id,即（YN_timer_n, callback）
-        'deleteTimingTask': function (timing_id, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_time_n'];
-            JDIOCtl(function () {
-                return CmdParserGen.deleteTiming(Database.gateway, timing_id);
-            }, callback, keys);
-
+        //场景关联载波按键子设备
+        //business_cb:function(true,{cmdCode,scenepid,btnNumber,btnStates})
+        //      or function(false,err)
+        'connectScenepidWithInputDevice':function(business_cb){
+            JDIOCtl(CmdParserGen.connectScenepidWithInputDevice.cmdgen,
+                CmdParserGen.connectScenepidWithInputDevice.parsergen,
+                business_cb
+            );
         },
 
-        //app查询所有pid状态
-        //参数 : pid_b起始pid pid_e结束Pid
-        'queryAllPidStatus': function (pid_b, pid_e, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid_b', 'YN_pid_e', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.queryAllPidStatus(Database.gateway, pid_b, pid_e);
-            }, callback, keys);
+        // 删除驱动子设备场景, 将某个驱动口从某个场景中删除
+        //business_cb:function(true,{cmdCode,scenepid,drivernumber})
+        //      or function(false,err)
+
+        'deleteOutputDeviceFromScene':function(business_cb){
+            JDIOCtl(CmdParserGen.deleteOutputDeviceFromScene.cmdgen,
+                CmdParserGen.deleteOutputDeviceFromScene.parsergen,
+                business_cb
+            );
         },
 
-        //查询单个pid状态
-        //参数: pid 要查询的pid
-        'queryPidStatus': function (pid, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.queryPidStatus(Database.gateway, pid);
-            }, callback, keys);
+
+        //网关获取当前时间
+        //business_cb:function(true, success)  sucess=="success"
+        //  or function(false,err)
+
+        'sendDatatimeToGateway':function(business_cb){
+            JDIOCtl(CmdParserGen.sendDatatimeToGateway.cmdgen,
+              CmdParserGen.sendDatatimeToGateway.parsergen,
+              business_cb
+             );
         },
 
-        //查询所有定时Pid状态
-        //参数 : pid_b起始pid pid_e结束Pid
-        'queryAllTimingPidStatus': function (pid_b, pid_e, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid_b', 'YN_pid_e', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.queryAllTimingPidStatus(Database.gateway, pid_b, pid_e);
-            }, callback, keys);
+        //全局场景控制
+        //business_cb:function(true,{cmdcode,scenepid,exec_result})
+        //  or function(false,err);
+
+        'sceneControl':function(business_cb) {
+            JDIOCtl(CmdParserGen.sceneControl.cmdgen,
+                CmdParserGen.sceneControl.parsergen,
+                business_cb
+            );
         },
 
-        //app场景控制
-        //参数: Pid 要执行的Pid,  status将要执行的动作0x7f表示执行/0x00表示停止
-        'controlScene': function (pid, status, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_msgpack'];
-            JDIOCtl(function () {
-                return CmdParserGen.controlScene(Database.gateway, pid, status);
-
-            }, callback, keys);
+        //独立场景控制, 单独控制一个驱动设备
+        //callback:function(true,{cmdcode,subdevtype, numberofdrivers,driverStates})
+        //  or function(false,err)
+        'independentSceneControl':function(business_cb) {
+            JDIOCtl(CmdParserGen.independentSceneControl.cmdgen,
+                CmdParserGen.independentSceneControl.parsergen,
+                business_cb
+            );
         },
-        //为某个电器配置单次执行的任务
-        //参数: step为YN_Scene_Step对象,用于描述单次配置
-        'controlElecEquiOnce': function (step, callback) {
-            var keys = ['YN_mac', 'YN_device_id', 'YN_msg_id', 'YN_pid', 'YN_pid_s'];
-            JDIOCtl(function () {
-                return CmdParserGen.controlElecEquiOnce(Database.gateway, step);
-            }, callback, keys);
+
+        //标准控制模式 用途：APP端独立控制指定驱动子设备某个驱动子设备的端口号。
+        //business_cb:function(true, {cmdCode,exec_result})
+        //  or function(false,err)
+
+        'standardControl':function(business_cb) {
+            JDIOCtl(CmdParserGen.standardControl.cmdgen,
+                CmdParserGen.standardControl.parsergen,
+                business_cb
+            );
         }
 
     };
