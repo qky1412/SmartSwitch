@@ -4,6 +4,52 @@
 
 
 
+
+//format int
+
+function FormatNumberLength(num, length) {
+    function reverse(s) {
+        return s.split("").reverse().join("");
+    }
+    if(length === 6) {
+        var hex = num.toString(16);
+        var reversehex = reverse(hex);
+        var pieces = reversehex.match(/.{1,2}/g).reverse();
+        return pieces.map(function(currentValue){
+            var val = reverse(currentValue);
+            return FormatNumberLength(parseInt(val,16),3);
+        }).reduce(function(total, currentValue){
+            return total + currentValue;
+        },"");
+
+    } else if (length ===3) {
+        var r = "" + num;
+        while (r.length < length) {
+            r = "0" + r;
+        }
+        return r;
+    }
+}
+
+
+function FormatArrayNumberLengthToString(arrayNumberLength) {
+    arrayNumberLength.map(function (currentValue) {
+        return FormatNumberLength(currentValue.num, currentValue.len)
+            .reduce(function(total, currentValue){
+                return total + currentValue;
+            },"");
+    });
+}
+
+
+
+
+
+
+
+//----------------------------------------------------//
+
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -172,7 +218,8 @@ function Timing_Config_getdatetime(timing_config) {
 
 
 /** 数据库对象 **/
-var Database = function () {
+//参数 :gatewayid -> 网关的唯一标识
+var Database = function (gatewayid) {
 
     var dataTables = {
         'elec_equi_list': [],  //电器列表
@@ -186,21 +233,23 @@ var Database = function () {
 
     function writeToDb() {
         for (var key_table in dataTables) {
-            Lockr.set(key_table, dataTables[key_table]);
+            Lockr.set(key_table+gatewayid, dataTables[key_table]);
         }
     }
 
 
     function readFromDb() {
         for (var key_table in dataTables) {
-            if (key_table == 'default_scene') {
+            key_table = key_table+gatewayid;
+            var defaultscene = 'default_scene'+gatewayid;
+            if (key_table === defaultscene) {
                 continue;
             }
             dataTables[key_table] = Lockr.get(key_table) || [];
         }
 
         //获取默认场景
-        dataTables['default_scene'] = Lockr.get('default_scene') || createDefaultScene();
+        dataTables[defaultscene] = Lockr.get('default_scene') || createDefaultScene();
 
     }
     //创建一个默认场景
@@ -580,6 +629,7 @@ var CmdGen = function () {
     }
 
     return {
+        /*
         //添加网关后进行初始化（app注册网关）
         //参数:网关对象
         'regGateway': function (gateway) {
@@ -591,6 +641,7 @@ var CmdGen = function () {
                 'YN_datetime': datetime()
             });
         },
+        */
 
         /*
          //更换网关:
@@ -609,6 +660,7 @@ var CmdGen = function () {
          */
 
 
+        /*
         //注册按键子设备
         //参数 : gateway 网关, ctlpanel: 控制面板
         'regBtnSubDev': function (gateway, ctlpanel) {
@@ -627,7 +679,10 @@ var CmdGen = function () {
             });
 
         },
+        */
 
+
+        /*
         //注册驱动子设备
         //参数: gateway 网关, relay: 继电器
         'regDrvSubDev': function (gateway, relay) {
@@ -643,7 +698,10 @@ var CmdGen = function () {
 
             });
         },
+        */
 
+
+        /*
         //删除按键子设备
         //参数 : gateway 网关,panel按钮
         'deleteBtnSubDev': function (gateway, ctlpanel) {
@@ -655,7 +713,10 @@ var CmdGen = function () {
 
             });
         },
+        */
 
+
+        /*
         //删除驱动子设备
         //参数: gateway 网关, relay: 继电器
         'deleteDrvSubDev': function (gateway, relay) {
@@ -669,8 +730,10 @@ var CmdGen = function () {
 
             });
         },
+        */
 
 
+        /*
         //更换按键子设备:
         //参数: gateway 网关, old_ctlpanel 旧的控制面板, new_ctlpanel 新的控制面板
         'replaceBtnSubDev': function (gateway, old_ctlpanel, new_ctlpanel) {
@@ -684,7 +747,10 @@ var CmdGen = function () {
 
             });
         },
+        */
 
+
+        /*
         //更换驱动子设备
         //参数: gateway 网关, old_relay旧的驱动子设备  new_relay 新的驱动子设备
         'replaceDrvSubDev': function (gateway, old_relay, new_relay) {
@@ -698,7 +764,22 @@ var CmdGen = function () {
                 'YN_msgpack': "" //??
             });
         },
+        */
 
+
+        // 配置驱动子设备场景
+        //参数: scenepid场景Pid, drivernumber驱动口号,  sceneinfo场景信息（SceneInfo类型）
+        'configScene': function(scenepid, drivernumber, sceneinfo ) {
+            var val = FormatArrayNumberLengthToString([{num:0xa,len:3},{num:scenepid,len:6},{num:drivernumber,len:3}]) + FormatArrayNumberLengthToString([{num:sceneinfo.latencyBeforeaAtion,len:6},{num:sceneinfo.stateBeforeAction,len:3},
+                    {num:sceneinfo.latencyAfterAction,len:6},{num:sceneinfo.stateAfterAction,len:3}]);
+             return to_stream_value({
+                 'powermemo':val
+             });
+        },
+
+
+
+        /*
         //创建场景
         //参数: gateway网关, scene 要创建的场景
         'createScene': function (gateway, scene) {
@@ -714,7 +795,9 @@ var CmdGen = function () {
                 'YN_s_driver_n': Scene_len_s_driver(scene)  //驱动组数
             });
         },
+        */
 
+        /*
         //更新场景
         //参数 gateway网关, scene: 要更新的场景
         'updateScene': function (gateway, scene) {
@@ -730,7 +813,18 @@ var CmdGen = function () {
                 'YN_s_driver_n': Scene_len_s_driver(scene) //驱动组数
             });
         },
+        */
 
+        //删除场景
+        //参数: 场景pid
+        'deleteScene':function(pid){
+              return to_stream_value({
+                  'message_id':0xc,
+                  'scene_id':pid,
+              });
+        },
+
+        /*
         //删除场景
         //参数 gateway 网关 scene: 要删除的场景
         'deleteScene': function (gateway, scene) {
@@ -741,6 +835,76 @@ var CmdGen = function () {
                 'YN_pid': scene.pid
             });
         },
+        */
+
+        //场景关联载波按键子设备
+        //参数: scenepid场景Pid，btnnumber按键编号,btntype按键类型
+        'connectScenepidWithInputDevice':function(scenepid, btnnumber,btntype){
+            var val = FormatArrayNumberLengthToString([{num:0x21,len:3},
+                {num:scenepid,len:6},{num:btnnumber,len:3},{num:btntype,len:3}]);
+            return to_stream_value({'keymemo':val});
+        },
+
+
+        // 删除驱动子设备场景, 将某个驱动口从某个场景中删除
+        //参数:pid场景pid, drivernumber驱动号
+        'deleteOutputDeviceFromScene':function(pid,drivernumber){
+            var val = FormatArrayNumberLengthToString([{num:0x22,len:3},
+                {num:pid,len:6},{num:drivernumber,len:3}]);
+            return to_stream_value({'powermemo':val});
+        },
+
+        //网关获取当前时间
+        'sendDatatimeToGateway':function() {
+            var now = new Date();
+            var val = FormatArrayNumberLengthToString([
+                {num:now.getFullYear(),len:6},
+                {num:now.getMonth()+1,len:3},
+                {num:now.getDate(),len:3},
+                {num:now.getHours()+1,len:3},
+                {num:now.getMinutes(),len:3},
+                {num:now.get.getSeconds(),len:3}
+            ]);
+            return to_stream_value({'message_id':0x25,
+            'memo':val});
+        },
+
+        //全局场景控制
+        //参数: pid场景pid, exec:执行要求：0x00-关，0x7F-开，0xff-反转
+        'sceneControl': function (pid, exec) {
+            return to_stream_value({'message_id': FormatArrayNumberLengthToString([{num:0x99,len:3}]),
+               'scene_id':FormatArrayNumberLengthToString([{num:pid,len:6}]),
+                'memo':FormatArrayNumberLengthToString([{num:exec,len:3}])
+            });
+        },
+
+        //独立场景控制
+        //参数:drivernumber驱动号,sceneinfo场景信息YN_SceneInfo
+        'independentSceneControl': function(drivernumber,sceneinfo) {
+            var val = FormatArrayNumberLengthToString([
+                {num:0x98,len:3},
+                {num:drivernumber,len:3},
+                {num:sceneinfo.latencyBeforeaAtion,len:6},
+                {num:sceneinfo.stateBeforeAction,len:3},
+                {num:sceneinfo.latencyAfterAction,len:6},
+                {num:sceneinfo.stateAfterAction,len:3}
+            ]);
+            return to_stream_value({
+                'powermemo':val
+            });
+        },
+
+        //标准控制模式,其实就是执行一个场景
+        //
+
+
+
+
+
+
+
+
+
 
         //配置单一驱动场景<其实就是为某个电器配置按钮>
 
@@ -1255,3 +1419,12 @@ function YN_Timing_Task(pid, timing_config) {
 }
 
 
+//场景配置信息
+//参数: latencyBeforeaAtion动作前延时, stateBeforeAction动作前状态, latencyAfterAction动作后延时,  stateAfterAction动作后状态
+function YN_SceneInfo(latencyBeforeaAtion,stateBeforeAction, latencyAfterAction, stateAfterAction) {
+    this.latencyBeforeaAtion = latencyBeforeaAtion;
+    this.stateBeforeAction = stateBeforeAction;
+    this.latencyAfterAction = latencyAfterAction;
+    this.stateAfterAction = stateAfterAction;
+
+}
