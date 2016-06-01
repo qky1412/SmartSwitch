@@ -123,7 +123,6 @@ function initData() {
 function refreshInitData(suc) {
     if(typeof(suc)=="string") {
         suc = JSON.parse(suc);
-        alert(suc);
         if(suc.device.status) {
             var status = suc.device.status;
             status = parseInt(status);
@@ -133,19 +132,19 @@ function refreshInitData(suc) {
 
             }
         }
-        var subDevices = suc.device.sub_devices;
-        if(subDevices) {
-            if(subDevices.length > 0) {
-                saveSubDevicesToDatabase(subDevices);
-                refreshSubDevices(subDevices);
-            } else {
-                alert("子设备为空");
-            }
-        }
-    }else {
-        return;
-    }
 
+    }else {
+
+    }
+    var subDevices = suc.device.sub_devices;
+    if(subDevices) {
+        if(subDevices.length > 0) {
+            //saveSubDevicesToDatabase(subDevices);
+            refreshSubDevices(subDevices);
+        } else {
+            alert("子设备为空");
+        }
+    }
 }
 //TODO 每次读取子设备列表后都和数据库存的比对一下，如有必要，保存至数据库
 function  saveSubDevicesToDatabase(subDevices) {

@@ -11,7 +11,7 @@ function initData() {
     JDSMART.io.initDeviceData(
         function (suc) {
             // 执行初始化的回调
-            alert("子设备初始化" + JSON.stringify(suc));
+            alert("输出子设备初始化" + JSON.stringify(suc));
             refreshData();
         });
 }
