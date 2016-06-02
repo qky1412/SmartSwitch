@@ -124,53 +124,8 @@ function deleteEleFromList(ele, list) {
 /* ------------------------- */
 //一些对象方法
 
-//*YN_CtlPanel_assoc对象方法
-//生成YN_s_key
-function CtlPanel_Assoc_to_s_key(ctlpanel) {
-    //组成为: SN（id）+ 按键编号 + 按键类型
-    return '' + ctlpanel.panel.id + ctlpanel.btn_index + ctlpanel.panel.type;
-}
-
-
-//*YN_Elec_Equi对象方法
-//生成YN_s_key 关联按钮组
-//参数: elec_equic电器对象
-function Elec_equic_to_s_key(elec_equic) {
-    var rt = '';
-    for (var as_panel in elec_equic.panel_assocs) {
-        rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
-    }
-    return rt;
-}
-
-//YN_s_key按钮组的长度
-//参数: 电器对象
-function Elec_equic_len_s_key(elec_equic) {
-    return elec_equic.panel_assocs.length;
-}
-
-
-//生成YN_s_driver
-//参数: YN_Scene_Step对象
-function Scene_Step_to_s_driver(scene_step) {
-    //组成驱动SN+驱动编号+3位初始状态+2位延时时间+3位结束状态+2位延时时间
-    return '' + scene_step.elec_equi.relay_assoc.relay.id +
-        scene_step.elec_equi.relay_assoc.slot_index +
-        scene_step.action1 +
-        scene_step.action1_delay +
-        scene_step.action2 +
-        scene_step.action2_delay;
-}
 
 //*YN_Scene对象方法
-//删除指面板
-//参数: scene YN_Scene对象, panel: YN_CtlPanel对象
-//返回: 更新后的scene对象
-function deleteCtlPanel(scene, panel) {
-    scene.ctlpanel_assocs = deleteEleFromList(panel, scene.ctlpanel_assocs);
-    return scene;
-}
-
 
 //删除指定场景里的动作
 //参数: scene YN_Scene对象, sceneStep: YN_Scene_Step对象
@@ -180,53 +135,12 @@ function deleteSceneStep(scene, sceneStep) {
     return scene;
 }
 
-//生成场景YN_s_key 场景关联按键
-//参数: scene YN_Scene对象
-function Scene_to_s_key(scene) {
-    var rt = '';
-    for (var as_panel in scene.panel_assocs) {
-        rt = rt.concat(CtlPanel_Assoc_to_s_key(as_panel));
-    }
-    return rt;
-}
-
-//生成场景关联子设备驱动组
-//参数: scene YN_Scene对象
-function Scene_to_s_driver(scene) {
-    var rt = '';
-    for (var step in this.scene_steps) {
-        rt = rt.concat(Scene_Step_to_s_driver(step));
-    }
-    return rt;
-}
-
-//场景中关联按键的个数
-//参数: scene YN_Scene对象
-function Scene_len_s_key(scene) {
-    return scene.ctlpanel_assocs.length;
-}
-
-//场景中关联按键的驱动个数
-//参数: scene YN_Scene对象
-function Scene_len_s_driver(scene) {
-    return scene.scene_steps.length;
-
-}
-
-
-//*YN_Timing_Config定时配置对象方法
-
-//参数: YN_Timing_Config对象
-//返回定时配置的时候格式,根据具体的定时配置对象类型
-function Timing_Config_getdatetime(timing_config) {
-    //todo 根据timing_config的类型进行
-    return timing_config.datetime;
-
-}
-
 
 /** 数据库对象 **/
 //参数 :gatewayid -> 网关的唯一标识
+
+
+//!! ready完以后要调用
 var Database = function (gatewayid) {
 
     var dataTables = {
@@ -475,13 +389,6 @@ var Database = function (gatewayid) {
         },
 
 
-        /* ----------------------- */
-        /* 网关相关api */
-        'setGateway': function (gateway) {
-            dataTables.gateway = gateway;
-            writeToDb();
-        },
-
 
         /* ------------------------ */
         /* 一些定制的api */
@@ -509,7 +416,7 @@ var Database = function (gatewayid) {
         'getCtlPanelListInRoom': function (roomid) {
             return dataTables.ctlpanel_list.filter(function (ctlpanel) {
                 return ctlpanel.room.id === roomid;
-            })
+            });
         },
 
 
@@ -531,63 +438,13 @@ var Database = function (gatewayid) {
 
         //电器对象方法
 
-        //生成YN_s_key 关联按钮组
-        //参数: elec_equic电器对象
-        'Elec_equic_to_s_key': Elec_equic_to_s_key,
-
-        //YN_s_key按钮组的长度
-        'Elec_equic_len_s_key': Elec_equic_len_s_key,
-
-
-        //YN_CtlPanel_assoc对象方法
-        //生成YN_s_key, 参数: ctlpanel对象
-        'CtlPanel_Assoc_to_s_key': CtlPanel_Assoc_to_s_key,
-
-        //*YN_Scene_Step对象方法
-        //生成YN_s_driver
-        //参数: YN_Scene_Step对象
-        'Scene_Step_to_s_driver': Scene_Step_to_s_driver,
-
-
-        //*YN_Scene对象方法
-        //删除指面板
-        //参数: scene YN_Scene对象, panel: YN_CtlPanel对象
-        //返回: 更新后的scene对象
-        'Scene_deleteCtlPanel': deleteCtlPanel,
-
 
         //删除指定场景里的动作
         //参数: scene YN_Scene对象, sceneStep: YN_Scene_Step对象
         //返回: 更新后的scene对象
-        'Scene_deleteSceneStep': deleteSceneStep,
+        'Scene_deleteSceneStep': deleteSceneStep
 
-        //生成场景YN_s_key 场景关联按键
-        //参数: scene YN_Scene对象
-        'Scene_to_s_key': Scene_to_s_key,
-
-
-        //生成场景关联子设备驱动组
-        //参数: scene YN_Scene对象
-        'Scene_to_s_driver': Scene_to_s_driver,
-
-        //场景中关联按键的个数
-        //参数: scene YN_Scene对象
-        'Scene_len_s_key': Scene_len_s_key,
-
-
-        //场景中关联按键的驱动个数
-        //参数: scene YN_Scene对象
-
-        'Scene_len_s_driver': Scene_len_s_driver,
-
-
-        //*YN_Timing_Config定时配置对象方法
-
-        //参数: YN_Timing_Config对象
-        //返回定时配置的时候格式,根据具体的定时配置对象类型
-        'Timing_Config_getdatetime': Timing_Config_getdatetime
-
-    }
+    };
 
 }();
 
@@ -1027,13 +884,6 @@ var CloudApi = function () {
 }();
 
 
-//网关对象
-function YN_Gateway(device_id, feed_id, mac) {
-    this.device_id = device_id;
-    this.feed_id = feed_id;
-    this.mac = mac;
-}
-
 
 //楼层对象
 function YN_Floor(name) {
@@ -1051,39 +901,26 @@ function YN_Room(name) {
 }
 
 //电器对象
-function YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType, timing_tasks) {
+function YN_Elec_Equi(name, floor, relay_assoc, room, iconType) {
     this.id = guid(); //电器的id,作为唯的标识
     this.name = name;  // 电器的名称
     this.floor = floor; //电器所处楼层
     this.room = room; //电器所处的房间
     this.relay_assoc = relay_assoc; //关联的继电器
-    this.panel_assocs = panel_assocs; //关联的多个控制面板,也可能没有关联控制面板
     this.iconType = iconType;
 
-    this.timing_tasks = timing_tasks; //电器的定时配置任务
-
 }
 
-//对电器对象执行的操作, 如调光\打开\关闭\调色
-function YN_Elec_Equi_Action(d1, d2, d3) {
-    //d1,d2,d3的意义为:
-    //当为调色: d1 d2 d3 为 r g b 三色值
-    //当为调光时: d1= d2 = d3 值的范围为0-100; 0表示关 100表示开  0-100中的某个数值表示一定的亮度
-    this.id = guid();
-    this.d1 = d1;
-    this.d2 = d2;
-    this.d3 = d3;
-}
 
 //继电器对象
-function YN_Relay(id, name, floor, room, numberOfSlotsUsed) {
+function YN_Relay(id, name, floor, room) {
     this.id = id; //继电器对象的id
     this.name = name; //此继电器用户所输入的名称
     this.floor = floor; //继电器所处楼层
     this.room = room; //继电器所处的房间
-    this.numberOfSlots = 4; //继电器的输出路数
-    this.numberOfSlotsUsed = numberOfSlotsUsed; //继电器已接路数
-    this.type = null; //继电器的类型
+    this.numberOfSlots = 7; //继电器的输出路数
+    this.slotStates = []; //继电器的当前状态
+    this.type = null; //继电器的类型, not used
     this.pid = null; //起始pid
 }
 //用于绑定某个继电器的某一路使用的数据结构
@@ -1099,9 +936,9 @@ function YN_CtlPanel(id, name, floor, room) {
     this.name = name; //面板名称
     this.floor = floor; // 面板所处楼层
     this.room = room; // 面板所处房间
-    this.numberOfButtons = 5; //面板中的按钮个数
-    this.type = null; //面板的类型
-    this.key_type = null; //按键外接设备类型
+    this.numberOfButtons = 4; //面板中的按钮个数
+    this.btnStates = []; //面板中的按钮状态
+    this.type = null; //面板的类型, not used
     this.pid = null; //起始pid
 
 
@@ -1111,51 +948,8 @@ function YN_CtlPanel(id, name, floor, room) {
 function YN_CtlPanel_assoc(panel, btn_index) {
     this.id = guid();
     this.panel = panel;
-    this.btn_index = btn_index; //
+    this.btn_index = btn_index;
 
-
-}
-
-//组成场景中的某一步的对象
-function YN_Scene_Step(elec_equi, action1, delay1, action2, delay2) {
-    this.id = guid();
-    this.elec_equi = elec_equi; //相关的电器
-    this.action1 = action1; //需要执行的第一个动作
-    this.action1_delay = delay1; //第一个动作的相应延时
-    this.action2 = action2; //需要执行的第二个动作
-    this.action2_delay = delay2;  //第二个动作的相应延时
-}
-
-//场景对象
-function YN_Scene(name, scene_steps, ctlpanel_assocs, timing_tasks) {
-    this.id = guid();
-    this.name = name; //场景的名称
-    this.scene_steps = scene_steps; //场景里的相关动作
-    this.ctlpanel_assocs = ctlpanel_assocs; //场景可能绑定的多个面板, 也有可能没有绑定
-    this.timing_tasks = timing_tasks; //场景的定时配置列表
-    this.pid = null; //场景的pid
-
-}
-
-//定时配置对象, 可用于电器与场景; 当于用一个场景的定时时,elec_equi_action传递为null; 当用于一个电器的定时时, elec_equi_action代表电器定时所要执行的动作
-function YN_Timing_Config(type, datetime, repeatArray, status, elec_equi_action) {
-    this.type = type; // 1代表单次定时,2代表每周循环
-    // todo: 配置的具体格式待定
-    this.datetime = datetime;
-    this.repeatArray = repeatArray;
-    this.status = status; //true开启false是关闭
-    this.getDatetime = function () {
-        return datetime;
-    }
-
-    this.elec_equi_action = elec_equi_action || null ; //YN_Elec_Equi_Action 对象; 表示当此配置用于一个电器时,电器所要执行的动作
-}
-
-//定时任务
-function YN_Timing_Task(pid, timing_config) {
-    this.id = String.fromCharCode(255, 255); //对应于YN_time_n,即定时任务的编号
-    this.timing_config = timing_config;  //定时配置
-    this.pid = pid; //定时任务针对的pid
 
 }
 
@@ -1169,3 +963,21 @@ function YN_SceneInfo(latencyBeforeaAtion,stateBeforeAction, latencyAfterAction,
     this.stateAfterAction = stateAfterAction;
 
 }
+
+
+//组成场景中的某一步的对象
+function YN_Scene_Step(elec_equi, sceneinfo) {
+    this.id = guid();
+    this.sceneinfo = sceneinfo;//对该电器在此步场景中的配置
+    this.elec_equi = elec_equi; //相关的电器
+}
+
+//场景对象
+function YN_Scene(name, scene_steps) {
+    this.id = guid();
+    this.name = name; //场景的名称
+    this.scene_steps = scene_steps; //场景里的相关动作
+    this.pid = 0xff; //场景的pid
+
+}
+
