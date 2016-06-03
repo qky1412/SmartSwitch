@@ -2,7 +2,10 @@
  * Created by qky on 2016/2/20 0020.
  */
 $(document).ready(function(){
+
+
     $(document).on("pageInit", "#page-home", function (e, id, page) {
+
         JDSMART.ready(function () {
             showButton(true);
             showLoading();
@@ -27,7 +30,7 @@ $(document).ready(function(){
         $("#tab-control4").click(function () {
             $("#bottom-control1, #bottom-control2, #bottom-control3").hide();
         });
-        refreshHomeData();
+
     });
 
     $(document).on("pageReinit", "#page-home", function (e, id, page) {
@@ -86,7 +89,7 @@ $(document).ready(function(){
     //    initFloorSelect();
     //    refreshEditInputDevice(getParameterByName("id"));
     //});
-    $(document).on("pageInit", "#page-add-scene", function (e, id, page) {
+    $(document).on("pageInit", "#page-add-new-scene-title", function (e, id, page) {
         JDSMART.ready(function () {
             showButton(false);
         });
@@ -115,8 +118,9 @@ function initData() {
     JDSMART.io.initDeviceData(
         function (suc) {
             // 执行初始化的回调
+            Databaseg(suc.device.feed_id);
             refreshInitData(suc);
-            
+            refreshHomeData();
         });
 }
 
@@ -139,8 +143,7 @@ function refreshInitData(suc) {
     var subDevices = suc.device.sub_devices;
     if(subDevices) {
         if(subDevices.length > 0) {
-            //saveSubDevicesToDatabase(subDevices);
-            refreshSubDevices(subDevices);
+            saveSubDevicesToDatabase(subDevices);
         } else {
             alert("子设备为空");
         }
@@ -148,37 +151,101 @@ function refreshInitData(suc) {
 }
 //TODO 每次读取子设备列表后都和数据库存的比对一下，如有必要，保存至数据库
 function  saveSubDevicesToDatabase(subDevices) {
-
+    var dbInputs = Database.getCtlPanelList();
+    var dbOutputs = Database.getRelayList();
+    if(dbInputs != null && dbInputs.length > 0) {
+        for(var i = 0; i < subDevices.length; i++) {
+            var device = subDevices[i];
+            if(device.product.product_uuid.toUpperCase() === "X6WIMG") {
+                for(var j = 0; j < dbInputs.length; j++) {
+                    if(dbInputs[j].id == device.device.device_id) {
+                        break;
+                    } else {
+                        if(j == dbInputs.length -1) {
+                            var newCtlPanel = new YN_CtlPanel(device.device.device_id, null, null, null);
+                            Database.addCtlPanelToList(newCtlPanel);
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        for(var k = 0; k < subDevices.length; k++) {
+            var device1 = subDevices[k];
+            if(device1.product.product_uuid.toUpperCase() === "X6WIMG") {
+                var newCtlPanel = new YN_CtlPanel(device1.device.device_id, null, null, null);
+                Database.addCtlPanelToList(newCtlPanel);
+            }
+        }
+    }
+    if(dbOutputs != null && dbOutputs.length > 0) {
+        for(var i = 0; i < subDevices.length; i++) {
+            var device3 = subDevices[i];
+            if(device3.product.product_uuid.toUpperCase() === "V8YKNE") {
+                for(var j = 0; j < dbOutputs.length; j++) {
+                    if(dbOutputs[j].id == device3.device.device_id) {
+                        break;
+                    } else {
+                        if(j == dbOutputs.length -1) {
+                            var newRelay = new YN_Relay(device3.device.device_id, null, null, null);
+                            Database.addRelayToList(newRelay);
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        for(var k = 0; k < subDevices.length; k++) {
+            var device4 = subDevices[k];
+            if(device4.product.product_uuid.toUpperCase() === "V8YKNE") {
+                var newRelay = new YN_Relay(device4.device.device_id, null, null, null);
+                Database.addRelayToList(newRelay);
+            }
+        }
+    }
 }
 //TODO 刷新子设备列表
-function refreshSubDevices(subDevices) {
+function refreshSubDevices() {
     document.getElementById("home-output-module").innerHTML = '';
     document.getElementById("home-input-module").innerHTML = '';
-    //todo 本来是本地取，现在每次进入界面都需要取一次
-    //var outputs = Database.getRelayList();
+
+    var outputs = Database.getRelayList();
+    var inputs = Database.getCtlPanelList();
     var templateOutput = document.getElementById("template-output-device");
     var templateInput = document.getElementById("template-input-device");
-    for(var i = 0, length = subDevices.length; i < length; i++) {
-        var device = subDevices[i];
-        if(device.product.product_uuid.toUpperCase() === "V8YKNE") {
-            var tmp1 = templateOutput.content.cloneNode(true);
-            tmp1.querySelector('a').dataset.id = device.device.feed_id;
-            tmp1.querySelector('.text-title').innerText = device.product.product_uuid;
-            tmp1.querySelector('#span-output-id').innerText = "ID:" + device.device.device_id;
-            document.getElementById("home-output-module").appendChild(tmp1);
-        } else if(device.product.product_uuid.toUpperCase() === "X6WIMG") {
-            var tmp2 = templateInput.content.cloneNode(true);
-            tmp2.querySelector('a').dataset.id = device.device.feed_id;
-            tmp2.querySelector('.text-title').innerText = device.product.product_uuid;
-            tmp2.querySelector('#span-input-id').innerText = "ID:" + device.device.device_id;
-            document.getElementById("home-input-module").appendChild(tmp2);
+
+    for(var i = 0; i < outputs.length; i++) {
+        var device = outputs[i];
+        var tmp1 = templateOutput.content.cloneNode(true);
+        tmp1.querySelector('a').dataset.id = device.id;
+        tmp1.querySelector('.text-title').innerText = device.id;
+        tmp1.querySelector('#span-output-id').innerText = "";
+        if(device.room != null) {
+            tmp1.querySelector('#span-output-room').innerText = device.room.name;
+        }
+        if(device.floor != null) {
+            tmp1.querySelector('#span-output-floor').innerText = device.floor.name;
         }
 
-       // tmp.querySelector('.device-edit').dataset.id = output.id;
-        //tmp.querySelector('#span-output-room').innerText = output.room.name;
-        //tmp.querySelector('#span-output-floor').innerText = output.floor.name;
-
+        document.getElementById("home-output-module").appendChild(tmp1);
     }
+    for(var j = 0; j < inputs.length; j++) {
+        var device2 = inputs[j];
+        var tmp2 = templateInput.content.cloneNode(true);
+        tmp2.querySelector('a').dataset.id = device2.id;
+        tmp2.querySelector('.text-title').innerText = device2.id;
+        tmp2.querySelector('#span-input-id').innerText = "";
+        if(device2.room != null) {
+            tmp2.querySelector('#span-input-room').innerText = device2.room.name;
+        }
+        if(device2.floor != null) {
+            tmp2.querySelector('#span-input-floor').innerText = device2.floor.name;
+        }
+
+        document.getElementById("home-input-module").appendChild(tmp2);
+    }
+
+
 }
 //添加子设备
 function addSubDevice(){
@@ -195,10 +262,10 @@ function jumpSubDevice(data) {
 function refreshHomeData() {
     //刷新首页
     refreshHomeDevicesList();
+    //刷新子设备
+    refreshSubDevices();
     //刷新场景
-    refreshSceneList();
-    //刷新操作
-    //refreshOperationList();
+    refreshOperationList();
 
 }
 //测试连接
@@ -363,7 +430,7 @@ function initRelaySelect() {
     for (var i = 0, length = relayList.length; i < length; i++) {
         var newOption = document.createElement("option");
         newOption.value = relayList[i].id;
-        newOption.text = relayList[i].name;
+        newOption.text = relayList[i].id;
         selectRelay.add(newOption);
     }
     refreshRelaySlot();
@@ -505,8 +572,9 @@ function refreshInputDeviceList() {
  * 场景配置页面所需js
  */
 //TODO 是否需要显示动作2 以及显示的格式  待商榷
-
+//刷新操作配置列表（弃用）
 function refreshSceneList() {
+
     document.getElementById("home-config-list").innerHTML = "";
     var sceneList = Database.getSceneList();
     var templateScene = document.getElementById("home-config-template-config");
@@ -554,6 +622,7 @@ function refreshOperationList() {
         document.getElementById("home-operation-scene").appendChild(tmpScene);
     }
 }
+//刷新单个设备（弃用）
 function refreshSingleDeviceList() {
     document.getElementById("home-operation-devices").innerHTML = '';
     var floors = Database.getFloorList();
@@ -583,7 +652,7 @@ function refreshSingleDeviceList() {
         }
     }
 }
-
+//开关
 function toggle(elem, deviceId) {
     if($(elem).hasClass("on")) {
         $(elem).removeClass("on");
@@ -803,25 +872,25 @@ function addNewHomeDevice() {
     var relay_assoc = new YN_Relay_assoc(relay, relaySlot);
     //TODO  判断当前已添加面板个数 如果存在绑定的开关面板，则获取合法的面板数据
     //var existPanelNumbers = $('.li-panel').length;
-    var selectPanels = document.getElementsByClassName("select-panel");
-    var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
-    var panel_assocs = [];
-    if(selectPanels.length > 0) {
-        for(var i = 0, length = selectPanels.length; i < length; i++) {
-            var selectedPanelId = selectPanels[i].value;
-            if(selectedPanelId != null && selectedPanelId != '') {
-                var selectedPanelSlot = selectPanelSlots[i].value;
-                if(selectedPanelSlot != null && selectedPanelSlot != '') {
-                    var panel = Database.getCtlPanelByid(selectedPanelId);
-                    if(panel != null && panel != "") {
-                        var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
-                        panel_assocs.push(panel_assoc);
-                    }
-                }
-            }
-        }
-    }
-    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, panel_assocs, iconType, []);
+    // var selectPanels = document.getElementsByClassName("select-panel");
+    // var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
+    // var panel_assocs = [];
+    // if(selectPanels.length > 0) {
+    //     for(var i = 0, length = selectPanels.length; i < length; i++) {
+    //         var selectedPanelId = selectPanels[i].value;
+    //         if(selectedPanelId != null && selectedPanelId != '') {
+    //             var selectedPanelSlot = selectPanelSlots[i].value;
+    //             if(selectedPanelSlot != null && selectedPanelSlot != '') {
+    //                 var panel = Database.getCtlPanelByid(selectedPanelId);
+    //                 if(panel != null && panel != "") {
+    //                     var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
+    //                     panel_assocs.push(panel_assoc);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    var newDevice = new YN_Elec_Equi(name, floor, relay_assoc, room, null, iconType, []);
     Database.addElecEquiToList(newDevice);
     $.router.back("../html/home.html");
 }
@@ -928,30 +997,30 @@ function updateDevice() {
     var relay_assoc = new YN_Relay_assoc(relay, relaySlot);
     //TODO  判断当前已添加面板个数 如果存在绑定的开关面板，则获取合法的面板数据
     //var existPanelNumbers = $('.li-panel').length;
-    var selectPanels = document.getElementsByClassName("select-panel");
-    var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
-    var panel_assocs = [];
-    if(selectPanels.length > 0) {
-        for(var i = 0, length = selectPanels.length; i < length; i++) {
-            var selectedPanelId = selectPanels[i].value;
-            if(selectedPanelId != null && selectedPanelId != '') {
-                var selectedPanelSlot = selectPanelSlots[i].value;
-                if(selectedPanelSlot != null && selectedPanelSlot != '') {
-                    var panel = Database.getCtlPanelByid(selectedPanelId);
-                    if(panel != null && panel != "") {
-                        var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
-                        panel_assocs.push(panel_assoc);
-                    }
-                }
-            }
-        }
-    }
+    // var selectPanels = document.getElementsByClassName("select-panel");
+    // var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
+    // var panel_assocs = [];
+    // if(selectPanels.length > 0) {
+    //     for(var i = 0, length = selectPanels.length; i < length; i++) {
+    //         var selectedPanelId = selectPanels[i].value;
+    //         if(selectedPanelId != null && selectedPanelId != '') {
+    //             var selectedPanelSlot = selectPanelSlots[i].value;
+    //             if(selectedPanelSlot != null && selectedPanelSlot != '') {
+    //                 var panel = Database.getCtlPanelByid(selectedPanelId);
+    //                 if(panel != null && panel != "") {
+    //                     var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
+    //                     panel_assocs.push(panel_assoc);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     var deviceToUpdate = Database.getElecEquiByid(getParameterByName("id"));
     deviceToUpdate.name = name;
     deviceToUpdate.floor = floor;
     deviceToUpdate.relay_assoc = relay_assoc;
     deviceToUpdate.room = room;
-    deviceToUpdate.panel_assocs = panel_assocs;
+    //deviceToUpdate.panel_assocs = panel_assocs;
     Database.updateElecEqui(deviceToUpdate);
     $.router.back("../html/home.html");
 }
@@ -1131,108 +1200,108 @@ function addNewScene() {
         alert("场景名称不能为空");
         return;
     }
-    var existDeviceNumbers = $('.add-scene-device-card').length;
-    if(existDeviceNumbers == 0) {
-        alert("至少选择一个电器");
-        return;
-    }
-    var sceneSteps = [];
-    for(var i = 0; i < existDeviceNumbers; i++) {
-        var deviceCard = document.getElementsByClassName("add-scene-device-card")[i];
-        var deviceId = deviceCard.getElementsByClassName("add-scene-select-device-name")[0].value;
-        var device = Database.getElecEquiByid(deviceId);
-        //action1 的各个值
-        var action1IsOn = deviceCard.getElementsByClassName("add-scene-action1-switch-checkbox")[0].checked;//true or false
-        var action1Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action1-range")[0].value);
-        if(!action1IsOn) {
-            //如果动作是关闭，则亮度值为0
-            action1Brightness = 0;
-        } else {
-            //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
-            if(action1Brightness == 0) {
-                action1Brightness = 100;
-            }
-        }
-        var action1IsDelay = deviceCard.getElementsByClassName("add-scene-action1-delay-checkbox")[0].checked;//true or false
-
-        //TODO 延迟时间的格式待商榷
-        var action1DelayTime = "0";
-        var action1DelayHours = 0;
-        var action1DelayMinute = 0;
-        if(action1IsDelay) {
-            action1DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-hour-select")[0].value);
-            action1DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-minute-select")[0].value);
-            action1DelayTime = action1DelayHours + action1DelayMinute
-        }
-
-
-        //action2 的各个值
-        var action2IsOn = deviceCard.getElementsByClassName("add-scene-action2-switch-checkbox")[0].checked;//true or false
-        var action2Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action2-range")[0].value);
-        if(!action2IsOn) {
-            //如果动作是关闭，则亮度值为0
-            action2Brightness = 0;
-        } else {
-            //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
-            if(action2Brightness == 0) {
-                action2Brightness = 100;
-            }
-        }
-        var action2IsDelay = deviceCard.getElementsByClassName("add-scene-action2-delay-checkbox")[0].checked;//true or false
-
-        //TODO 延迟时间的格式待商榷
-        var action2DelayTime = "0";
-        var action2DelayHours = 0;
-        var action2DelayMinute = 0;
-        if(action2IsDelay) {
-            action2DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-hour-select")[0].value);
-            action2DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-minute-select")[0].value);
-            action2DelayTime = action2DelayHours + "" + action2DelayMinute
-        }
-        //TODO 需要组合2个action
-        var action1 = new YN_Elec_Equi_Action();
-        var action2 = new YN_Elec_Equi_Action();
-        if(action1IsOn) {
-            action1.d1 = action1Brightness;
-            action1.d2 = action1Brightness;
-            action1.d3 = action1Brightness;
-        } else {
-            action1.d1 = 0;
-            action1.d2 = 0;
-            action1.d3 = 0;
-        }
-        if(action2IsOn) {
-            action2.d1 = action2Brightness;
-            action2.d2 = action2Brightness;
-            action2.d3 = action2Brightness;
-        } else {
-            action2.d1 = 0;
-            action2.d2 = 0;
-            action2.d3 = 0;
-        }
-        var newSceneStep = new YN_Scene_Step(device, action1, action1DelayTime, action2, action2DelayTime);
-        sceneSteps.push(newSceneStep);
-    }
-
-    var selectPanels = document.getElementsByClassName("select-panel");
-    var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
-    var ctrlPanelAssocs = [];
-    if(selectPanels.length > 0) {
-        for(var i = 0, length = selectPanels.length; i < length; i++) {
-            var selectedPanelId = selectPanels[i].value;
-            if(selectedPanelId != null && selectedPanelId != '') {
-                var selectedPanelSlot = selectPanelSlots[i].value;
-                if(selectedPanelSlot != null && selectedPanelSlot != '') {
-                    var panel = Database.getCtlPanelByid(selectedPanelId);
-                    if(panel != null && panel != "") {
-                        var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
-                        ctrlPanelAssocs.push(panel_assoc);
-                    }
-                }
-            }
-        }
-    }
-    var newScene = new YN_Scene(name, sceneSteps, ctrlPanelAssocs, []);
+    // var existDeviceNumbers = $('.add-scene-device-card').length;
+    // if(existDeviceNumbers == 0) {
+    //     alert("至少选择一个电器");
+    //     return;
+    // }
+    // var sceneSteps = [];
+    // for(var i = 0; i < existDeviceNumbers; i++) {
+    //     var deviceCard = document.getElementsByClassName("add-scene-device-card")[i];
+    //     var deviceId = deviceCard.getElementsByClassName("add-scene-select-device-name")[0].value;
+    //     var device = Database.getElecEquiByid(deviceId);
+    //     //action1 的各个值
+    //     var action1IsOn = deviceCard.getElementsByClassName("add-scene-action1-switch-checkbox")[0].checked;//true or false
+    //     var action1Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action1-range")[0].value);
+    //     if(!action1IsOn) {
+    //         //如果动作是关闭，则亮度值为0
+    //         action1Brightness = 0;
+    //     } else {
+    //         //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
+    //         if(action1Brightness == 0) {
+    //             action1Brightness = 100;
+    //         }
+    //     }
+    //     var action1IsDelay = deviceCard.getElementsByClassName("add-scene-action1-delay-checkbox")[0].checked;//true or false
+    //
+    //     //TODO 延迟时间的格式待商榷
+    //     var action1DelayTime = "0";
+    //     var action1DelayHours = 0;
+    //     var action1DelayMinute = 0;
+    //     if(action1IsDelay) {
+    //         action1DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-hour-select")[0].value);
+    //         action1DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action1-delay-minute-select")[0].value);
+    //         action1DelayTime = action1DelayHours + action1DelayMinute
+    //     }
+    //
+    //
+    //     //action2 的各个值
+    //     var action2IsOn = deviceCard.getElementsByClassName("add-scene-action2-switch-checkbox")[0].checked;//true or false
+    //     var action2Brightness = parseInt(deviceCard.getElementsByClassName("add-scene-action2-range")[0].value);
+    //     if(!action2IsOn) {
+    //         //如果动作是关闭，则亮度值为0
+    //         action2Brightness = 0;
+    //     } else {
+    //         //如果动作是开启，但是用户选择亮度为0，则自动将亮度值置为为100
+    //         if(action2Brightness == 0) {
+    //             action2Brightness = 100;
+    //         }
+    //     }
+    //     var action2IsDelay = deviceCard.getElementsByClassName("add-scene-action2-delay-checkbox")[0].checked;//true or false
+    //
+    //     //TODO 延迟时间的格式待商榷
+    //     var action2DelayTime = "0";
+    //     var action2DelayHours = 0;
+    //     var action2DelayMinute = 0;
+    //     if(action2IsDelay) {
+    //         action2DelayHours = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-hour-select")[0].value);
+    //         action2DelayMinute = parseInt(deviceCard.getElementsByClassName("add-scene-action2-delay-minute-select")[0].value);
+    //         action2DelayTime = action2DelayHours + "" + action2DelayMinute
+    //     }
+    //     //TODO 需要组合2个action
+    //     var action1 = new YN_Elec_Equi_Action();
+    //     var action2 = new YN_Elec_Equi_Action();
+    //     if(action1IsOn) {
+    //         action1.d1 = action1Brightness;
+    //         action1.d2 = action1Brightness;
+    //         action1.d3 = action1Brightness;
+    //     } else {
+    //         action1.d1 = 0;
+    //         action1.d2 = 0;
+    //         action1.d3 = 0;
+    //     }
+    //     if(action2IsOn) {
+    //         action2.d1 = action2Brightness;
+    //         action2.d2 = action2Brightness;
+    //         action2.d3 = action2Brightness;
+    //     } else {
+    //         action2.d1 = 0;
+    //         action2.d2 = 0;
+    //         action2.d3 = 0;
+    //     }
+    //     var newSceneStep = new YN_Scene_Step(device, action1, action1DelayTime, action2, action2DelayTime);
+    //     sceneSteps.push(newSceneStep);
+    // }
+    //
+    // var selectPanels = document.getElementsByClassName("select-panel");
+    // var selectPanelSlots = document.getElementsByClassName("select-panel-slot");
+    // var ctrlPanelAssocs = [];
+    // if(selectPanels.length > 0) {
+    //     for(var i = 0, length = selectPanels.length; i < length; i++) {
+    //         var selectedPanelId = selectPanels[i].value;
+    //         if(selectedPanelId != null && selectedPanelId != '') {
+    //             var selectedPanelSlot = selectPanelSlots[i].value;
+    //             if(selectedPanelSlot != null && selectedPanelSlot != '') {
+    //                 var panel = Database.getCtlPanelByid(selectedPanelId);
+    //                 if(panel != null && panel != "") {
+    //                     var panel_assoc = new YN_CtlPanel_assoc(panel, selectedPanelSlot);
+    //                     ctrlPanelAssocs.push(panel_assoc);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    var newScene = new YN_Scene(name, null, null, []);
     Database.addSceneToList(newScene);
     $.router.back("../html/home.html");
 }

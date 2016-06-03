@@ -141,7 +141,8 @@ function deleteSceneStep(scene, sceneStep) {
 
 
 //!! ready完以后要调用
-var Database = function (gatewayid) {
+var Database=undefined;
+var Databaseg = function (gatewayid) {
 
     var dataTables = {
         'elec_equi_list': [],  //电器列表
@@ -162,12 +163,12 @@ var Database = function (gatewayid) {
 
     function readFromDb() {
         for (var key_table in dataTables) {
-            key_table = key_table+gatewayid;
+            var key_table2 = key_table+gatewayid;
             var defaultscene = 'default_scene'+gatewayid;
-            if (key_table === defaultscene) {
+            if (key_table2 === defaultscene) {
                 continue;
             }
-            dataTables[key_table] = Lockr.get(key_table) || [];
+            dataTables[key_table] = Lockr.get(key_table2) || [];
         }
 
         //获取默认场景
@@ -213,7 +214,7 @@ var Database = function (gatewayid) {
     //初始化动作
     readFromDb();
 
-    return {
+    Database = {
         /* ------------------------------------ */
         /* 电器相关api */
 
@@ -446,7 +447,8 @@ var Database = function (gatewayid) {
 
     };
 
-}();
+    return Database;
+};
 
 /* 京东控制设备的交互命令生成
 
