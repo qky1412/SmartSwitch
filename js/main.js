@@ -158,11 +158,11 @@ function  saveSubDevicesToDatabase(subDevices) {
             var device = subDevices[i];
             if(device.product.product_uuid.toUpperCase() === "X6WIMG") {
                 for(var j = 0; j < dbInputs.length; j++) {
-                    if(dbInputs[j].id == device.device.device_id) {
+                    if(dbInputs[j].id == device.device.feed_id) {
                         break;
                     } else {
                         if(j == dbInputs.length -1) {
-                            var newCtlPanel = new YN_CtlPanel(device.device.device_id, null, null, null);
+                            var newCtlPanel = new YN_CtlPanel(device.device.feed_id, null, null, null);
                             Database.addCtlPanelToList(newCtlPanel);
                         }
                     }
@@ -173,7 +173,7 @@ function  saveSubDevicesToDatabase(subDevices) {
         for(var k = 0; k < subDevices.length; k++) {
             var device1 = subDevices[k];
             if(device1.product.product_uuid.toUpperCase() === "X6WIMG") {
-                var newCtlPanel = new YN_CtlPanel(device1.device.device_id, null, null, null);
+                var newCtlPanel = new YN_CtlPanel(device1.device.feed_id, null, null, null);
                 Database.addCtlPanelToList(newCtlPanel);
             }
         }
@@ -183,11 +183,11 @@ function  saveSubDevicesToDatabase(subDevices) {
             var device3 = subDevices[i];
             if(device3.product.product_uuid.toUpperCase() === "V8YKNE") {
                 for(var j = 0; j < dbOutputs.length; j++) {
-                    if(dbOutputs[j].id == device3.device.device_id) {
+                    if(dbOutputs[j].id == device3.device.feed_id) {
                         break;
                     } else {
                         if(j == dbOutputs.length -1) {
-                            var newRelay = new YN_Relay(device3.device.device_id, null, null, null);
+                            var newRelay = new YN_Relay(device3.device.feed_id, null, null, null);
                             Database.addRelayToList(newRelay);
                         }
                     }
@@ -198,7 +198,7 @@ function  saveSubDevicesToDatabase(subDevices) {
         for(var k = 0; k < subDevices.length; k++) {
             var device4 = subDevices[k];
             if(device4.product.product_uuid.toUpperCase() === "V8YKNE") {
-                var newRelay = new YN_Relay(device4.device.device_id, null, null, null);
+                var newRelay = new YN_Relay(device4.device.feed_id, null, null, null);
                 Database.addRelayToList(newRelay);
             }
         }
