@@ -29,7 +29,7 @@ function refreshInputDeviceData() {
         if(result) {
             alert("查询输入设备状态成功" + JSON.stringify(data));
         }else {
-            alert("查询输入设备状态失败");
+            alert("查询输入设备状态失败" + JSON.stringify(data));
         }
     });
 }

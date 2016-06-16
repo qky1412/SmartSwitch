@@ -7,7 +7,7 @@
 
 //format int
 
-function FormatNumberLength(num, length) {
+function  FormatNumberLength(num, length) {
     function reverse(s) {
         return s.split("").reverse().join("");
     }
@@ -33,12 +33,11 @@ function FormatNumberLength(num, length) {
 
 
 function FormatArrayNumberLengthToString(arrayNumberLength) {
-    arrayNumberLength.map(function (currentValue) {
-        return FormatNumberLength(currentValue.num, currentValue.len)
-            .reduce(function(total, currentValue){
-                return total + currentValue;
-            },"");
-    });
+    return arrayNumberLength.map(function (currentValue) {
+        return  FormatNumberLength(currentValue.num, currentValue.len);
+    }).reduce(function(total, currentValue){
+        return total + currentValue;
+    },"");
 }
 
 
@@ -511,6 +510,7 @@ var CmdParserGen = function () {
         // 查询载波按键子设备状态（06H）,APP端查询关联载波按键子设备当前工作状态
         'queryInputDevStatus':{
             'cmdgen':function() {
+
             return to_stream_value({'keymemo':FormatArrayNumberLengthToString([{num:0x06,len:3}])});
         },
             //callback:function({cmdCode,btnStates}) cmdCode:命令字,btnStates:按键状态集合;工作状态，0x00-关，0x7F-开，0xff是反转，默认为0x00-关
@@ -750,19 +750,25 @@ var CloudApi = function () {
 
     function JDIOCtl(cmdgen_f, parser_f, callback) {
 
+
         JDSMART.io.controlDevice(
             {"command": cmdgen_f()},
             function (suc) {
+
                 parser_f(suc.streams,function(resultobject){
                     callback(true, resultobject);
                 });
+
             },
             function (err) {
+
                 if (callback) {
                     callback(false, err);
                 }
+
             }
         );
+
     }
 
 
@@ -772,6 +778,7 @@ var CloudApi = function () {
         //business_cb:function(true,{cmdCode,btnStates})
         //      or function(false,err);
         'queryInputDevStatus':function(business_cb) {
+
             JDIOCtl(CmdParserGen.queryInputDevStatus.cmdgen,
                 CmdParserGen.queryInputDevStatus.parsergen,
                 business_cb
